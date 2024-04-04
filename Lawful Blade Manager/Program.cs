@@ -1,17 +1,36 @@
+using LawfulBladeManager.Project;
+
 namespace LawfulBladeManager
 {
-    internal static class Program
+    public static class Program
     {
-        /// <summary>
-        ///  The main entry point for the application.
-        /// </summary>
+        // Private Data
+        static string pathAppData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "FSMC", "LawfulBlade");
+
+        // Public Data
+        public static ProjectManager projectManager = new();
+
+        // Properties
+        public static string AppDataPath => pathAppData;
+
+        // Implementation
+
         [STAThread]
         static void Main()
         {
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
+            InitializePaths();
+
+            projectManager.CreateProject(@"C:\Users\lXDayDreamXl\Desktop", "Test Project", "");
+            projectManager.SaveProjectInfo();
+
             ApplicationConfiguration.Initialize();
-            Application.Run(new MainForm());
+            Application.Run(new wfMainForm());
+        }
+
+        static void InitializePaths()
+        {
+            if(!Directory.Exists(pathAppData))
+                Directory.CreateDirectory(pathAppData);
         }
     }
 }

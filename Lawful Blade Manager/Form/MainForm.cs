@@ -1,8 +1,8 @@
 namespace LawfulBladeManager
 {
-    public partial class MainForm : Form
+    public partial class wfMainForm : Form
     {
-        public MainForm()
+        public wfMainForm()
         {
             InitializeComponent();
         }
