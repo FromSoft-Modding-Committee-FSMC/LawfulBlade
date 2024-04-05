@@ -26,5 +26,8 @@ namespace LawfulBladeManager.Project
 
         [JsonInclude]
         public string StoragePath;
+
+        [JsonInclude]
+        public bool IsManaged;
     }
 }

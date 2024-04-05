@@ -1,6 +1,6 @@
 ﻿namespace LawfulBladeManager
 {
-    partial class wfMainForm
+    partial class FormMain
     {
         /// <summary>
         ///  Required designer variable.
@@ -28,11 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(wfMainForm));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             msMain = new MenuStrip();
             msMainFile = new ToolStripMenuItem();
+            msMainExit = new ToolStripMenuItem();
             msMainEdit = new ToolStripMenuItem();
-            msMainView = new ToolStripMenuItem();
+            msMainPackages = new ToolStripMenuItem();
+            msMainCreatePackage = new ToolStripMenuItem();
             tcMain = new TabControl();
             tpProjects = new TabPage();
             pcProjectList = new Panel();
@@ -48,7 +50,7 @@
             // 
             // msMain
             // 
-            msMain.Items.AddRange(new ToolStripItem[] { msMainFile, msMainEdit, msMainView });
+            msMain.Items.AddRange(new ToolStripItem[] { msMainFile, msMainEdit, msMainPackages });
             msMain.Location = new Point(0, 0);
             msMain.Name = "msMain";
             msMain.Size = new Size(800, 24);
@@ -57,9 +59,17 @@
             // 
             // msMainFile
             // 
+            msMainFile.DropDownItems.AddRange(new ToolStripItem[] { msMainExit });
             msMainFile.Name = "msMainFile";
             msMainFile.Size = new Size(37, 20);
             msMainFile.Text = "File";
+            // 
+            // msMainExit
+            // 
+            msMainExit.Name = "msMainExit";
+            msMainExit.Size = new Size(180, 22);
+            msMainExit.Text = "Exit";
+            msMainExit.Click += msMainExit_Click;
             // 
             // msMainEdit
             // 
@@ -67,11 +77,18 @@
             msMainEdit.Size = new Size(39, 20);
             msMainEdit.Text = "Edit";
             // 
-            // msMainView
+            // msMainPackages
             // 
-            msMainView.Name = "msMainView";
-            msMainView.Size = new Size(44, 20);
-            msMainView.Text = "View";
+            msMainPackages.DropDownItems.AddRange(new ToolStripItem[] { msMainCreatePackage });
+            msMainPackages.Name = "msMainPackages";
+            msMainPackages.Size = new Size(68, 20);
+            msMainPackages.Text = "Packages";
+            // 
+            // msMainCreatePackage
+            // 
+            msMainCreatePackage.Name = "msMainCreatePackage";
+            msMainCreatePackage.Size = new Size(164, 22);
+            msMainCreatePackage.Text = "Create Package...";
             // 
             // tcMain
             // 
@@ -127,7 +144,7 @@
             button1.FlatStyle = FlatStyle.Flat;
             button1.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
             button1.ForeColor = SystemColors.ButtonFace;
-            button1.Image = LawfulBladeManager.Properties.Resources.browsefolder_lb;
+            button1.Image = Properties.Resources.browsefolder_lb;
             button1.ImageAlign = ContentAlignment.MiddleLeft;
             button1.Location = new Point(2, 51);
             button1.Margin = new Padding(3, 3, 3, 10);
@@ -135,9 +152,10 @@
             button1.Padding = new Padding(10, 0, 0, 0);
             button1.Size = new Size(224, 46);
             button1.TabIndex = 1;
-            button1.Text = "    &Open Project";
+            button1.Text = "    &Import Project";
             button1.TextImageRelation = TextImageRelation.ImageBeforeText;
             button1.UseVisualStyleBackColor = false;
+            button1.Click += button1_Click;
             // 
             // btNewProject
             // 
@@ -147,7 +165,7 @@
             btNewProject.FlatStyle = FlatStyle.Flat;
             btNewProject.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
             btNewProject.ForeColor = SystemColors.ButtonFace;
-            btNewProject.Image = LawfulBladeManager.Properties.Resources.newfile_lb;
+            btNewProject.Image = Properties.Resources.newfile_lb;
             btNewProject.ImageAlign = ContentAlignment.MiddleLeft;
             btNewProject.Location = new Point(2, 5);
             btNewProject.Margin = new Padding(3, 3, 3, 10);
@@ -158,6 +176,7 @@
             btNewProject.Text = "    &Create Project";
             btNewProject.TextImageRelation = TextImageRelation.ImageBeforeText;
             btNewProject.UseVisualStyleBackColor = false;
+            btNewProject.Click += btNewProject_Click;
             // 
             // tpInstances
             // 
@@ -169,7 +188,7 @@
             tpInstances.Text = "Instances";
             tpInstances.UseVisualStyleBackColor = true;
             // 
-            // wfMainForm
+            // FormMain
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -179,7 +198,7 @@
             Controls.Add(msMain);
             Icon = (Icon)resources.GetObject("$this.Icon");
             MainMenuStrip = msMain;
-            Name = "wfMainForm";
+            Name = "FormMain";
             Text = "Lawful Blade Manager";
             msMain.ResumeLayout(false);
             msMain.PerformLayout();
@@ -198,10 +217,12 @@
         private TabPage tpProjects;
         private TabPage tpInstances;
         private ToolStripMenuItem msMainEdit;
-        private ToolStripMenuItem msMainView;
         private Panel pcProjectButtons;
         private Button btNewProject;
         private Button button1;
         private Panel pcProjectList;
+        private ToolStripMenuItem msMainPackages;
+        private ToolStripMenuItem msMainCreatePackage;
+        private ToolStripMenuItem msMainExit;
     }
 }
