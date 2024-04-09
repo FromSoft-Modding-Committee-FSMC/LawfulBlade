@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing.Imaging;
-using System.Linq;
-using System.Text;
+﻿using System.Drawing.Imaging;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace LawfulBladeManager.Project
 {
@@ -19,7 +14,7 @@ namespace LawfulBladeManager.Project
         // Constructors
         public ProjectManager()
         {
-            if(!LoadProjectInfo() || projects == null)
+            if (!LoadProjectInfo() || projects == null)
                 projects = new List<Project>();
         }
 
@@ -79,7 +74,8 @@ namespace LawfulBladeManager.Project
                 InstanceUUID = "",
                 LastEditData = DateTime.Now.ToString("yyyy-MM-dd hh:mm tt"),
                 StoragePath = path,
-                IsManaged   = true
+                IsManaged   = true,
+                TagIDs      = new List<int> { 0 }
             });
         }
 
@@ -101,7 +97,10 @@ namespace LawfulBladeManager.Project
             if (!File.Exists(Path.Combine(ProgramContext.AppDataPath, @"projects.json")))
                 return false;
 
+            Console.WriteLine("Loading Projects");
+
             projects = JsonSerializer.Deserialize<List<Project>>(File.ReadAllText(Path.Combine(ProgramContext.AppDataPath, @"projects.json")));
+
             return true;
         }
 

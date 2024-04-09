@@ -1,0 +1,14 @@
+{
+	"packageList": [
+		{
+			"name": "abc",
+			"uri": "def",
+			"uuid": "ghi"
+		},
+		{
+			"name": "123",
+			"uri": "456",
+			"uuid": "789"
+		}
+	]
+}

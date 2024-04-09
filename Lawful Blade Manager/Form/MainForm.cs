@@ -1,3 +1,4 @@
+using LawfulBladeManager.Control;
 using LawfulBladeManager.Dialog;
 using LawfulBladeManager.Project;
 
@@ -8,11 +9,17 @@ namespace LawfulBladeManager
         public FormMain()
         {
             InitializeComponent();
+
+            EnumurateProjectsInList();
         }
 
         #region Main Tab View - Projects
         private void btNewProject_Click(object sender, EventArgs e)
         {
+            // This won't happen, but VS doesn't stfu about it.
+            if (Program.ProjectManager == null)
+                return;
+
             // Show Dialog
             using (ProjectCreateDialog pcd = new())
             {
@@ -21,14 +28,16 @@ namespace LawfulBladeManager
                     case DialogResult.OK:
 
                         // Create the project
-                        Program.Context.projectManager.CreateProject(pcd.TargetPath, pcd.ProjectName, pcd.ProjectDescription);
+                        Program.ProjectManager.CreateProject(pcd.TargetPath, pcd.ProjectName, pcd.ProjectDescription);
 
                         break;
                 }
             }
+
+            EnumurateProjectsInList();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void btLocalProject_Click(object sender, EventArgs e)
         {
             // Show Dialog
             using (OpenFileDialog ofd = new())
@@ -42,7 +51,15 @@ namespace LawfulBladeManager
                         break;
                 }
             }
+
+            EnumurateProjectsInList();
         }
+
+        private void btPackageProject_Click(object sender, EventArgs e)
+        {
+
+        }
+
         #endregion
 
         #region Menu Strip - File
@@ -52,5 +69,23 @@ namespace LawfulBladeManager
         }
 
         #endregion
+
+        void EnumurateProjectsInList()
+        {
+            // Exit early if the project list is null.
+            if (Program.ProjectManager == null || Program.ProjectManager.Projects == null)
+                return;
+
+            // Clear previous project controls
+            pcProjectList.Controls.Clear();
+
+            foreach (Project.Project project in Program.ProjectManager.Projects)
+            {
+                pcProjectList.Controls.Add(new ProjectControl(project)
+                {
+                    Dock = DockStyle.Top
+                });
+            }
+        }
     }
 }

@@ -39,7 +39,7 @@
             tpProjects = new TabPage();
             pcProjectList = new Panel();
             pcProjectButtons = new Panel();
-            button1 = new Button();
+            btLocalProject = new Button();
             btNewProject = new Button();
             tpInstances = new TabPage();
             msMain.SuspendLayout();
@@ -53,7 +53,7 @@
             msMain.Items.AddRange(new ToolStripItem[] { msMainFile, msMainEdit, msMainPackages });
             msMain.Location = new Point(0, 0);
             msMain.Name = "msMain";
-            msMain.Size = new Size(800, 24);
+            msMain.Size = new Size(944, 24);
             msMain.TabIndex = 0;
             msMain.Text = "menuStrip1";
             // 
@@ -67,7 +67,7 @@
             // msMainExit
             // 
             msMainExit.Name = "msMainExit";
-            msMainExit.Size = new Size(180, 22);
+            msMainExit.Size = new Size(93, 22);
             msMainExit.Text = "Exit";
             msMainExit.Click += msMainExit_Click;
             // 
@@ -98,7 +98,7 @@
             tcMain.Location = new Point(0, 24);
             tcMain.Name = "tcMain";
             tcMain.SelectedIndex = 0;
-            tcMain.Size = new Size(800, 426);
+            tcMain.Size = new Size(944, 477);
             tcMain.TabIndex = 1;
             // 
             // tpProjects
@@ -109,7 +109,7 @@
             tpProjects.Location = new Point(4, 24);
             tpProjects.Name = "tpProjects";
             tpProjects.Padding = new Padding(3);
-            tpProjects.Size = new Size(792, 398);
+            tpProjects.Size = new Size(936, 449);
             tpProjects.TabIndex = 0;
             tpProjects.Text = "Projects";
             // 
@@ -117,10 +117,9 @@
             // 
             pcProjectList.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             pcProjectList.BackColor = Color.FromArgb(8, 8, 8);
-            pcProjectList.BorderStyle = BorderStyle.FixedSingle;
             pcProjectList.Location = new Point(236, 3);
             pcProjectList.Name = "pcProjectList";
-            pcProjectList.Size = new Size(553, 392);
+            pcProjectList.Size = new Size(697, 443);
             pcProjectList.TabIndex = 1;
             // 
             // pcProjectButtons
@@ -128,34 +127,34 @@
             pcProjectButtons.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             pcProjectButtons.BackColor = Color.FromArgb(8, 8, 8);
             pcProjectButtons.BorderStyle = BorderStyle.FixedSingle;
-            pcProjectButtons.Controls.Add(button1);
+            pcProjectButtons.Controls.Add(btLocalProject);
             pcProjectButtons.Controls.Add(btNewProject);
             pcProjectButtons.Location = new Point(3, 3);
             pcProjectButtons.Name = "pcProjectButtons";
             pcProjectButtons.Padding = new Padding(2, 5, 2, 5);
-            pcProjectButtons.Size = new Size(230, 392);
+            pcProjectButtons.Size = new Size(230, 443);
             pcProjectButtons.TabIndex = 0;
             // 
-            // button1
+            // btLocalProject
             // 
-            button1.BackColor = Color.FromArgb(48, 48, 48);
-            button1.Dock = DockStyle.Top;
-            button1.FlatAppearance.BorderColor = Color.Black;
-            button1.FlatStyle = FlatStyle.Flat;
-            button1.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            button1.ForeColor = SystemColors.ButtonFace;
-            button1.Image = Properties.Resources.browsefolder_lb;
-            button1.ImageAlign = ContentAlignment.MiddleLeft;
-            button1.Location = new Point(2, 51);
-            button1.Margin = new Padding(3, 3, 3, 10);
-            button1.Name = "button1";
-            button1.Padding = new Padding(10, 0, 0, 0);
-            button1.Size = new Size(224, 46);
-            button1.TabIndex = 1;
-            button1.Text = "    &Import Project";
-            button1.TextImageRelation = TextImageRelation.ImageBeforeText;
-            button1.UseVisualStyleBackColor = false;
-            button1.Click += button1_Click;
+            btLocalProject.BackColor = Color.FromArgb(48, 48, 48);
+            btLocalProject.Dock = DockStyle.Top;
+            btLocalProject.FlatAppearance.BorderColor = Color.Black;
+            btLocalProject.FlatStyle = FlatStyle.Flat;
+            btLocalProject.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            btLocalProject.ForeColor = SystemColors.ButtonFace;
+            btLocalProject.Image = Properties.Resources.browsefolder_lb;
+            btLocalProject.ImageAlign = ContentAlignment.MiddleLeft;
+            btLocalProject.Location = new Point(2, 51);
+            btLocalProject.Margin = new Padding(3, 3, 3, 10);
+            btLocalProject.Name = "btLocalProject";
+            btLocalProject.Padding = new Padding(10, 0, 0, 0);
+            btLocalProject.Size = new Size(224, 46);
+            btLocalProject.TabIndex = 1;
+            btLocalProject.Text = "    Add &Local Project";
+            btLocalProject.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btLocalProject.UseVisualStyleBackColor = false;
+            btLocalProject.Click += btLocalProject_Click;
             // 
             // btNewProject
             // 
@@ -173,7 +172,7 @@
             btNewProject.Padding = new Padding(10, 0, 0, 0);
             btNewProject.Size = new Size(224, 46);
             btNewProject.TabIndex = 0;
-            btNewProject.Text = "    &Create Project";
+            btNewProject.Text = "    &Create New Project";
             btNewProject.TextImageRelation = TextImageRelation.ImageBeforeText;
             btNewProject.UseVisualStyleBackColor = false;
             btNewProject.Click += btNewProject_Click;
@@ -183,7 +182,7 @@
             tpInstances.Location = new Point(4, 24);
             tpInstances.Name = "tpInstances";
             tpInstances.Padding = new Padding(3);
-            tpInstances.Size = new Size(792, 398);
+            tpInstances.Size = new Size(936, 449);
             tpInstances.TabIndex = 1;
             tpInstances.Text = "Instances";
             tpInstances.UseVisualStyleBackColor = true;
@@ -193,11 +192,12 @@
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.ButtonFace;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(944, 501);
             Controls.Add(tcMain);
             Controls.Add(msMain);
             Icon = (Icon)resources.GetObject("$this.Icon");
             MainMenuStrip = msMain;
+            MinimumSize = new Size(960, 540);
             Name = "FormMain";
             Text = "Lawful Blade Manager";
             msMain.ResumeLayout(false);
@@ -212,17 +212,18 @@
         #endregion
 
         private MenuStrip msMain;
-        private ToolStripMenuItem msMainFile;
         private TabControl tcMain;
         private TabPage tpProjects;
         private TabPage tpInstances;
-        private ToolStripMenuItem msMainEdit;
         private Panel pcProjectButtons;
         private Button btNewProject;
-        private Button button1;
-        private Panel pcProjectList;
+        private Button btLocalProject;
+
+        private ToolStripMenuItem msMainFile;
+        private ToolStripMenuItem msMainExit;
+        private ToolStripMenuItem msMainEdit;
         private ToolStripMenuItem msMainPackages;
         private ToolStripMenuItem msMainCreatePackage;
-        private ToolStripMenuItem msMainExit;
+        private Panel pcProjectList;
     }
 }

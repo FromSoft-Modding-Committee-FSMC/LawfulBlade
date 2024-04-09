@@ -1,23 +1,29 @@
 using System.Windows.Forms;
-
+using LawfulBladeManager.Networking;
 using LawfulBladeManager.Project;
 
 namespace LawfulBladeManager
 {
     public static class Program
     {
-        // Private Data
-        static readonly ProgramContext context = new();
-
         // Properties
-        public static ProgramContext Context => context;
+        public static ProgramContext? Context;
+        public static ProjectManager? ProjectManager;
+        public static DownloadManager? DownloadManager;
 
         // Entry Point
         [STAThread]
         static void Main()
         {
             ApplicationConfiguration.Initialize();
-            Application.Run(context);
+
+            DownloadManager = new();
+            ProjectManager  = new();
+            Context         = new();
+
+            DownloadManager.StartASyncDownload(@"", @"C:\Users\lXDayDreamXl\Desktop\plist.json");
+
+            Application.Run(Context);
         }
     }
 }

@@ -14,9 +14,6 @@ namespace LawfulBladeManager
 
         readonly FormMain mainWindow;
 
-        // Public Data
-        public ProjectManager projectManager;
-
         // Properties
         public static string AppDataPath => pathAppData;
 
@@ -29,10 +26,6 @@ namespace LawfulBladeManager
             // Basic Initialization
             InitializeFirstTime();
 
-            // Load Application Data
-            projectManager = new ProjectManager();
-
-            // Construct Main Window Form
             mainWindow = new FormMain();
             mainWindow.FormClosing += OnApplicationExit;    // Yeah... The other one isn't firing?
             mainWindow.Show();
@@ -55,9 +48,10 @@ namespace LawfulBladeManager
         void OnApplicationExit(object? sender, EventArgs e)
         {
             // Save program data
-            projectManager.SaveProjectInfo();
+            if (Program.ProjectManager == null)
+                return;
 
-            Console.WriteLine("Allo?");
+            Program.ProjectManager.SaveProjectInfo();
         }
     }
 }
