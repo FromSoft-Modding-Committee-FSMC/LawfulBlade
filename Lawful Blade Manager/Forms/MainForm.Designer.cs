@@ -1,4 +1,4 @@
-﻿namespace LawfulBladeManager
+﻿namespace LawfulBladeManager.Forms
 {
     partial class FormMain
     {
@@ -32,7 +32,6 @@
             msMain = new MenuStrip();
             msMainFile = new ToolStripMenuItem();
             msMainExit = new ToolStripMenuItem();
-            msMainEdit = new ToolStripMenuItem();
             msMainPackages = new ToolStripMenuItem();
             msMainCreatePackage = new ToolStripMenuItem();
             tcMain = new TabControl();
@@ -42,15 +41,23 @@
             btLocalProject = new Button();
             btNewProject = new Button();
             tpInstances = new TabPage();
+            pcInstanceButtons = new Panel();
+            btInstNew = new Button();
+            btInstLegacy = new Button();
+            pcInstanceList = new Panel();
+            msMainPackageTool = new ToolStripMenuItem();
+            msMainPackageToolGDD = new ToolStripMenuItem();
             msMain.SuspendLayout();
             tcMain.SuspendLayout();
             tpProjects.SuspendLayout();
             pcProjectButtons.SuspendLayout();
+            tpInstances.SuspendLayout();
+            pcInstanceButtons.SuspendLayout();
             SuspendLayout();
             // 
             // msMain
             // 
-            msMain.Items.AddRange(new ToolStripItem[] { msMainFile, msMainEdit, msMainPackages });
+            msMain.Items.AddRange(new ToolStripItem[] { msMainFile, msMainPackages });
             msMain.Location = new Point(0, 0);
             msMain.Name = "msMain";
             msMain.Size = new Size(944, 24);
@@ -67,19 +74,13 @@
             // msMainExit
             // 
             msMainExit.Name = "msMainExit";
-            msMainExit.Size = new Size(93, 22);
+            msMainExit.Size = new Size(180, 22);
             msMainExit.Text = "Exit";
             msMainExit.Click += msMainExit_Click;
             // 
-            // msMainEdit
-            // 
-            msMainEdit.Name = "msMainEdit";
-            msMainEdit.Size = new Size(39, 20);
-            msMainEdit.Text = "Edit";
-            // 
             // msMainPackages
             // 
-            msMainPackages.DropDownItems.AddRange(new ToolStripItem[] { msMainCreatePackage });
+            msMainPackages.DropDownItems.AddRange(new ToolStripItem[] { msMainCreatePackage, msMainPackageTool });
             msMainPackages.Name = "msMainPackages";
             msMainPackages.Size = new Size(68, 20);
             msMainPackages.Text = "Packages";
@@ -87,8 +88,8 @@
             // msMainCreatePackage
             // 
             msMainCreatePackage.Name = "msMainCreatePackage";
-            msMainCreatePackage.Size = new Size(164, 22);
-            msMainCreatePackage.Text = "Create Package...";
+            msMainCreatePackage.Size = new Size(180, 22);
+            msMainCreatePackage.Text = "Create Package";
             // 
             // tcMain
             // 
@@ -131,7 +132,7 @@
             pcProjectButtons.Controls.Add(btNewProject);
             pcProjectButtons.Location = new Point(3, 3);
             pcProjectButtons.Name = "pcProjectButtons";
-            pcProjectButtons.Padding = new Padding(2, 5, 2, 5);
+            pcProjectButtons.Padding = new Padding(2);
             pcProjectButtons.Size = new Size(230, 443);
             pcProjectButtons.TabIndex = 0;
             // 
@@ -145,13 +146,13 @@
             btLocalProject.ForeColor = SystemColors.ButtonFace;
             btLocalProject.Image = Properties.Resources.browsefolder_lb;
             btLocalProject.ImageAlign = ContentAlignment.MiddleLeft;
-            btLocalProject.Location = new Point(2, 51);
+            btLocalProject.Location = new Point(2, 48);
             btLocalProject.Margin = new Padding(3, 3, 3, 10);
             btLocalProject.Name = "btLocalProject";
             btLocalProject.Padding = new Padding(10, 0, 0, 0);
             btLocalProject.Size = new Size(224, 46);
             btLocalProject.TabIndex = 1;
-            btLocalProject.Text = "    Add &Local Project";
+            btLocalProject.Text = "    &Import Project";
             btLocalProject.TextImageRelation = TextImageRelation.ImageBeforeText;
             btLocalProject.UseVisualStyleBackColor = false;
             btLocalProject.Click += btLocalProject_Click;
@@ -166,7 +167,7 @@
             btNewProject.ForeColor = SystemColors.ButtonFace;
             btNewProject.Image = Properties.Resources.newfile_lb;
             btNewProject.ImageAlign = ContentAlignment.MiddleLeft;
-            btNewProject.Location = new Point(2, 5);
+            btNewProject.Location = new Point(2, 2);
             btNewProject.Margin = new Padding(3, 3, 3, 10);
             btNewProject.Name = "btNewProject";
             btNewProject.Padding = new Padding(10, 0, 0, 0);
@@ -179,13 +180,90 @@
             // 
             // tpInstances
             // 
+            tpInstances.BackColor = Color.FromArgb(16, 16, 16);
+            tpInstances.Controls.Add(pcInstanceList);
+            tpInstances.Controls.Add(pcInstanceButtons);
             tpInstances.Location = new Point(4, 24);
             tpInstances.Name = "tpInstances";
             tpInstances.Padding = new Padding(3);
             tpInstances.Size = new Size(936, 449);
             tpInstances.TabIndex = 1;
             tpInstances.Text = "Instances";
-            tpInstances.UseVisualStyleBackColor = true;
+            // 
+            // pcInstanceButtons
+            // 
+            pcInstanceButtons.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
+            pcInstanceButtons.BackColor = Color.FromArgb(8, 8, 8);
+            pcInstanceButtons.BorderStyle = BorderStyle.FixedSingle;
+            pcInstanceButtons.Controls.Add(btInstLegacy);
+            pcInstanceButtons.Controls.Add(btInstNew);
+            pcInstanceButtons.Location = new Point(3, 3);
+            pcInstanceButtons.Name = "pcInstanceButtons";
+            pcInstanceButtons.Padding = new Padding(2);
+            pcInstanceButtons.Size = new Size(230, 443);
+            pcInstanceButtons.TabIndex = 0;
+            // 
+            // btInstNew
+            // 
+            btInstNew.BackColor = Color.FromArgb(48, 48, 48);
+            btInstNew.Dock = DockStyle.Top;
+            btInstNew.FlatAppearance.BorderColor = Color.Black;
+            btInstNew.FlatStyle = FlatStyle.Flat;
+            btInstNew.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            btInstNew.ForeColor = SystemColors.ButtonFace;
+            btInstNew.Image = Properties.Resources.newfile_lb;
+            btInstNew.ImageAlign = ContentAlignment.MiddleLeft;
+            btInstNew.Location = new Point(2, 2);
+            btInstNew.Margin = new Padding(3, 3, 3, 10);
+            btInstNew.Name = "btInstNew";
+            btInstNew.Padding = new Padding(10, 0, 0, 0);
+            btInstNew.Size = new Size(224, 46);
+            btInstNew.TabIndex = 1;
+            btInstNew.Text = "    &Create New Instance";
+            btInstNew.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btInstNew.UseVisualStyleBackColor = false;
+            // 
+            // btInstLegacy
+            // 
+            btInstLegacy.BackColor = Color.FromArgb(48, 48, 48);
+            btInstLegacy.Dock = DockStyle.Top;
+            btInstLegacy.FlatAppearance.BorderColor = Color.Black;
+            btInstLegacy.FlatStyle = FlatStyle.Flat;
+            btInstLegacy.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            btInstLegacy.ForeColor = SystemColors.ButtonFace;
+            btInstLegacy.Image = Properties.Resources.browsefolder_lb;
+            btInstLegacy.ImageAlign = ContentAlignment.MiddleLeft;
+            btInstLegacy.Location = new Point(2, 48);
+            btInstLegacy.Margin = new Padding(3, 3, 3, 10);
+            btInstLegacy.Name = "btInstLegacy";
+            btInstLegacy.Padding = new Padding(10, 0, 0, 0);
+            btInstLegacy.Size = new Size(224, 46);
+            btInstLegacy.TabIndex = 2;
+            btInstLegacy.Text = "    Import &Legacy Instance";
+            btInstLegacy.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btInstLegacy.UseVisualStyleBackColor = false;
+            // 
+            // pcInstanceList
+            // 
+            pcInstanceList.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            pcInstanceList.BackColor = Color.FromArgb(8, 8, 8);
+            pcInstanceList.Location = new Point(236, 3);
+            pcInstanceList.Name = "pcInstanceList";
+            pcInstanceList.Size = new Size(697, 443);
+            pcInstanceList.TabIndex = 1;
+            // 
+            // msMainPackageTool
+            // 
+            msMainPackageTool.DropDownItems.AddRange(new ToolStripItem[] { msMainPackageToolGDD });
+            msMainPackageTool.Name = "msMainPackageTool";
+            msMainPackageTool.Size = new Size(180, 22);
+            msMainPackageTool.Text = "Tools...";
+            // 
+            // msMainPackageToolGDD
+            // 
+            msMainPackageToolGDD.Name = "msMainPackageToolGDD";
+            msMainPackageToolGDD.Size = new Size(202, 22);
+            msMainPackageToolGDD.Text = "Generate Delta Directory";
             // 
             // FormMain
             // 
@@ -205,6 +283,8 @@
             tcMain.ResumeLayout(false);
             tpProjects.ResumeLayout(false);
             pcProjectButtons.ResumeLayout(false);
+            tpInstances.ResumeLayout(false);
+            pcInstanceButtons.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -221,9 +301,14 @@
 
         private ToolStripMenuItem msMainFile;
         private ToolStripMenuItem msMainExit;
-        private ToolStripMenuItem msMainEdit;
         private ToolStripMenuItem msMainPackages;
         private ToolStripMenuItem msMainCreatePackage;
         private Panel pcProjectList;
+        private Panel pcInstanceButtons;
+        private Button btInstLegacy;
+        private Button btInstNew;
+        private Panel pcInstanceList;
+        private ToolStripMenuItem msMainPackageTool;
+        private ToolStripMenuItem msMainPackageToolGDD;
     }
 }

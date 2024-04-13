@@ -1,10 +1,9 @@
 using LawfulBladeManager.Control;
 using LawfulBladeManager.Dialog;
-using LawfulBladeManager.Project;
 
-namespace LawfulBladeManager
+namespace LawfulBladeManager.Forms
 {
-    public partial class FormMain : Form
+    public partial class FormMain : System.Windows.Forms.Form
     {
         public FormMain()
         {
@@ -85,6 +84,14 @@ namespace LawfulBladeManager
                 {
                     Dock = DockStyle.Top
                 });
+            }
+        }
+
+        private void packageManagerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (PackageManagerForm pmf = new())
+            {
+                pmf.ShowDialog();
             }
         }
     }

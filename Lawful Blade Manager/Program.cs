@@ -21,8 +21,6 @@ namespace LawfulBladeManager
             ProjectManager  = new();
             Context         = new();
 
-            DownloadManager.StartASyncDownload(@"", @"C:\Users\lXDayDreamXl\Desktop\plist.json");
-
             Application.Run(Context);
         }
     }

@@ -20,8 +20,6 @@ namespace LawfulBladeManager.Networking
             {
                 Timeout = TimeSpan.FromMilliseconds(1000)
             };
-
-            downloads = new List<Download>();
         }
 
         public async void StartASyncDownload(string sourceUri, string destinationFile)
@@ -35,7 +33,7 @@ namespace LawfulBladeManager.Networking
                 throw new ArgumentException("URI is invalid.");
 
             // Create a temporary file
-            string tempFile = GetTemporaryFilename();
+            string tempFile = Path.GetTempFileName();
 
             // Begin reading internet file
             using (HttpResponseMessage response = await client.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead))
@@ -54,11 +52,6 @@ namespace LawfulBladeManager.Networking
 
             // Assuming that's all done, we can now copy the temporary file to our final
             File.Copy(tempFile, destinationFile);
-        }
-
-        public static string GetTemporaryFilename()
-        {
-            return Path.ChangeExtension(Path.GetTempFileName(), "lbd");
         }
     }
 }
