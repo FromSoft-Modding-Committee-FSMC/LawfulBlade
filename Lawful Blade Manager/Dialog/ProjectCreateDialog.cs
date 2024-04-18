@@ -1,15 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Resources;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-namespace LawfulBladeManager.Dialog
+﻿namespace LawfulBladeManager.Dialog
 {
     public partial class ProjectCreateDialog : Form
     {
@@ -51,7 +40,7 @@ namespace LawfulBladeManager.Dialog
 
         private void btTargetSelect_Click(object sender, EventArgs e)
         {
-            using (FolderBrowserDialog fbd = new FolderBrowserDialog())
+            using (FolderBrowserDialog fbd = new())
             {
                 // Configure Dialog
 

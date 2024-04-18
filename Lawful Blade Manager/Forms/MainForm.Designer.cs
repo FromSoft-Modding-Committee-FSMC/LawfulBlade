@@ -34,6 +34,8 @@
             msMainExit = new ToolStripMenuItem();
             msMainPackages = new ToolStripMenuItem();
             msMainCreatePackage = new ToolStripMenuItem();
+            msMainPackageTool = new ToolStripMenuItem();
+            msMainPackageToolGDD = new ToolStripMenuItem();
             tcMain = new TabControl();
             tpProjects = new TabPage();
             pcProjectList = new Panel();
@@ -41,12 +43,10 @@
             btLocalProject = new Button();
             btNewProject = new Button();
             tpInstances = new TabPage();
-            pcInstanceButtons = new Panel();
-            btInstNew = new Button();
-            btInstLegacy = new Button();
             pcInstanceList = new Panel();
-            msMainPackageTool = new ToolStripMenuItem();
-            msMainPackageToolGDD = new ToolStripMenuItem();
+            pcInstanceButtons = new Panel();
+            btInstLegacy = new Button();
+            btInstNew = new Button();
             msMain.SuspendLayout();
             tcMain.SuspendLayout();
             tpProjects.SuspendLayout();
@@ -74,7 +74,7 @@
             // msMainExit
             // 
             msMainExit.Name = "msMainExit";
-            msMainExit.Size = new Size(180, 22);
+            msMainExit.Size = new Size(93, 22);
             msMainExit.Text = "Exit";
             msMainExit.Click += msMainExit_Click;
             // 
@@ -90,6 +90,21 @@
             msMainCreatePackage.Name = "msMainCreatePackage";
             msMainCreatePackage.Size = new Size(180, 22);
             msMainCreatePackage.Text = "Create Package";
+            msMainCreatePackage.Click += msMainCreatePackage_Click;
+            // 
+            // msMainPackageTool
+            // 
+            msMainPackageTool.DropDownItems.AddRange(new ToolStripItem[] { msMainPackageToolGDD });
+            msMainPackageTool.Name = "msMainPackageTool";
+            msMainPackageTool.Size = new Size(180, 22);
+            msMainPackageTool.Text = "Tools...";
+            // 
+            // msMainPackageToolGDD
+            // 
+            msMainPackageToolGDD.Name = "msMainPackageToolGDD";
+            msMainPackageToolGDD.Size = new Size(202, 22);
+            msMainPackageToolGDD.Text = "Generate Delta Directory";
+            msMainPackageToolGDD.Click += msMainPackageToolGDD_Click;
             // 
             // tcMain
             // 
@@ -190,6 +205,15 @@
             tpInstances.TabIndex = 1;
             tpInstances.Text = "Instances";
             // 
+            // pcInstanceList
+            // 
+            pcInstanceList.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            pcInstanceList.BackColor = Color.FromArgb(8, 8, 8);
+            pcInstanceList.Location = new Point(236, 3);
+            pcInstanceList.Name = "pcInstanceList";
+            pcInstanceList.Size = new Size(697, 443);
+            pcInstanceList.TabIndex = 1;
+            // 
             // pcInstanceButtons
             // 
             pcInstanceButtons.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
@@ -202,26 +226,6 @@
             pcInstanceButtons.Padding = new Padding(2);
             pcInstanceButtons.Size = new Size(230, 443);
             pcInstanceButtons.TabIndex = 0;
-            // 
-            // btInstNew
-            // 
-            btInstNew.BackColor = Color.FromArgb(48, 48, 48);
-            btInstNew.Dock = DockStyle.Top;
-            btInstNew.FlatAppearance.BorderColor = Color.Black;
-            btInstNew.FlatStyle = FlatStyle.Flat;
-            btInstNew.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            btInstNew.ForeColor = SystemColors.ButtonFace;
-            btInstNew.Image = Properties.Resources.newfile_lb;
-            btInstNew.ImageAlign = ContentAlignment.MiddleLeft;
-            btInstNew.Location = new Point(2, 2);
-            btInstNew.Margin = new Padding(3, 3, 3, 10);
-            btInstNew.Name = "btInstNew";
-            btInstNew.Padding = new Padding(10, 0, 0, 0);
-            btInstNew.Size = new Size(224, 46);
-            btInstNew.TabIndex = 1;
-            btInstNew.Text = "    &Create New Instance";
-            btInstNew.TextImageRelation = TextImageRelation.ImageBeforeText;
-            btInstNew.UseVisualStyleBackColor = false;
             // 
             // btInstLegacy
             // 
@@ -243,27 +247,25 @@
             btInstLegacy.TextImageRelation = TextImageRelation.ImageBeforeText;
             btInstLegacy.UseVisualStyleBackColor = false;
             // 
-            // pcInstanceList
+            // btInstNew
             // 
-            pcInstanceList.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            pcInstanceList.BackColor = Color.FromArgb(8, 8, 8);
-            pcInstanceList.Location = new Point(236, 3);
-            pcInstanceList.Name = "pcInstanceList";
-            pcInstanceList.Size = new Size(697, 443);
-            pcInstanceList.TabIndex = 1;
-            // 
-            // msMainPackageTool
-            // 
-            msMainPackageTool.DropDownItems.AddRange(new ToolStripItem[] { msMainPackageToolGDD });
-            msMainPackageTool.Name = "msMainPackageTool";
-            msMainPackageTool.Size = new Size(180, 22);
-            msMainPackageTool.Text = "Tools...";
-            // 
-            // msMainPackageToolGDD
-            // 
-            msMainPackageToolGDD.Name = "msMainPackageToolGDD";
-            msMainPackageToolGDD.Size = new Size(202, 22);
-            msMainPackageToolGDD.Text = "Generate Delta Directory";
+            btInstNew.BackColor = Color.FromArgb(48, 48, 48);
+            btInstNew.Dock = DockStyle.Top;
+            btInstNew.FlatAppearance.BorderColor = Color.Black;
+            btInstNew.FlatStyle = FlatStyle.Flat;
+            btInstNew.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            btInstNew.ForeColor = SystemColors.ButtonFace;
+            btInstNew.Image = Properties.Resources.newfile_lb;
+            btInstNew.ImageAlign = ContentAlignment.MiddleLeft;
+            btInstNew.Location = new Point(2, 2);
+            btInstNew.Margin = new Padding(3, 3, 3, 10);
+            btInstNew.Name = "btInstNew";
+            btInstNew.Padding = new Padding(10, 0, 0, 0);
+            btInstNew.Size = new Size(224, 46);
+            btInstNew.TabIndex = 1;
+            btInstNew.Text = "    &Create New Instance";
+            btInstNew.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btInstNew.UseVisualStyleBackColor = false;
             // 
             // FormMain
             // 

@@ -1,9 +1,4 @@
 ﻿using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LawfulBladeManager
 {
@@ -13,7 +8,7 @@ namespace LawfulBladeManager
     public static class ProgramRegistry
     {
         // Private Data
-        static RegistryKey RegKeySOM;
+        static readonly RegistryKey RegKeySOM;
 
         // Properties
         public static string SOMInstDir
@@ -26,7 +21,7 @@ namespace LawfulBladeManager
                 return (string)registryValue;
             }
 
-            set => RegKeySOM.SetValue("InstDir", (object)value, RegistryValueKind.String);
+            set => RegKeySOM.SetValue("InstDir", value, RegistryValueKind.String);
         }
 
         static ProgramRegistry()

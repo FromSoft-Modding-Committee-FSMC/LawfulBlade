@@ -1,26 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-
-namespace LawfulBladeManager.Tagging
+﻿namespace LawfulBladeManager.Tagging
 {
     public struct Tag
     {
-        public static readonly Tag UserProject   = new() { Text = "User Project",   BackgroundColour = Color.AliceBlue };
-        public static readonly Tag SampleProject = new() { Text = "Sample Project", BackgroundColour = Color.GreenYellow };
+        public static readonly Tag Project = new() { Text = "Project", BackgroundColour = Color.AliceBlue };
+        public static readonly Tag Sample  = new() { Text = "Sample", BackgroundColour = Color.GreenYellow };
+        public static readonly Tag Managed = new() { Text = "Managed", BackgroundColour = Color.RebeccaPurple };
+        public static readonly Tag Legacy  = new() { Text = "Legacy", BackgroundColour = Color.Orange };
 
         public static readonly Tag[] TagList = new Tag[]
         {
             // Project Tags
-            UserProject,
-            SampleProject
+            Project,
+            Sample,
 
             // Instance Tags
 
             // Package Tags
+
+            // Misc Tags
+            Legacy,
+            Managed
         };
 
         public string Text;

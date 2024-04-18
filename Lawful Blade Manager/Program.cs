@@ -1,26 +1,20 @@
-using System.Windows.Forms;
 using LawfulBladeManager.Networking;
-using LawfulBladeManager.Project;
+using LawfulBladeManager.Projects;
 
 namespace LawfulBladeManager
 {
     public static class Program
     {
         // Properties
-        public static ProgramContext? Context;
-        public static ProjectManager? ProjectManager;
-        public static DownloadManager? DownloadManager;
+        public readonly static DownloadManager? DownloadManager = new();
+        public readonly static ProjectManager? ProjectManager   = new();
+        public readonly static ProgramContext? Context          = new();
 
         // Entry Point
         [STAThread]
         static void Main()
         {
             ApplicationConfiguration.Initialize();
-
-            DownloadManager = new();
-            ProjectManager  = new();
-            Context         = new();
-
             Application.Run(Context);
         }
     }

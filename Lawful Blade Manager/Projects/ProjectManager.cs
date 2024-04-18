@@ -1,12 +1,12 @@
 ﻿using System.Drawing.Imaging;
 using System.Text.Json;
 
-namespace LawfulBladeManager.Project
+namespace LawfulBladeManager.Projects
 {
     public class ProjectManager
     {
         #region New Project Data
-        static byte[][] levelTables = new byte[][]
+        static readonly byte[][] levelTables = new byte[][]
         {
             // 0.lvt - King's Field I
             new byte[]
@@ -360,7 +360,7 @@ namespace LawfulBladeManager.Project
                 0x06, 0x00, 0x01, 0x02, 0x48, 0x58, 0x0E, 0x00, 0x06, 0x00, 0x02, 0x03
             }
         };
-        static byte[] defaultProjectDat = {
+        static readonly byte[] defaultProjectDat = {
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -3254,7 +3254,37 @@ namespace LawfulBladeManager.Project
                 LastEditData = DateTime.Now.ToString("yyyy-MM-dd hh:mm tt"),
                 StoragePath = path,
                 IsManaged = true,
-                TagIDs = new List<int> { 0 }
+                TagIDs = new List<int> { 0, 3 }
+            });
+        }
+
+        public void ImportProject(string path)
+        {
+            // Get the project name from the som file
+            string? projectName = string.Empty;
+            using (StreamReader sr = new(File.OpenRead(path)))
+                projectName = sr.ReadLine();
+
+            if (projectName == null)
+                throw new Exception("Failed to import project (not a valid SOM file!)");
+
+            // Get the project path
+            string? projectPath = Path.GetDirectoryName(path);
+
+            if(projectPath == null)
+                throw new Exception("Failed to import project (invalid directory!?)");
+
+            // Start the process of importing...
+            projects?.Add(new Project
+            {
+                Name = projectName,
+                Description = "Legacy/Imported Project",
+                Author = "n/a",
+                InstanceUUID = "",
+                LastEditData = File.GetLastAccessTime(path).ToString("yyyy-MM-dd hh:mm tt"),
+                StoragePath = projectPath,
+                IsManaged = false,
+                TagIDs = new List<int> { 0, 2 }
             });
         }
 

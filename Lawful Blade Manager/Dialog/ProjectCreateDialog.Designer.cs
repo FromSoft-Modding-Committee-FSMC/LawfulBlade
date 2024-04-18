@@ -204,6 +204,7 @@
             ShowIcon = false;
             ShowInTaskbar = false;
             SizeGripStyle = SizeGripStyle.Hide;
+            StartPosition = FormStartPosition.CenterParent;
             Text = "Create Project";
             TopMost = true;
             ResumeLayout(false);

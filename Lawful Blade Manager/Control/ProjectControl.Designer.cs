@@ -34,10 +34,10 @@
             flTagList = new FlowLayoutPanel();
             tsFunctions = new ToolStrip();
             tsFuncDelete = new ToolStripButton();
-            tsFuncOpen = new ToolStripButton();
-            toolStripSeparator1 = new ToolStripSeparator();
-            tsFuncExport = new ToolStripButton();
             tsFuncPackages = new ToolStripButton();
+            tsFuncExport = new ToolStripButton();
+            toolStripSeparator1 = new ToolStripSeparator();
+            tsFuncOpen = new ToolStripButton();
             ((System.ComponentModel.ISupportInitialize)pbIcon).BeginInit();
             tsFunctions.SuspendLayout();
             SuspendLayout();
@@ -95,9 +95,9 @@
             tsFunctions.Dock = DockStyle.None;
             tsFunctions.ImageScalingSize = new Size(24, 24);
             tsFunctions.Items.AddRange(new ToolStripItem[] { tsFuncDelete, tsFuncPackages, tsFuncExport, toolStripSeparator1, tsFuncOpen });
-            tsFunctions.Location = new Point(886, 89);
+            tsFunctions.Location = new Point(855, 89);
             tsFunctions.Name = "tsFunctions";
-            tsFunctions.Size = new Size(130, 31);
+            tsFunctions.Size = new Size(161, 31);
             tsFunctions.TabIndex = 9;
             // 
             // tsFuncDelete
@@ -108,20 +108,16 @@
             tsFuncDelete.Name = "tsFuncDelete";
             tsFuncDelete.Size = new Size(28, 28);
             tsFuncDelete.Text = "Delete Project...";
+            tsFuncDelete.Click += tsFuncDelete_Click;
             // 
-            // tsFuncOpen
+            // tsFuncPackages
             // 
-            tsFuncOpen.DisplayStyle = ToolStripItemDisplayStyle.Image;
-            tsFuncOpen.Image = Properties.Resources._64x_open;
-            tsFuncOpen.ImageTransparentColor = Color.Magenta;
-            tsFuncOpen.Name = "tsFuncOpen";
-            tsFuncOpen.Size = new Size(28, 28);
-            tsFuncOpen.Text = "Open Project...";
-            // 
-            // toolStripSeparator1
-            // 
-            toolStripSeparator1.Name = "toolStripSeparator1";
-            toolStripSeparator1.Size = new Size(6, 31);
+            tsFuncPackages.DisplayStyle = ToolStripItemDisplayStyle.Image;
+            tsFuncPackages.Image = Properties.Resources._64x_packages;
+            tsFuncPackages.ImageTransparentColor = Color.Magenta;
+            tsFuncPackages.Name = "tsFuncPackages";
+            tsFuncPackages.Size = new Size(28, 28);
+            tsFuncPackages.Text = "Manage Packages...";
             // 
             // tsFuncExport
             // 
@@ -132,14 +128,19 @@
             tsFuncExport.Size = new Size(28, 28);
             tsFuncExport.Text = "Export Runtime...";
             // 
-            // tsFuncPackages
+            // toolStripSeparator1
             // 
-            tsFuncPackages.DisplayStyle = ToolStripItemDisplayStyle.Image;
-            tsFuncPackages.Image = Properties.Resources._64x_packages;
-            tsFuncPackages.ImageTransparentColor = Color.Magenta;
-            tsFuncPackages.Name = "tsFuncPackages";
-            tsFuncPackages.Size = new Size(28, 28);
-            tsFuncPackages.Text = "Manage Packages...";
+            toolStripSeparator1.Name = "toolStripSeparator1";
+            toolStripSeparator1.Size = new Size(6, 31);
+            // 
+            // tsFuncOpen
+            // 
+            tsFuncOpen.DisplayStyle = ToolStripItemDisplayStyle.Image;
+            tsFuncOpen.Image = Properties.Resources._64x_open;
+            tsFuncOpen.ImageTransparentColor = Color.Magenta;
+            tsFuncOpen.Name = "tsFuncOpen";
+            tsFuncOpen.Size = new Size(28, 28);
+            tsFuncOpen.Text = "Open Project...";
             // 
             // ProjectControl
             // 

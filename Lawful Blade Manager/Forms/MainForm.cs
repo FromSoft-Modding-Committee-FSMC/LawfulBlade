@@ -1,5 +1,6 @@
 using LawfulBladeManager.Control;
 using LawfulBladeManager.Dialog;
+using LawfulBladeManager.Projects;
 
 namespace LawfulBladeManager.Forms
 {
@@ -15,7 +16,7 @@ namespace LawfulBladeManager.Forms
         #region Main Tab View - Projects
         private void btNewProject_Click(object sender, EventArgs e)
         {
-            // This won't happen, but VS doesn't stfu about it.
+            // This won't happen, but VS doesn't STFU about it.
             if (Program.ProjectManager == null)
                 return;
 
@@ -27,8 +28,9 @@ namespace LawfulBladeManager.Forms
                     case DialogResult.OK:
 
                         // Create the project
+                        BusyDialog.Instance.ShowBusy();
                         Program.ProjectManager.CreateProject(pcd.TargetPath, pcd.ProjectName, pcd.ProjectDescription);
-
+                        BusyDialog.Instance.HideBusy();
                         break;
                 }
             }
@@ -38,6 +40,9 @@ namespace LawfulBladeManager.Forms
 
         private void btLocalProject_Click(object sender, EventArgs e)
         {
+            if (Program.ProjectManager == null)
+                return;
+
             // Show Dialog
             using (OpenFileDialog ofd = new())
             {
@@ -46,7 +51,7 @@ namespace LawfulBladeManager.Forms
                 switch (ofd.ShowDialog())
                 {
                     case DialogResult.OK:
-
+                        Program.ProjectManager.ImportProject(ofd.FileName);
                         break;
                 }
             }
@@ -78,7 +83,7 @@ namespace LawfulBladeManager.Forms
             // Clear previous project controls
             pcProjectList.Controls.Clear();
 
-            foreach (Project.Project project in Program.ProjectManager.Projects)
+            foreach (Project project in Program.ProjectManager.Projects)
             {
                 pcProjectList.Controls.Add(new ProjectControl(project)
                 {
@@ -94,5 +99,18 @@ namespace LawfulBladeManager.Forms
                 pmf.ShowDialog();
             }
         }
+
+        #region Menu Strip - Packages
+        private void msMainCreatePackage_Click(object sender, EventArgs e)
+        {
+            BusyDialog.Instance.ShowBusy();
+        }
+
+        private void msMainPackageToolGDD_Click(object sender, EventArgs e)
+        {
+            using PackageDeltaDialog pdf = new();
+            pdf.ShowDialog();
+        }
+        #endregion
     }
 }
