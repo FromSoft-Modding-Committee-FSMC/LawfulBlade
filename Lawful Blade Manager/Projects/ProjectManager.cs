@@ -3258,6 +3258,9 @@ namespace LawfulBladeManager.Projects
             });
         }
 
+        public bool ProjectExists(ref Project project) =>
+            Directory.Exists(project.StoragePath) && File.Exists(Path.Combine(project.StoragePath, $"{project.Name}.som"));
+
         public void ImportProject(string path)
         {
             // Get the project name from the som file
