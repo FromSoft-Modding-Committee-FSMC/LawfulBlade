@@ -63,6 +63,16 @@ namespace LawfulBladeManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap _128x_package {
+            get {
+                object obj = ResourceManager.GetObject("128x_package", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap _64x_delete {
             get {
                 object obj = ResourceManager.GetObject("64x_delete", resourceCulture);

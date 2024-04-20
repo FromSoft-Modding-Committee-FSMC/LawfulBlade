@@ -103,7 +103,10 @@ namespace LawfulBladeManager.Forms
         #region Menu Strip - Packages
         private void msMainCreatePackage_Click(object sender, EventArgs e)
         {
-            BusyDialog.Instance.ShowBusy();
+            using(PackageCreateDialog pcd = new())
+            {
+                pcd.ShowDialog();
+            }
         }
 
         private void msMainPackageToolGDD_Click(object sender, EventArgs e)
