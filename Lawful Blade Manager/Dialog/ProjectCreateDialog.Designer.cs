@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ProjectCreateDialog));
             lbCreateProject = new Label();
             lbProjectName = new Label();
             tbProjectName = new TextBox();
@@ -195,17 +196,17 @@
             Controls.Add(lbProjectName);
             Controls.Add(lbCreateProject);
             FormBorderStyle = FormBorderStyle.FixedDialog;
+            Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
             MaximumSize = new Size(640, 480);
             MdiChildrenMinimizedAnchorBottom = false;
             MinimizeBox = false;
             MinimumSize = new Size(640, 480);
             Name = "ProjectCreateDialog";
-            ShowIcon = false;
             ShowInTaskbar = false;
             SizeGripStyle = SizeGripStyle.Hide;
             StartPosition = FormStartPosition.CenterParent;
-            Text = "Create Project";
+            Text = "Lawful Blade - Project Creator";
             TopMost = true;
             ResumeLayout(false);
             PerformLayout();

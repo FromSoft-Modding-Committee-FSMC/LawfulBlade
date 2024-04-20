@@ -82,7 +82,7 @@
             ShowInTaskbar = false;
             SizeGripStyle = SizeGripStyle.Hide;
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "Busy...";
+            Text = "Doing a Thing...";
             TopMost = true;
             UseWaitCursor = true;
             ResumeLayout(false);

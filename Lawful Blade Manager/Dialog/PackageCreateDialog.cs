@@ -21,7 +21,7 @@ namespace LawfulBladeManager.Dialog
         {
             // Test
             string[] authors = tbAuthors.Text.Split(';');
-            foreach(string author in authors)
+            foreach (string author in authors)
             {
                 Console.WriteLine($"'{author.Trim()}'");
             }

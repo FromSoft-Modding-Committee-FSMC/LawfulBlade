@@ -35,6 +35,7 @@ namespace LawfulBladeManager.Control
                 {
                     Text = Tagging.Tag.TagList[tag].Text,
                     BackColor = Tagging.Tag.TagList[tag].BackgroundColour,
+                    ForeColor = Tagging.Tag.TagList[tag].ForegroundColour,
                     Size = new Size(96, 20),
                     TextAlign = ContentAlignment.MiddleCenter
                 }); ;

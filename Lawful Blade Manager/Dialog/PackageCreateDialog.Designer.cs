@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PackageCreateDialog));
             lbCreatePackage = new Label();
             tbName = new TextBox();
             lbProjectName = new Label();
@@ -287,17 +288,17 @@
             Controls.Add(lbProjectName);
             Controls.Add(lbCreatePackage);
             FormBorderStyle = FormBorderStyle.FixedDialog;
+            Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
             MaximumSize = new Size(640, 480);
             MdiChildrenMinimizedAnchorBottom = false;
             MinimizeBox = false;
             MinimumSize = new Size(640, 480);
             Name = "PackageCreateDialog";
-            ShowIcon = false;
             ShowInTaskbar = false;
             SizeGripStyle = SizeGripStyle.Hide;
             StartPosition = FormStartPosition.CenterParent;
-            Text = "Create Package...";
+            Text = "Lawful Blade - Package Creator";
             TopMost = true;
             ((System.ComponentModel.ISupportInitialize)pbIcon).EndInit();
             ResumeLayout(false);
