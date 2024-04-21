@@ -26,6 +26,6 @@ namespace LawfulBladeManager.Projects
         public bool IsManaged;
 
         [JsonInclude]
-        public List<int> TagIDs;
+        public string[] Tags;
     }
 }

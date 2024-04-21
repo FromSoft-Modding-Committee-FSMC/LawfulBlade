@@ -14,7 +14,7 @@
 
         private void btCreate_Click(object sender, EventArgs e)
         {
-            // Validate Input Date
+            // Data Validation
             try
             {
                 if (tbProjectName.Text == string.Empty)
@@ -56,6 +56,5 @@
                 }
             }
         }
-
     }
 }
