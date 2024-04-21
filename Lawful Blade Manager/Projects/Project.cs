@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using LawfulBladeManager.Tagging;
+using System.Text.Json.Serialization;
 
 namespace LawfulBladeManager.Projects
 {
@@ -26,6 +27,6 @@ namespace LawfulBladeManager.Projects
         public bool IsManaged;
 
         [JsonInclude]
-        public string[] Tags;
+        public Tag[] Tags;
     }
 }

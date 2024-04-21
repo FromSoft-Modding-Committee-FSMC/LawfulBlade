@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using LawfulBladeManager.Tagging;
+using System.Text.Json.Serialization;
 
 namespace LawfulBladeManager.Packages
 {
@@ -18,7 +19,7 @@ namespace LawfulBladeManager.Packages
         public string[] Authors;
 
         [JsonInclude]
-        public string[] Tags;
+        public Tag[] Tags;
 
         [JsonInclude]
         public string UUID;

@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using LawfulBladeManager.Projects;
+using LawfulBladeManager.Tagging;
 
 namespace LawfulBladeManager.Control
 {
@@ -29,14 +30,16 @@ namespace LawfulBladeManager.Control
             if(File.Exists(Path.Combine(project.StoragePath, "icon.png")))
                 pbIcon.Image = Image.FromFile(Path.Combine(project.StoragePath, "icon.png"));
 
-            foreach (int tag in project.TagIDs)
+            Graphics GP = Graphics.FromHwnd(Handle);
+
+            foreach (Tag tag in project.Tags)
             {
                 flTagList.Controls.Add(new Label
                 {
-                    Text = Tagging.Tag.TagList[tag].Text,
-                    BackColor = Tagging.Tag.TagList[tag].BackgroundColour,
-                    ForeColor = Tagging.Tag.TagList[tag].ForegroundColour,
-                    Size = new Size(96, 20),
+                    Text = tag.Text,
+                    BackColor = tag.BackgroundColour,
+                    ForeColor = tag.ForegroundColour,
+                    Size = new Size((int)GP.MeasureString(tag.Text, lbDescription.Font).Width, 20),
                     TextAlign = ContentAlignment.MiddleCenter
                 }); ;
             }

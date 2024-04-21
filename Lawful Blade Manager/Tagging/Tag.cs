@@ -4,28 +4,6 @@ namespace LawfulBladeManager.Tagging
 {
     public struct Tag
     {
-        // These can be removed.
-        public static readonly Tag Project = new() { Text = "ABCD" };
-        public static readonly Tag Sample = new() { Text = "FAHT" };
-        public static readonly Tag Managed = new() { Text = "OHNO" };
-        public static readonly Tag Legacy = new() { Text = "DOOM" };
-
-        // This can 53410% be removed. EWWWWWW.
-        public static readonly Tag[] TagList = new Tag[]
-        {
-            // Project Tags
-            Project,
-            Sample,
-
-            // Instance Tags
-
-            // Package Tags
-
-            // Misc Tags
-            Legacy,
-            Managed
-        };
-
         [JsonInclude]
         public string Text;
 
@@ -109,7 +87,7 @@ namespace LawfulBladeManager.Tagging
         }
 
         // Fuck you in the arse Microsoft (why private uint hex colour function?..)
-        Color HexC(uint RGB) =>
+        static Color HexC(uint RGB) =>
             Color.FromArgb(0xFF, (int)(RGB >> 16) & 0xFF, (int)(RGB >> 8) & 0xFF, (int)(RGB >> 0) & 0xFF);
     }
 }

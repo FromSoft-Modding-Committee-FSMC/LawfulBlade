@@ -1,6 +1,8 @@
 ﻿using System.Drawing.Imaging;
 using System.Text.Json;
 
+using LawfulBladeManager.Tagging;
+
 namespace LawfulBladeManager.Projects
 {
     public class ProjectManager
@@ -3254,7 +3256,7 @@ namespace LawfulBladeManager.Projects
                 LastEditData = DateTime.Now.ToString("yyyy-MM-dd hh:mm tt"),
                 StoragePath = path,
                 IsManaged = true,
-                TagIDs = new List<int> { 0, 3 }
+                Tags = new Tag[] { new Tag { Text = "Project" } }
             });
         }
 
@@ -3287,7 +3289,7 @@ namespace LawfulBladeManager.Projects
                 LastEditData = File.GetLastAccessTime(path).ToString("yyyy-MM-dd hh:mm tt"),
                 StoragePath = projectPath,
                 IsManaged = false,
-                TagIDs = new List<int> { 0, 2 }
+                Tags = new Tag[] { new Tag { Text = "Project" }, new Tag { Text = "Legacy" } }
             });
         }
 
