@@ -1,4 +1,5 @@
-﻿using LawfulBladeManager.Type;
+﻿using LawfulBladeManager.Tagging;
+using LawfulBladeManager.Type;
 using System.Drawing.Imaging;
 using System.Security.Cryptography;
 
@@ -18,14 +19,17 @@ namespace LawfulBladeManager.Dialog
                 return strings;
             }
         }
-        public string[] PackageTags
+        public Tag[] PackageTags
         {
             get
             {
+                List<Tag> tags = new() ;
                 string[] strings = tbTags.Text.Split(';');
+
                 for (int i = 0; i < strings.Length; ++i)
-                    strings[i] = strings[i].Trim();
-                return strings;
+                    tags.Add(new Tag { Text = strings[i].Trim() });
+
+                return tags.ToArray();
             }
         }
         public string PackageVersion => tbVersion.Text;

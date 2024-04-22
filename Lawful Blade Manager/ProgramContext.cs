@@ -6,11 +6,12 @@ namespace LawfulBladeManager
     {
         // Private Data
         static readonly string pathAppData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "FSMC", "LawfulBlade");
-
+        static readonly string pathProgram = Application.StartupPath;
         readonly FormMain mainWindow;
 
         // Properties
         public static string AppDataPath => pathAppData;
+        public static string ProgramPath => pathProgram;
 
         // Constructors
         public ProgramContext()

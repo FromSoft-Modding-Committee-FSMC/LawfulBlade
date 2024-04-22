@@ -1,5 +1,6 @@
 using LawfulBladeManager.Control;
 using LawfulBladeManager.Dialog;
+using LawfulBladeManager.Packages;
 using LawfulBladeManager.Projects;
 
 namespace LawfulBladeManager.Forms
@@ -103,9 +104,28 @@ namespace LawfulBladeManager.Forms
         #region Menu Strip - Packages
         private void msMainCreatePackage_Click(object sender, EventArgs e)
         {
+            if (Program.PackageManager == null)
+                return;
+
             using(PackageCreateDialog pcd = new())
             {
-                pcd.ShowDialog();
+                if (pcd.ShowDialog() == DialogResult.OK)
+                {
+                    BusyDialog.Instance.ShowBusy();
+                    Program.PackageManager.PackageCreate(new PackageCreateArgs
+                    {
+                        Name = pcd.PackageName,
+                        Description = pcd.PackageDescription,
+                        Version = pcd.PackageVersion,
+                        Authors = pcd.PackageAuthors,
+                        Tags = pcd.PackageTags,
+                        Icon = pcd.PackageIcon,
+                        
+                        SourceDirectory = pcd.PackageSource,
+                        TargetFile = pcd.PackageOutput
+                    });
+                    BusyDialog.Instance.HideBusy();
+                }
             }
         }
 

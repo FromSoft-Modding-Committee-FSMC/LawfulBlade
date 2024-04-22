@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using LawfulBladeManager.Forms;
 using LawfulBladeManager.Projects;
 using LawfulBladeManager.Tagging;
 
@@ -55,6 +56,12 @@ namespace LawfulBladeManager.Control
         #region Toolbar Functions
         private void tsFuncDelete_Click(object sender, EventArgs e)
         {
+            using(PackageManagerForm packageManagerForm = new())
+            {
+                packageManagerForm.ShowDialog();
+            }
+
+
             // Make sure to confirm the user actually wants to delete the project
             if(MessageBox.Show($"Are you sure you want to delete {project.Name}?\n\n" +
                 "You will not be able to recover the project if you do.", "Lawful Blade", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)

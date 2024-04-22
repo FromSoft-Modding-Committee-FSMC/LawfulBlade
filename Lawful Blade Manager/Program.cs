@@ -1,4 +1,5 @@
 using LawfulBladeManager.Networking;
+using LawfulBladeManager.Packages;
 using LawfulBladeManager.Projects;
 
 namespace LawfulBladeManager
@@ -9,6 +10,7 @@ namespace LawfulBladeManager
         public readonly static DownloadManager? DownloadManager = new();
         public readonly static ProjectManager? ProjectManager   = new();
         public readonly static ProgramContext? Context          = new();
+        public readonly static PackageManager? PackageManager   = new();
 
         // Entry Point
         [STAThread]

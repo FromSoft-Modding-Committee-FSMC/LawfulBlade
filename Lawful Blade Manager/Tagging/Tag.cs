@@ -7,7 +7,10 @@ namespace LawfulBladeManager.Tagging
         [JsonInclude]
         public string Text;
 
+        [JsonIgnore]
         public Color BackgroundColour => GetColourByName();
+
+        [JsonIgnore]
         public Color ForegroundColour 
         {
             get

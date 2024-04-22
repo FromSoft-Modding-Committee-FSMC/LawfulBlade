@@ -32,11 +32,13 @@
             scMain = new SplitContainer();
             lvPackageFilter = new CheckedListBox();
             scPackageView = new SplitContainer();
+            packageInfoControl1 = new Control.PackageInfoControl();
             ((System.ComponentModel.ISupportInitialize)scMain).BeginInit();
             scMain.Panel1.SuspendLayout();
             scMain.Panel2.SuspendLayout();
             scMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)scPackageView).BeginInit();
+            scPackageView.Panel2.SuspendLayout();
             scPackageView.SuspendLayout();
             SuspendLayout();
             // 
@@ -83,9 +85,22 @@
             scPackageView.Dock = DockStyle.Fill;
             scPackageView.Location = new Point(0, 0);
             scPackageView.Name = "scPackageView";
+            // 
+            // scPackageView.Panel2
+            // 
+            scPackageView.Panel2.Controls.Add(packageInfoControl1);
             scPackageView.Size = new Size(604, 450);
             scPackageView.SplitterDistance = 344;
             scPackageView.TabIndex = 0;
+            // 
+            // packageInfoControl1
+            // 
+            packageInfoControl1.BackColor = Color.FromArgb(32, 32, 32);
+            packageInfoControl1.Dock = DockStyle.Fill;
+            packageInfoControl1.Location = new Point(0, 0);
+            packageInfoControl1.Name = "packageInfoControl1";
+            packageInfoControl1.Size = new Size(256, 450);
+            packageInfoControl1.TabIndex = 0;
             // 
             // PackageManagerForm
             // 
@@ -102,6 +117,7 @@
             scMain.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)scMain).EndInit();
             scMain.ResumeLayout(false);
+            scPackageView.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)scPackageView).EndInit();
             scPackageView.ResumeLayout(false);
             ResumeLayout(false);
@@ -112,5 +128,6 @@
         private SplitContainer scMain;
         private CheckedListBox lvPackageFilter;
         private SplitContainer scPackageView;
+        private Control.PackageInfoControl packageInfoControl1;
     }
 }

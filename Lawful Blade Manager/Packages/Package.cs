@@ -23,8 +23,5 @@ namespace LawfulBladeManager.Packages
 
         [JsonInclude]
         public string UUID;
-
-        [JsonInclude]
-        public PackageFile[] Files;
     }
 }
