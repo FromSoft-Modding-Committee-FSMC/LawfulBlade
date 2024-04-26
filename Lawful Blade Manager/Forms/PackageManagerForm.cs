@@ -1,4 +1,5 @@
-﻿using LawfulBladeManager.Packages;
+﻿using LawfulBladeManager.Control;
+using LawfulBladeManager.Packages;
 using LawfulBladeManager.Tagging;
 using System.IO.Compression;
 using System.Text.Json;
@@ -7,6 +8,8 @@ namespace LawfulBladeManager.Forms
 {
     public partial class PackageManagerForm : System.Windows.Forms.Form
     {
+        List<PackageControl> packageControls = new List<PackageControl>();
+
         public PackageManagerForm()
         {
             InitializeComponent();
@@ -18,10 +21,9 @@ namespace LawfulBladeManager.Forms
             if (Program.PackageManager == null)
                 return;
 
-            // Load Filters
-            List<string> tagFilters = new();
+            // Load Packages
+            lvPackageFilter.Items.Clear();
 
-            // Scan each package
             Task packageScanTask = new(() =>
             {
                 // Open each archive and grab package.json
@@ -29,6 +31,7 @@ namespace LawfulBladeManager.Forms
                 {
                     using (ZipArchive zip = ZipFile.OpenRead(lbp))
                     {
+                        // Load package.json
                         ZipArchiveEntry? packEntry = zip.GetEntry("package.json");
                         if (packEntry == null)
                             throw new Exception($"Package '{Path.GetFileName(lbp)}' does not contain 'package.json'");
@@ -40,34 +43,87 @@ namespace LawfulBladeManager.Forms
 
                         Package package = JsonSerializer.Deserialize<Package>(packageJson, JsonSerializerOptions.Default);
 
+                        // Load icon.png
+                        ZipArchiveEntry? iconEntry = zip.GetEntry("icon.png");
+                        if (iconEntry == null)
+                            throw new Exception($"Package '{Path.GetFileName(lbp)}' does not contain 'icon.png'");
+
+                        // Create Image
+                        Image icon = Image.FromStream(iconEntry.Open());
+
                         // Store information about the package in the mananger
-                        foreach (Tag tag in package.Tags)
-                            tagFilters.Add(tag.Text);
+                        Invoke((MethodInvoker)(() =>
+                        {
+                            // Load Tags
+                            foreach (Tag tag in package.Tags)
+                                if (!lvPackageFilter.Items.Contains(tag.Text))
+                                    lvPackageFilter.Items.Add(tag.Text, true);
+
+                            // Load Control
+                            PackageControl pkgControl = new(package, icon)
+                            {
+                                Dock = DockStyle.Top,
+                            };
+
+                            pkgControl.pcMain.Click += PackageControl_Click;
+
+                            pcPackageList.Controls.Add(pkgControl);
+                            packageControls.Add(pkgControl);
+                        }));
                     }
-
-                    // Here we should add a new package control to the list.
-
-                    Console.WriteLine($"Package [Source: {lbp}]");
                 }
-
-                this.Invoke((MethodInvoker)(() =>
-                {
-                    lvPackageFilter.Items.Clear();
-                    foreach (string tag in tagFilters)
-                    {
-                        lvPackageFilter.Items.Add(tag);
-                        lvPackageFilter.SetItemChecked(lvPackageFilter.Items.Count - 1, true);
-                    }
-
-                }));
-
-                Console.WriteLine($"Tags Loaded = {tagFilters.Count}");
             });
             packageScanTask.Start();
+        }
 
-            // Now copy the filter
+        private void PackageControl_Click(object? sender, EventArgs e)
+        {
+            if (sender == null)
+                return;
 
+            //Console.WriteLine($"Hello from {((PackageControl)(((Panel)sender).Parent)).package.Name}");
+            exInfo.LoadMetadata(((PackageControl)(((Panel)sender).Parent)).package);
+            exInfo.LoadIcon(((PackageControl)(((Panel)sender).Parent)).icon);
+        }
 
+        private void lvPackageFilter_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            // We must now rescan each package...
+            pcPackageList.Controls.Clear();
+
+            // Loop through each package control
+            foreach (PackageControl pkgControl in packageControls)
+            {
+                Package package = pkgControl.package;
+
+                // Store check state
+                bool packageFiltered = true;
+
+                // Loop through each tag in the package
+                foreach (Tag tag in package.Tags)
+                {
+                    // Get index of tag
+                    int tagIndex = lvPackageFilter.Items.IndexOf(tag.Text);
+
+                    // Is this tag valid?
+                    if (tagIndex >= 0 & tagIndex != e.Index)
+                    {
+                        // Is this tag checked?
+                        packageFiltered &= (!(lvPackageFilter.GetItemChecked(tagIndex)));
+                    }
+                    else
+                    if (tagIndex == e.Index)
+                    {
+                        packageFiltered &= (e.NewValue == CheckState.Unchecked);
+                    }
+
+                    if (!packageFiltered)
+                        break;
+                }
+
+                if (!packageFiltered)
+                    pcPackageList.Controls.Add(pkgControl);
+            }
         }
     }
 }

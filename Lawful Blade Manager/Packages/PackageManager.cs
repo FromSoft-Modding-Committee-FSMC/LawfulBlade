@@ -19,9 +19,8 @@ namespace LawfulBladeManager.Packages
             foreach (string file in Directory.GetFiles(Path.Combine(ProgramContext.ProgramPath, "Packages"), "*.LBP", SearchOption.AllDirectories))
             {
                 packageList.Add(file);
-                Console.WriteLine(file);
+                Console.WriteLine($"Package [file = {file}]");
             }
-                
         }
 
         public void PackageCreate(PackageCreateArgs args)

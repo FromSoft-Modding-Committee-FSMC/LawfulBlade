@@ -37,6 +37,9 @@
             lbVersion = new Label();
             lbTags = new Label();
             Install = new Button();
+            lbAuthorsVal = new Label();
+            lbVersionVal = new Label();
+            lbTagsVal = new Label();
             ((System.ComponentModel.ISupportInitialize)pbIcon).BeginInit();
             SuspendLayout();
             // 
@@ -45,18 +48,18 @@
             lbName.AutoSize = true;
             lbName.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point);
             lbName.ForeColor = SystemColors.ButtonFace;
-            lbName.Location = new Point(73, 3);
+            lbName.Location = new Point(105, 3);
             lbName.Name = "lbName";
-            lbName.Size = new Size(147, 30);
+            lbName.Size = new Size(77, 30);
             lbName.TabIndex = 0;
-            lbName.Text = "ExampleName";
+            lbName.Text = "{name}";
             // 
             // pbIcon
             // 
             pbIcon.BorderStyle = BorderStyle.FixedSingle;
             pbIcon.Location = new Point(3, 3);
             pbIcon.Name = "pbIcon";
-            pbIcon.Size = new Size(64, 64);
+            pbIcon.Size = new Size(96, 96);
             pbIcon.SizeMode = PictureBoxSizeMode.StretchImage;
             pbIcon.TabIndex = 1;
             pbIcon.TabStop = false;
@@ -66,7 +69,7 @@
             lbDescription.AutoSize = true;
             lbDescription.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
             lbDescription.ForeColor = SystemColors.ButtonFace;
-            lbDescription.Location = new Point(3, 70);
+            lbDescription.Location = new Point(3, 102);
             lbDescription.Name = "lbDescription";
             lbDescription.Size = new Size(71, 15);
             lbDescription.TabIndex = 2;
@@ -77,12 +80,14 @@
             tbDescription.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             tbDescription.BackColor = Color.FromArgb(32, 32, 32);
             tbDescription.BorderStyle = BorderStyle.FixedSingle;
-            tbDescription.Location = new Point(3, 88);
+            tbDescription.ForeColor = SystemColors.ButtonFace;
+            tbDescription.Location = new Point(3, 120);
             tbDescription.Multiline = true;
             tbDescription.Name = "tbDescription";
+            tbDescription.PlaceholderText = "No Description.";
             tbDescription.ReadOnly = true;
             tbDescription.ScrollBars = ScrollBars.Vertical;
-            tbDescription.Size = new Size(312, 277);
+            tbDescription.Size = new Size(312, 245);
             tbDescription.TabIndex = 3;
             // 
             // lbAuthors
@@ -102,7 +107,7 @@
             lbUUID.AutoSize = true;
             lbUUID.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
             lbUUID.ForeColor = SystemColors.ButtonFace;
-            lbUUID.Location = new Point(76, 33);
+            lbUUID.Location = new Point(109, 34);
             lbUUID.Name = "lbUUID";
             lbUUID.Size = new Size(42, 15);
             lbUUID.TabIndex = 5;
@@ -135,12 +140,51 @@
             // Install
             // 
             Install.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            Install.BackColor = Color.FromArgb(120, 66, 135);
+            Install.FlatStyle = FlatStyle.Popup;
+            Install.ForeColor = SystemColors.ButtonFace;
             Install.Location = new Point(240, 452);
             Install.Name = "Install";
             Install.Size = new Size(75, 23);
             Install.TabIndex = 8;
             Install.Text = "Install";
-            Install.UseVisualStyleBackColor = true;
+            Install.UseVisualStyleBackColor = false;
+            // 
+            // lbAuthorsVal
+            // 
+            lbAuthorsVal.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            lbAuthorsVal.AutoSize = true;
+            lbAuthorsVal.Font = new Font("Segoe UI Light", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            lbAuthorsVal.ForeColor = SystemColors.ButtonFace;
+            lbAuthorsVal.Location = new Point(71, 368);
+            lbAuthorsVal.Name = "lbAuthorsVal";
+            lbAuthorsVal.Size = new Size(51, 15);
+            lbAuthorsVal.TabIndex = 9;
+            lbAuthorsVal.Text = "{authors}";
+            // 
+            // lbVersionVal
+            // 
+            lbVersionVal.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            lbVersionVal.AutoSize = true;
+            lbVersionVal.Font = new Font("Segoe UI Light", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            lbVersionVal.ForeColor = SystemColors.ButtonFace;
+            lbVersionVal.Location = new Point(71, 384);
+            lbVersionVal.Name = "lbVersionVal";
+            lbVersionVal.Size = new Size(48, 15);
+            lbVersionVal.TabIndex = 10;
+            lbVersionVal.Text = "{version}";
+            // 
+            // lbTagsVal
+            // 
+            lbTagsVal.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            lbTagsVal.AutoSize = true;
+            lbTagsVal.Font = new Font("Segoe UI Light", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            lbTagsVal.ForeColor = SystemColors.ButtonFace;
+            lbTagsVal.Location = new Point(71, 401);
+            lbTagsVal.Name = "lbTagsVal";
+            lbTagsVal.Size = new Size(35, 15);
+            lbTagsVal.TabIndex = 11;
+            lbTagsVal.Text = "{tags}";
             // 
             // PackageInfoControl
             // 
@@ -148,6 +192,9 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(32, 32, 32);
             BorderStyle = BorderStyle.FixedSingle;
+            Controls.Add(lbTagsVal);
+            Controls.Add(lbVersionVal);
+            Controls.Add(lbAuthorsVal);
             Controls.Add(Install);
             Controls.Add(lbTags);
             Controls.Add(lbVersion);
@@ -175,5 +222,8 @@
         private Label lbVersion;
         private Label lbTags;
         private Button Install;
+        private Label lbAuthorsVal;
+        private Label lbVersionVal;
+        private Label lbTagsVal;
     }
 }

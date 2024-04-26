@@ -92,5 +92,7 @@ namespace LawfulBladeManager.Tagging
         // Fuck you in the arse Microsoft (why private uint hex colour function?..)
         static Color HexC(uint RGB) =>
             Color.FromArgb(0xFF, (int)(RGB >> 16) & 0xFF, (int)(RGB >> 8) & 0xFF, (int)(RGB >> 0) & 0xFF);
+
+        public override string ToString() => Text;
     }
 }

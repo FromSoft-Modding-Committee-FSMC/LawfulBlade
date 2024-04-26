@@ -5,7 +5,7 @@ using LawfulBladeManager.Projects;
 
 namespace LawfulBladeManager.Forms
 {
-    public partial class FormMain : System.Windows.Forms.Form
+    public partial class FormMain : Form
     {
         public FormMain()
         {
