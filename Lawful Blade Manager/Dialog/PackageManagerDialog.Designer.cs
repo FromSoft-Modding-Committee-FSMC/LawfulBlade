@@ -1,6 +1,6 @@
 ﻿namespace LawfulBladeManager.Forms
 {
-    partial class PackageManagerForm
+    partial class PackageManagerDialog
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PackageManagerForm));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PackageManagerDialog));
             scMain = new SplitContainer();
             lbFilterTxt = new Label();
             lvPackageFilter = new CheckedListBox();

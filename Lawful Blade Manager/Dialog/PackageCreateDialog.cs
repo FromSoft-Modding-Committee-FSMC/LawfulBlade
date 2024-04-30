@@ -19,17 +19,16 @@ namespace LawfulBladeManager.Dialog
                 return strings;
             }
         }
-        public Tag[] PackageTags
+        public string[] PackageTags
         {
             get
             {
-                List<Tag> tags = new() ;
                 string[] strings = tbTags.Text.Split(';');
 
                 for (int i = 0; i < strings.Length; ++i)
-                    tags.Add(new Tag { Text = strings[i].Trim() });
+                    strings[i] = strings[i].Trim();
 
-                return tags.ToArray();
+                return strings;
             }
         }
         public string PackageVersion => tbVersion.Text;

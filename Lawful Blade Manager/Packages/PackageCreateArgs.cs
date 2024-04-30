@@ -10,7 +10,7 @@ namespace LawfulBladeManager.Packages
         public string Description;      // The description of the package
         public string Version;          // The version of the package
         public string[] Authors;        // Any authors of the package
-        public Tag[] Tags;              // Any tags for the package
+        public string[] Tags;           // Any tags for the package
         public Bitmap Icon;             // The icon data of the package.
     }
 }

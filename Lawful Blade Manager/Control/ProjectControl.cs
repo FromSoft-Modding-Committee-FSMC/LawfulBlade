@@ -56,7 +56,7 @@ namespace LawfulBladeManager.Control
         #region Toolbar Functions
         private void tsFuncDelete_Click(object sender, EventArgs e)
         {
-            using(PackageManagerForm packageManagerForm = new())
+            using(PackageManagerDialog packageManagerForm = new())
             {
                 packageManagerForm.ShowDialog();
             }

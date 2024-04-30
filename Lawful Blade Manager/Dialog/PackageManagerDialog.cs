@@ -1,18 +1,26 @@
 ﻿using LawfulBladeManager.Control;
 using LawfulBladeManager.Packages;
-using LawfulBladeManager.Tagging;
+using LawfulBladeManager.Type;
+
 using System.IO.Compression;
 using System.Text.Json;
 
 namespace LawfulBladeManager.Forms
 {
-    public partial class PackageManagerForm : System.Windows.Forms.Form
+    public partial class PackageManagerDialog : System.Windows.Forms.Form
     {
+        // Private Fields
         List<PackageControl> packageControls = new List<PackageControl>();
 
-        public PackageManagerForm()
+        // Public Fields & Properties
+        public string[] SuperFilter { get; set; }
+
+        public PackageManagerDialog()
         {
             InitializeComponent();
+
+            // Default value because .NET complains otherwise
+            SuperFilter = new string[] { string.Empty };
         }
 
         private void PackageManagerForm_Load(object sender, EventArgs e)
@@ -43,6 +51,10 @@ namespace LawfulBladeManager.Forms
 
                         Package package = JsonSerializer.Deserialize<Package>(packageJson, JsonSerializerOptions.Default);
 
+                        // Check to see if this package is included via the super filter
+                        if (!SuperFilter.Contains(package.Tags))
+                            continue;
+
                         // Load icon.png
                         ZipArchiveEntry? iconEntry = zip.GetEntry("icon.png");
                         if (iconEntry == null)
@@ -55,9 +67,9 @@ namespace LawfulBladeManager.Forms
                         Invoke((MethodInvoker)(() =>
                         {
                             // Load Tags
-                            foreach (Tag tag in package.Tags)
-                                if (!lvPackageFilter.Items.Contains(tag.Text))
-                                    lvPackageFilter.Items.Add(tag.Text, true);
+                            foreach (string tag in package.Tags)
+                                if (!lvPackageFilter.Items.Contains(tag))
+                                    lvPackageFilter.Items.Add(tag, true);
 
                             // Load Control
                             PackageControl pkgControl = new(package, icon)
@@ -78,12 +90,17 @@ namespace LawfulBladeManager.Forms
 
         private void PackageControl_Click(object? sender, EventArgs e)
         {
-            if (sender == null)
+            // Safe cast sender to panel
+            if (sender is not Panel senderPanel)
                 return;
 
-            //Console.WriteLine($"Hello from {((PackageControl)(((Panel)sender).Parent)).package.Name}");
-            exInfo.LoadMetadata(((PackageControl)(((Panel)sender).Parent)).package);
-            exInfo.LoadIcon(((PackageControl)(((Panel)sender).Parent)).icon);
+            // Safe cast to package control
+            if (senderPanel.Parent is not PackageControl packageControl)
+                return;
+
+            // Load information about the clicked package.
+            exInfo.LoadMetadata(packageControl.package);
+            exInfo.LoadIcon(packageControl.icon);
         }
 
         private void lvPackageFilter_ItemCheck(object sender, ItemCheckEventArgs e)
@@ -100,12 +117,12 @@ namespace LawfulBladeManager.Forms
                 bool packageFiltered = true;
 
                 // Loop through each tag in the package
-                foreach (Tag tag in package.Tags)
+                foreach (string tag in package.Tags)
                 {
                     // Get index of tag
-                    int tagIndex = lvPackageFilter.Items.IndexOf(tag.Text);
+                    int tagIndex = lvPackageFilter.Items.IndexOf(tag);
 
-                    // Is this tag valid?
+                    // Is this tag valid? This whole mess is here because WinForms fucking sucks.
                     if (tagIndex >= 0 & tagIndex != e.Index)
                     {
                         // Is this tag checked?

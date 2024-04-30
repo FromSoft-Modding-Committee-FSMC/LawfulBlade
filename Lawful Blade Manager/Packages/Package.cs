@@ -19,7 +19,7 @@ namespace LawfulBladeManager.Packages
         public string[] Authors;
 
         [JsonInclude]
-        public Tag[] Tags;
+        public string[] Tags;
 
         [JsonInclude]
         public string UUID;

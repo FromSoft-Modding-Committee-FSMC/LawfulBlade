@@ -95,7 +95,7 @@ namespace LawfulBladeManager.Forms
 
         private void packageManagerToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            using (PackageManagerForm pmf = new())
+            using (PackageManagerDialog pmf = new())
             {
                 pmf.ShowDialog();
             }
