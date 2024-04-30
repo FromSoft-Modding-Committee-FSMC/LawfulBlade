@@ -41,6 +41,7 @@
             tbSource = new TextBox();
             tbDescription = new TextBox();
             pbIcon = new PictureBox();
+            cbExpectOverwrites = new CheckBox();
             lbVersion = new Label();
             lbTags = new Label();
             lbSource = new Label();
@@ -179,6 +180,18 @@
             ttMain.SetToolTip(pbIcon, "Icon for the package. Double click to change.");
             pbIcon.DoubleClick += pbIcon_DoubleClick;
             // 
+            // cbExpectOverwrites
+            // 
+            cbExpectOverwrites.AutoSize = true;
+            cbExpectOverwrites.ForeColor = SystemColors.ButtonFace;
+            cbExpectOverwrites.Location = new Point(12, 406);
+            cbExpectOverwrites.Name = "cbExpectOverwrites";
+            cbExpectOverwrites.Size = new Size(125, 19);
+            cbExpectOverwrites.TabIndex = 20;
+            cbExpectOverwrites.Text = "Expect Overwrites?";
+            ttMain.SetToolTip(cbExpectOverwrites, "Check this if you expect the package to overwrite files, such as a translation patch etc");
+            cbExpectOverwrites.UseVisualStyleBackColor = true;
+            // 
             // lbVersion
             // 
             lbVersion.AutoSize = true;
@@ -272,6 +285,7 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(32, 32, 32);
             ClientSize = new Size(624, 441);
+            Controls.Add(cbExpectOverwrites);
             Controls.Add(lbIcon);
             Controls.Add(btCancel);
             Controls.Add(btCreate);
@@ -329,5 +343,6 @@
         private Button btCancel;
         private Button btCreate;
         private Label lbIcon;
+        private CheckBox cbExpectOverwrites;
     }
 }

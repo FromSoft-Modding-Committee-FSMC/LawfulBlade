@@ -77,14 +77,14 @@ namespace LawfulBladeManager.Dialog
             }
 
             // Ask for the output directory
-            using(SaveFileDialog sfd = new())
+            using (SaveFileDialog sfd = new())
             {
                 // Configure Dialog
                 sfd.Filter = $"Lawful Blade Package (*.LBP)|*.LBP";
                 sfd.InitialDirectory = tbSource.Text;
 
                 // Do Dialog (with logic inversion)
-                if(sfd.ShowDialog() != DialogResult.OK)
+                if (sfd.ShowDialog() != DialogResult.OK)
                     return;
 
                 PackageOutput = sfd.FileName;
@@ -128,7 +128,7 @@ namespace LawfulBladeManager.Dialog
                         try
                         {
                             pbIcon.Image = Image.FromFile(ofd.FileName);
-                        }      
+                        }
                         catch (Exception ex)
                         {
                             MessageBox.Show(ex.Message, @"Lawful Blade", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);

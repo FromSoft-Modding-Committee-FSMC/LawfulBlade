@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ProjectCreateDialog));
             lbCreateProject = new Label();
             lbProjectName = new Label();
@@ -41,6 +42,8 @@
             tbDescription = new TextBox();
             btCreate = new Button();
             btCancel = new Button();
+            xbCreateEmpty = new CheckBox();
+            ttPrimary = new ToolTip(components);
             SuspendLayout();
             // 
             // lbCreateProject
@@ -74,6 +77,7 @@
             tbProjectName.Name = "tbProjectName";
             tbProjectName.Size = new Size(519, 23);
             tbProjectName.TabIndex = 2;
+            ttPrimary.SetToolTip(tbProjectName, "The name of the project");
             tbProjectName.WordWrap = false;
             // 
             // lbTargetPath
@@ -95,6 +99,7 @@
             tbTargetPath.Name = "tbTargetPath";
             tbTargetPath.Size = new Size(519, 23);
             tbTargetPath.TabIndex = 4;
+            ttPrimary.SetToolTip(tbTargetPath, "The target path of the directory. An additional sub directory will be created in the path to store the project.");
             tbTargetPath.WordWrap = false;
             // 
             // btTargetSelect
@@ -106,6 +111,7 @@
             btTargetSelect.Size = new Size(75, 23);
             btTargetSelect.TabIndex = 5;
             btTargetSelect.Text = "Select...";
+            ttPrimary.SetToolTip(btTargetSelect, "Select the project path");
             btTargetSelect.UseVisualStyleBackColor = true;
             btTargetSelect.Click += btTargetSelect_Click;
             // 
@@ -120,6 +126,7 @@
             cbTargetInstance.Size = new Size(519, 23);
             cbTargetInstance.TabIndex = 6;
             cbTargetInstance.Text = "Test";
+            ttPrimary.SetToolTip(cbTargetInstance, "Choose which Sword of Moonlight instance the project will be edited with.");
             // 
             // lbTargetInstance
             // 
@@ -151,6 +158,7 @@
             tbDescription.Name = "tbDescription";
             tbDescription.Size = new Size(600, 161);
             tbDescription.TabIndex = 9;
+            ttPrimary.SetToolTip(tbDescription, "A description of the project.");
             // 
             // btCreate
             // 
@@ -177,12 +185,24 @@
             btCancel.UseVisualStyleBackColor = true;
             btCancel.Click += btCancel_Click;
             // 
+            // xbCreateEmpty
+            // 
+            xbCreateEmpty.AutoSize = true;
+            xbCreateEmpty.Location = new Point(12, 410);
+            xbCreateEmpty.Name = "xbCreateEmpty";
+            xbCreateEmpty.Size = new Size(100, 19);
+            xbCreateEmpty.TabIndex = 12;
+            xbCreateEmpty.Text = "Empty Project";
+            ttPrimary.SetToolTip(xbCreateEmpty, "Check this box if you are intending to import a sample project using the package manager.");
+            xbCreateEmpty.UseVisualStyleBackColor = true;
+            // 
             // ProjectCreateDialog
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(32, 32, 32);
             ClientSize = new Size(624, 441);
+            Controls.Add(xbCreateEmpty);
             Controls.Add(btCancel);
             Controls.Add(btCreate);
             Controls.Add(tbDescription);
@@ -226,5 +246,7 @@
         private TextBox tbDescription;
         private Button btCreate;
         private Button btCancel;
+        private ToolTip ttPrimary;
+        private CheckBox xbCreateEmpty;
     }
 }

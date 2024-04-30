@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using LawfulBladeManager.Forms;
+﻿using LawfulBladeManager.Forms;
 using LawfulBladeManager.Projects;
 using LawfulBladeManager.Tagging;
 
@@ -33,14 +26,14 @@ namespace LawfulBladeManager.Control
 
             Graphics GP = Graphics.FromHwnd(Handle);
 
-            foreach (Tag tag in project.Tags)
+            foreach (string tag in project.Tags)
             {
                 flTagList.Controls.Add(new Label
                 {
-                    Text = tag.Text,
-                    BackColor = tag.BackgroundColour,
-                    ForeColor = tag.ForegroundColour,
-                    Size = new Size((int)GP.MeasureString(tag.Text, lbDescription.Font).Width, 20),
+                    Text = tag,
+                    BackColor = Tags.MakeBackgroundColour(tag),
+                    ForeColor = Tags.MakeForegroundColour(tag),
+                    Size = new Size((int)GP.MeasureString(tag, lbDescription.Font).Width, 20),
                     TextAlign = ContentAlignment.MiddleCenter
                 }); ;
             }

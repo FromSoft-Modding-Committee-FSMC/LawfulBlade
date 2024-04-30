@@ -3256,11 +3256,11 @@ namespace LawfulBladeManager.Projects
                 LastEditData = DateTime.Now.ToString("yyyy-MM-dd hh:mm tt"),
                 StoragePath = path,
                 IsManaged = true,
-                Tags = new Tag[] { new Tag { Text = "Project" } }
+                Tags = new string[] { "Project", "Managed" }
             });
         }
 
-        public bool ProjectExists(ref Project project) =>
+        public static bool ProjectExists(ref Project project) =>
             Directory.Exists(project.StoragePath) && File.Exists(Path.Combine(project.StoragePath, $"{project.Name}.som"));
 
         public void ImportProject(string path)
@@ -3289,7 +3289,7 @@ namespace LawfulBladeManager.Projects
                 LastEditData = File.GetLastAccessTime(path).ToString("yyyy-MM-dd hh:mm tt"),
                 StoragePath = projectPath,
                 IsManaged = false,
-                Tags = new Tag[] { new Tag { Text = "Project" }, new Tag { Text = "Legacy" } }
+                Tags = new string[] { "Project", "Legacy" }
             });
         }
 
