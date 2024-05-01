@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using LawfulBladeManager.Dialog;
+using System.Security.Cryptography;
 
 namespace LawfulBladeManager.Forms
 {
@@ -55,6 +56,8 @@ namespace LawfulBladeManager.Forms
                     throw new Exception("Source B must be a valid path!");
                 if (tbTarget.Text == string.Empty || Directory.GetFileSystemEntries(tbTarget.Text).Length > 0)
                     throw new Exception("Target directory is either invalid, or already has files!");
+
+                BusyDialog.Instance.ShowBusy();
 
                 // Does the user want to do logging?
                 StreamWriter? logWriter = null;
@@ -142,12 +145,14 @@ namespace LawfulBladeManager.Forms
             }
             catch (Exception ex)
             {
+                BusyDialog.Instance.HideBusy();
                 MessageBox.Show(ex.Message, "Lawful Blade - Delta Generator", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            // Close Dialog with valid result
+            BusyDialog.Instance.HideBusy();
 
+            // Close Dialog with valid result
             MessageBox.Show("Delta Generated Successfully!", "Lawful Blade - Delta Generator", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
             DialogResult = DialogResult.OK;

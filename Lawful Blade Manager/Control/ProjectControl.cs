@@ -51,6 +51,9 @@ namespace LawfulBladeManager.Control
         {
             using(PackageManagerDialog packageManagerForm = new())
             {
+                // Configure Package Manager
+                packageManagerForm.SuperFilter = new string[] { "Editor" };
+
                 packageManagerForm.ShowDialog();
             }
 

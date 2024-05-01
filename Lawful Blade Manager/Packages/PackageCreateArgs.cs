@@ -12,5 +12,6 @@ namespace LawfulBladeManager.Packages
         public string[] Authors;        // Any authors of the package
         public string[] Tags;           // Any tags for the package
         public Bitmap Icon;             // The icon data of the package.
+        public bool ExpectOverwrite;    // The package expects to overwrite files. Will still check for primary checksums first and warn on conflicts.
     }
 }

@@ -107,7 +107,7 @@ namespace LawfulBladeManager.Forms
             if (Program.PackageManager == null)
                 return;
 
-            using(PackageCreateDialog pcd = new())
+            using (PackageCreateDialog pcd = new())
             {
                 if (pcd.ShowDialog() == DialogResult.OK)
                 {
@@ -120,7 +120,7 @@ namespace LawfulBladeManager.Forms
                         Authors = pcd.PackageAuthors,
                         Tags = pcd.PackageTags,
                         Icon = pcd.PackageIcon,
-                        
+
                         SourceDirectory = pcd.PackageSource,
                         TargetFile = pcd.PackageOutput
                     });
@@ -131,8 +131,8 @@ namespace LawfulBladeManager.Forms
 
         private void msMainPackageToolGDD_Click(object sender, EventArgs e)
         {
-            using PackageDeltaDialog pdf = new();
-            pdf.ShowDialog();
+            using (PackageDeltaDialog pdf = new())
+                pdf.ShowDialog();
         }
         #endregion
     }

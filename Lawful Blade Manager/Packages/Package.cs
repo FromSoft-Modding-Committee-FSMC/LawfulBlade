@@ -23,5 +23,8 @@ namespace LawfulBladeManager.Packages
 
         [JsonInclude]
         public string UUID;
+
+        [JsonInclude]
+        public bool ExpectOverwrite;
     }
 }

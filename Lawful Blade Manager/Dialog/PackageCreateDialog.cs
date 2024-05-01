@@ -36,7 +36,7 @@ namespace LawfulBladeManager.Dialog
         public string PackageDescription => tbDescription.Text;
         public Bitmap PackageIcon => (Bitmap)pbIcon.Image;
         public string PackageOutput = string.Empty;
-
+        public bool PackageExpectOW => xbExpectOverwrites.Checked;
 
         public PackageCreateDialog()
         {

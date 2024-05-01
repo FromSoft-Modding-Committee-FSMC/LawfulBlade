@@ -41,7 +41,7 @@
             tbSource = new TextBox();
             tbDescription = new TextBox();
             pbIcon = new PictureBox();
-            cbExpectOverwrites = new CheckBox();
+            xbExpectOverwrites = new CheckBox();
             lbVersion = new Label();
             lbTags = new Label();
             lbSource = new Label();
@@ -180,17 +180,17 @@
             ttMain.SetToolTip(pbIcon, "Icon for the package. Double click to change.");
             pbIcon.DoubleClick += pbIcon_DoubleClick;
             // 
-            // cbExpectOverwrites
+            // xbExpectOverwrites
             // 
-            cbExpectOverwrites.AutoSize = true;
-            cbExpectOverwrites.ForeColor = SystemColors.ButtonFace;
-            cbExpectOverwrites.Location = new Point(12, 406);
-            cbExpectOverwrites.Name = "cbExpectOverwrites";
-            cbExpectOverwrites.Size = new Size(125, 19);
-            cbExpectOverwrites.TabIndex = 20;
-            cbExpectOverwrites.Text = "Expect Overwrites?";
-            ttMain.SetToolTip(cbExpectOverwrites, "Check this if you expect the package to overwrite files, such as a translation patch etc");
-            cbExpectOverwrites.UseVisualStyleBackColor = true;
+            xbExpectOverwrites.AutoSize = true;
+            xbExpectOverwrites.ForeColor = SystemColors.ButtonFace;
+            xbExpectOverwrites.Location = new Point(12, 406);
+            xbExpectOverwrites.Name = "xbExpectOverwrites";
+            xbExpectOverwrites.Size = new Size(125, 19);
+            xbExpectOverwrites.TabIndex = 20;
+            xbExpectOverwrites.Text = "Expect Overwrites?";
+            ttMain.SetToolTip(xbExpectOverwrites, "Check this if you expect the package to overwrite files, such as a translation patch etc");
+            xbExpectOverwrites.UseVisualStyleBackColor = true;
             // 
             // lbVersion
             // 
@@ -285,7 +285,7 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(32, 32, 32);
             ClientSize = new Size(624, 441);
-            Controls.Add(cbExpectOverwrites);
+            Controls.Add(xbExpectOverwrites);
             Controls.Add(lbIcon);
             Controls.Add(btCancel);
             Controls.Add(btCreate);
@@ -343,6 +343,6 @@
         private Button btCancel;
         private Button btCreate;
         private Label lbIcon;
-        private CheckBox cbExpectOverwrites;
+        private CheckBox xbExpectOverwrites;
     }
 }

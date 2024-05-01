@@ -17,10 +17,7 @@ namespace LawfulBladeManager.Packages
         {
             // Find Default Packages
             foreach (string file in Directory.GetFiles(Path.Combine(ProgramContext.ProgramPath, "Packages"), "*.LBP", SearchOption.AllDirectories))
-            {
                 packageList.Add(file);
-                Console.WriteLine($"Package [file = {file}]");
-            }
         }
 
         public void PackageCreate(PackageCreateArgs args)
@@ -57,7 +54,8 @@ namespace LawfulBladeManager.Packages
                 Version = args.Version,
                 Authors = args.Authors,
                 Tags = args.Tags,
-                UUID = new Guid(accumMD5.Hash).ToString()
+                UUID = new Guid(accumMD5.Hash).ToString(),
+                ExpectOverwrite = args.ExpectOverwrite
             };
 
             //
