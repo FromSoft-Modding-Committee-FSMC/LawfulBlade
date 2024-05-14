@@ -3263,6 +3263,51 @@ namespace LawfulBladeManager.Projects
         public static bool ProjectExists(ref Project project) =>
             Directory.Exists(project.StoragePath) && File.Exists(Path.Combine(project.StoragePath, $"{project.Name}.som"));
 
+        /// <summary>
+        /// Deletes a pre existing project that is owned by Lawful Blade.
+        /// </summary>
+        /// <param name="path">Path to the project.</param>
+        /// <returns>True on success, false otherwise.</returns>
+        public bool DeleteProject(string path)
+        {
+            if (projects == null)
+                return false;
+
+            // Check if this path is owned by the project
+            bool isOwnedProject = false;
+
+            foreach (Project project in projects)
+                isOwnedProject |= (project.StoragePath == path);
+
+            // Exit when the given path is now owned
+            if (!isOwnedProject)
+                return false;
+
+            // We can start recursively deleting files...
+            string[] entities = Directory.GetFileSystemEntries(path, "*.*", SearchOption.AllDirectories);
+            
+            foreach(string entity in entities)
+            {
+                // Could be dangerous, but whatever...
+                if (Directory.Exists(entity))
+                    Directory.Delete(entity, true);
+            }
+
+            // Remove reference to the project from the manager...
+            for (int i = 0; i < projects.Count; ++i)
+            {
+                if (projects[i].StoragePath == path)
+                {
+                    projects.RemoveAt(i);
+                    break;
+                }
+
+            }
+
+            // Duun
+            return true;
+        }
+
         public void ImportProject(string path)
         {
             // Get the project name from the som file
