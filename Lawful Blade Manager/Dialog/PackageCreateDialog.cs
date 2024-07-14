@@ -80,7 +80,7 @@ namespace LawfulBladeManager.Dialog
             using (SaveFileDialog sfd = new())
             {
                 // Configure Dialog
-                sfd.Filter = $"Lawful Blade Package (*.LBP)|*.LBP";
+                sfd.Filter = $"Possibly A Zip (*.paz)|*.paz";
                 sfd.InitialDirectory = tbSource.Text;
 
                 // Do Dialog (with logic inversion)

@@ -58,110 +58,113 @@ namespace LawfulBladeManager.Forms
             // Load Packages
             lvPackageFilter.Items.Clear();
 
-            // Define a task to scan for avaliable packages
-            Task packageScanTask = new(() =>
-            {
-                // Start the busy dialog
-                BusyDialog.Instance.ShowBusy();
+            /*
 
-                // Open each archive and grab package.json
-                foreach (string lbp in Program.PackageManager.PackageList)
-                {
-                    // Open Zip File
-                    ZipArchive zip = ZipFile.OpenRead(lbp);
+// Define a task to scan for avaliable packages
+Task packageScanTask = new(() =>
+{
+// Start the busy dialog
+BusyDialog.Instance.ShowBusy();
 
-                    // Load package.json
-                    ZipArchiveEntry? packEntry = zip.GetEntry("package.json");
-                    if (packEntry == null)
-                        throw new Exception($"Package '{Path.GetFileName(lbp)}' does not contain 'package.json'");
+// Open each archive and grab package.json
+foreach (string lbp in Program.PackageManager.PackageList)
+{
+    // Open Zip File
+    ZipArchive zip = ZipFile.OpenRead(lbp);
 
-                    // Deserialize package.json
-                    string packageJson = string.Empty;
-                    using (StreamReader sr = new(packEntry.Open()))
-                        packageJson = sr.ReadToEnd();
+    // Load package.json
+    ZipArchiveEntry? packEntry = zip.GetEntry("package.json");
+    if (packEntry == null)
+        throw new Exception($"Package '{Path.GetFileName(lbp)}' does not contain 'package.json'");
 
-                    Package package = JsonSerializer.Deserialize<Package>(packageJson, JsonSerializerOptions.Default);
+    // Deserialize package.json
+    string packageJson = string.Empty;
+    using (StreamReader sr = new(packEntry.Open()))
+        packageJson = sr.ReadToEnd();
 
-                    // Check to see if this package is included via the super filter
-                    if (!SuperFilter.Contains(package.Tags))
-                        continue;
+    Package package = JsonSerializer.Deserialize<Package>(packageJson, JsonSerializerOptions.Default);
 
-                    // Load icon.png
-                    Image icon;
+    // Check to see if this package is included via the super filter
+    if (!SuperFilter.Contains(package.Tags))
+        continue;
 
-                    ZipArchiveEntry? iconEntry = zip.GetEntry("icon.png");
-                    if (iconEntry != null)
-                        icon = Image.FromStream(iconEntry.Open());
-                    else
-                        icon = new Bitmap(Properties.Resources._128x_package);  // Default package image just in case...
+    // Load icon.png
+    Image icon;
 
-                    // Load package.list.json
-                    ZipArchiveEntry? fileListEntry = zip.GetEntry("package.list.json");
-                    if (fileListEntry == null)
-                        throw new Exception($"Package '{Path.GetFileName(lbp)}' does not contain 'package.list.json'");
+    ZipArchiveEntry? iconEntry = zip.GetEntry("icon.png");
+    if (iconEntry != null)
+        icon = Image.FromStream(iconEntry.Open());
+    else
+        icon = new Bitmap(Properties.Resources._128x_package);  // Default package image just in case...
 
-                    string packageListJson = string.Empty;
-                    using (StreamReader sr = new(fileListEntry.Open()))
-                        packageListJson = sr.ReadToEnd();
+    // Load package.list.json
+    ZipArchiveEntry? fileListEntry = zip.GetEntry("package.list.json");
+    if (fileListEntry == null)
+        throw new Exception($"Package '{Path.GetFileName(lbp)}' does not contain 'package.list.json'");
 
-                    PackageFile[]? packageFiles = JsonSerializer.Deserialize<PackageFile[]>(packageListJson, JsonSerializerOptions.Default);
+    string packageListJson = string.Empty;
+    using (StreamReader sr = new(fileListEntry.Open()))
+        packageListJson = sr.ReadToEnd();
 
-                    if (packageFiles == null)
-                        throw new Exception($"Package '{Path.GetFileName(lbp)}' contains corrupted 'package.list.json'");
+    PackageFile[]? packageFiles = JsonSerializer.Deserialize<PackageFile[]>(packageListJson, JsonSerializerOptions.Default);
 
-                    // Create package control on the main thread.
-                    Invoke((MethodInvoker)(() =>
-                    {
-                        // Load Tags
-                        foreach (string tag in package.Tags)
-                            if (!lvPackageFilter.Items.Contains(tag))
-                                lvPackageFilter.Items.Add(tag, true);
+    if (packageFiles == null)
+        throw new Exception($"Package '{Path.GetFileName(lbp)}' contains corrupted 'package.list.json'");
 
-                        // Load Control
-                        PackageControl pkgControl = new(package, icon)
-                        {
-                            Dock       = DockStyle.Top,
-                            Files      = packageFiles,
-                            PackageZip = zip
-                        };
+    // Create package control on the main thread.
+    Invoke((MethodInvoker)(() =>
+    {
+        // Load Tags
+        foreach (string tag in package.Tags)
+            if (!lvPackageFilter.Items.Contains(tag))
+                lvPackageFilter.Items.Add(tag, true);
 
-                        pkgControl.OnSelect += PkgControl_OnSelect;
+        // Load Control
+        PackageControl pkgControl = new(package, icon)
+        {
+            Dock       = DockStyle.Top,
+            Files      = packageFiles,
+            PackageZip = zip
+        };
 
-                        pcPackageList.Controls.Add(pkgControl);
-                        packageControls.Add(pkgControl);
+        pkgControl.OnSelect += PkgControl_OnSelect;
 
-                        // Does the library already contain this package?
-                        if (library.Contains(package.UUID))
-                            pkgControl.UpdateStatus(PackageStatus.Installed);
+        pcPackageList.Controls.Add(pkgControl);
+        packageControls.Add(pkgControl);
 
-                    }));
-                }
-            });
+        // Does the library already contain this package?
+        if (library.Contains(package.UUID))
+            pkgControl.UpdateStatus(PackageStatus.Installed);
 
-            // Start the package scan task.
-            packageScanTask.Start();
+    }));
+}
+});
 
-            // Define a callback which is executed when the package scan task completes...
-            packageScanTask.ContinueWith(t =>
-            {
-                // Load the first package in the list
-                if (packageControls.Count > 0)
-                    Invoke((MethodInvoker)(() => LoadPackageInfo(packageControls[^1])));  // Invoke on parent thread
+// Start the package scan task.
+packageScanTask.Start();
+
+// Define a callback which is executed when the package scan task completes...
+packageScanTask.ContinueWith(t =>
+{
+// Load the first package in the list
+if (packageControls.Count > 0)
+    Invoke((MethodInvoker)(() => LoadPackageInfo(packageControls[^1])));  // Invoke on parent thread
 
 
-                // Scan for conflicts.
+// Scan for conflicts.
 
-                // Each target for packages should have a 'library.json' file ...
-                // Load it to get info about installed packages.
+// Each target for packages should have a 'library.json' file ...
+// Load it to get info about installed packages.
 
-                // Check each package to see if it conflicts with one installed.
+// Check each package to see if it conflicts with one installed.
 
-                // Bind the package info install button.
-                exInfo.OnInstallPressed += OnInstallPressed;
+// Bind the package info install button.
+exInfo.OnInstallPressed += OnInstallPressed;
 
-                // Hide Busy Pannel
-                BusyDialog.Instance.HideBusy();
-            });
+// Hide Busy Pannel
+BusyDialog.Instance.HideBusy();
+});
+*/
         }
 
         void PackageManagerDialog_FormClosing(object sender, FormClosingEventArgs e)
@@ -296,9 +299,9 @@ namespace LawfulBladeManager.Forms
                         // Does this the existing file match this one?
                         string oldChecksum = Convert.ToBase64String(MD5.HashData(File.ReadAllBytes(outputPath)));
 
-                        shouldInstallFile = package.ExpectOverwrite;
+                        shouldInstallFile = false;
 
-                        if (oldChecksum != packageFile.Checksum && !package.ExpectOverwrite)
+                        if (oldChecksum != packageFile.Checksum)
                             shouldInstallFile = (MessageBox.Show($"File '{packageFile.Filename}' already exists in '{InstallationRoot}.\nDo you want to replace it?", "Lawful Blade", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes);
                     }
 

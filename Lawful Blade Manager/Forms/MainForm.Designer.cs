@@ -34,6 +34,8 @@
             msMainExit = new ToolStripMenuItem();
             msMainPackages = new ToolStripMenuItem();
             msMainAddPackage = new ToolStripMenuItem();
+            msMainAddPackageLocal = new ToolStripMenuItem();
+            msMainAddPackageNet = new ToolStripMenuItem();
             msMainCreatePackage = new ToolStripMenuItem();
             toolStripSeparator1 = new ToolStripSeparator();
             msMainPackageTool = new ToolStripMenuItem();
@@ -49,8 +51,6 @@
             pcInstanceButtons = new Panel();
             btInstLegacy = new Button();
             btInstNew = new Button();
-            msMainAddPackageLocal = new ToolStripMenuItem();
-            msMainAddPackageNet = new ToolStripMenuItem();
             msMain.SuspendLayout();
             tcMain.SuspendLayout();
             tpProjects.SuspendLayout();
@@ -93,26 +93,38 @@
             // 
             msMainAddPackage.DropDownItems.AddRange(new ToolStripItem[] { msMainAddPackageLocal, msMainAddPackageNet });
             msMainAddPackage.Name = "msMainAddPackage";
-            msMainAddPackage.Size = new Size(180, 22);
+            msMainAddPackage.Size = new Size(165, 22);
             msMainAddPackage.Text = "Add Package(s)...";
+            // 
+            // msMainAddPackageLocal
+            // 
+            msMainAddPackageLocal.Name = "msMainAddPackageLocal";
+            msMainAddPackageLocal.Size = new Size(154, 22);
+            msMainAddPackageLocal.Text = "From Local File";
+            // 
+            // msMainAddPackageNet
+            // 
+            msMainAddPackageNet.Name = "msMainAddPackageNet";
+            msMainAddPackageNet.Size = new Size(154, 22);
+            msMainAddPackageNet.Text = "From URL";
             // 
             // msMainCreatePackage
             // 
             msMainCreatePackage.Name = "msMainCreatePackage";
-            msMainCreatePackage.Size = new Size(180, 22);
+            msMainCreatePackage.Size = new Size(165, 22);
             msMainCreatePackage.Text = "Create Package...";
             msMainCreatePackage.Click += msMainCreatePackage_Click;
             // 
             // toolStripSeparator1
             // 
             toolStripSeparator1.Name = "toolStripSeparator1";
-            toolStripSeparator1.Size = new Size(177, 6);
+            toolStripSeparator1.Size = new Size(162, 6);
             // 
             // msMainPackageTool
             // 
             msMainPackageTool.DropDownItems.AddRange(new ToolStripItem[] { msMainPackageToolGDD });
             msMainPackageTool.Name = "msMainPackageTool";
-            msMainPackageTool.Size = new Size(180, 22);
+            msMainPackageTool.Size = new Size(165, 22);
             msMainPackageTool.Text = "Tools...";
             // 
             // msMainPackageToolGDD
@@ -282,18 +294,6 @@
             btInstNew.Text = "    &Create New Instance";
             btInstNew.TextImageRelation = TextImageRelation.ImageBeforeText;
             btInstNew.UseVisualStyleBackColor = false;
-            // 
-            // msMainAddPackageLocal
-            // 
-            msMainAddPackageLocal.Name = "msMainAddPackageLocal";
-            msMainAddPackageLocal.Size = new Size(180, 22);
-            msMainAddPackageLocal.Text = "From Local File";
-            // 
-            // msMainAddPackageNet
-            // 
-            msMainAddPackageNet.Name = "msMainAddPackageNet";
-            msMainAddPackageNet.Size = new Size(180, 22);
-            msMainAddPackageNet.Text = "From URL";
             // 
             // FormMain
             // 

@@ -25,6 +25,9 @@
         public static void ShortWrite(string heading, uint headingColour, string message) =>
             Console.WriteLine(string.Join("", logHeadingStart, heading.Colourize(headingColour), logHeadingEnd, message.Colourize(0xFFFFFF)));
 
+        public static void ShortWrite(string header, string message) =>
+            Console.WriteLine(string.Join("", logHeadingStart, header, logHeadingEnd, message));
+
         public static void Info(string message) =>
             Write("INFO", 0x88CCFF, message);
 

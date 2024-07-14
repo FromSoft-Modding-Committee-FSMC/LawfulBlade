@@ -2,41 +2,42 @@ using LawfulBladeManager.Instances;
 using LawfulBladeManager.Networking;
 using LawfulBladeManager.Packages;
 using LawfulBladeManager.Projects;
-using Microsoft.VisualBasic.ApplicationServices;
+using System.Text.Json;
 
 namespace LawfulBladeManager
 {
     public static class Program
     {
-        public delegate bool OnVoidEvent();
-        public static event OnVoidEvent? OnShutdown;
+        // Delegates
+        public delegate bool OnBoolEvent();
 
-        // Properties
-        public readonly static InstanceManager? InstanceManager = new();
-        public readonly static DownloadManager? DownloadManager = new();
-        public readonly static ProjectManager? ProjectManager   = new();
-        public readonly static ProgramContext? Context          = new();
-        public readonly static PackageManager? PackageManager   = new();
+        // Events
+        public static event OnBoolEvent OnShutdown = () => { Environment.Exit(0); return true; };
 
-        // Entry Point
-        [STAThread]
-        static void Main()
+        // Managers
+        public readonly static DownloadManager DownloadManager = new();
+        public readonly static PackageManager  PackageManager  = new();
+        public readonly static InstanceManager InstanceManager = new();
+        public readonly static ProjectManager  ProjectManager  = new();
+
+        // Context and Program Properties
+        public readonly static ProgramContext Context = new();
+
+        /// <summary>
+        /// Program Entry Point
+        /// </summary>
+        [STAThread] static void Main()
         {
             ApplicationConfiguration.Initialize();
 
-            // Bind shutdown event...
-            OnShutdown += ProgramShutdown;
+            // PackageManager.CreatePackageSource("D:\\dev\\.NET Projects\\Lawful-Blade\\Lawful Blade Manager\\bin\\Debug\\net7.0-windows\\Packages", "D:\\dev\\.NET Projects\\Lawful-Blade\\Lawful Blade Manager\\bin\\Debug\\net7.0-windows\\Packages");
 
             Application.Run(Context);
         }
 
-        static bool ProgramShutdown()
-        {
-            Environment.Exit(0);
-            
-            return true;
-        }
-
+        /// <summary>
+        /// Raises the OnShutdown event.
+        /// </summary>
         public static void Shutdown() =>
             OnShutdown?.Invoke();
     }

@@ -3251,7 +3251,7 @@ namespace LawfulBladeManager.Projects
         /// Creates a new project according to the arguments provided.
         /// </summary>
         /// <param name="args">Project creation settings</param>
-        public void CreateProject(ProjectCreationArgs args)
+        public void CreateProject(ProjectCreateArgs args)
         {
             // Construct the absolute path of the project
             string absolutePath = Path.Combine(args.Destination, args.Name);

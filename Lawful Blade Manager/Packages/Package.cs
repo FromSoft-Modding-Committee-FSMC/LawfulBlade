@@ -2,28 +2,40 @@
 
 namespace LawfulBladeManager.Packages
 {
-    public struct Package
+    public class Package
     {
-        // Serialized Fields
         [JsonInclude]
-        public string Name;
+        public string Name            { get; set; } = string.Empty;
 
         [JsonInclude]
-        public string Description;
+        public string Description     { get; set; } = string.Empty;
 
         [JsonInclude]
-        public string Version;
+        public string Version         { get; set; } = string.Empty;
 
         [JsonInclude]
-        public string[] Authors;
+        public string[] Authors       { get; set; } = Array.Empty<string>();
 
         [JsonInclude]
-        public string[] Tags;
+        public string[] Tags          { get; set; } = Array.Empty<string>();
 
         [JsonInclude]
-        public string UUID;
+        public string UUID            { get; set; } = string.Empty;
 
         [JsonInclude]
-        public bool ExpectOverwrite;
+        public string BundleSourceUri { get; set; } = string.Empty;
+
+        [JsonInclude]
+        public string IconBase64      { get; set; } = string.Empty;
+    }
+
+    // Local Packages have additional information.
+    public class LocalPackage : Package
+    {
+        [JsonInclude]
+        public bool IsBundleCached   { get; set; } = false;
+
+        [JsonInclude]
+        public string BundleFilePath { get; set; } = string.Empty;
     }
 }

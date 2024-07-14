@@ -32,7 +32,7 @@ namespace LawfulBladeManager.Forms
                         BusyDialog.Instance.ShowBusy();
 
                         // refactor this shit jfc...
-                        Program.ProjectManager.CreateProject(new ProjectCreationArgs { Name = pcd.ProjectName, Description = pcd.ProjectDescription, Destination = pcd.TargetPath, InstanceUUID = pcd.TargetInstance, CreateEmpty = pcd.EmptyProject });
+                        Program.ProjectManager.CreateProject(new ProjectCreateArgs { Name = pcd.ProjectName, Description = pcd.ProjectDescription, Destination = pcd.TargetPath, InstanceUUID = pcd.TargetInstance, CreateEmpty = pcd.EmptyProject });
 
                         BusyDialog.Instance.HideBusy();
                         break;
@@ -88,18 +88,19 @@ namespace LawfulBladeManager.Forms
                 if (pcd.ShowDialog() == DialogResult.OK)
                 {
                     BusyDialog.Instance.ShowBusy();
-                    PackageManager.PackageCreate(new PackageCreateArgs
+                    PackageManager.CreatePackage(new PackageCreateArgs
                     {
-                        Name = pcd.PackageName,
-                        Description = pcd.PackageDescription,
-                        Version = pcd.PackageVersion,
-                        Authors = pcd.PackageAuthors,
-                        Tags = pcd.PackageTags,
-                        Icon = pcd.PackageIcon,
-
-                        SourceDirectory = pcd.PackageSource,
-                        TargetFile = pcd.PackageOutput
+                        SourceDirectory  = pcd.PackageSource,
+                        TargetFile       = pcd.PackageOutput,
+                        Name             = pcd.PackageName,
+                        Description      = pcd.PackageDescription,
+                        Version          = pcd.PackageVersion,
+                        Authors          = pcd.PackageAuthors,
+                        Tags             = pcd.PackageTags,
+                        IconSource       = pcd.PackageIcon,
+                        ExpectOverwrites = pcd.PackageExpectOW
                     });
+
                     BusyDialog.Instance.HideBusy();
                 }
             }
@@ -137,7 +138,7 @@ namespace LawfulBladeManager.Forms
 
         void DestroyProjectsInList()
         {
-            foreach(ProjectControl projectControl in pcProjectList.Controls)
+            foreach (ProjectControl projectControl in pcProjectList.Controls)
             {
                 projectControl.OnProjectDelete -= OnProjectDelete;
 

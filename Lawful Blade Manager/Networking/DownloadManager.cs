@@ -11,47 +11,39 @@ namespace LawfulBladeManager.Networking
 {
     public class DownloadManager
     {
-        readonly HttpClient client;
+        readonly HttpClient httpClient;
 
         public DownloadManager()
         {
             // Initialize HTTP Client
-            client = new HttpClient
+            httpClient = new HttpClient
             {
-                Timeout = TimeSpan.FromMilliseconds(1000)
+                Timeout = TimeSpan.FromMilliseconds(1000),
             };
         }
 
-        public async void StartASyncDownload(string sourceUri, string destinationFile)
+        public string DownloadFileSync(Uri source)
         {
-            // Is the computer connected to the internet?
-            if(!NetworkInterface.GetIsNetworkAvailable())
-                return;
+            // If this is a file Uri we just return the local path (?)
+            if (source.IsFile)
+                return source.LocalPath;
 
-            // Create a valid URI structure
-            if (!Uri.TryCreate(sourceUri, UriKind.Absolute, out Uri? uri))
-                throw new ArgumentException("URI is invalid.");
+            // It wasn't a file uri, so it's hosted somewhere. Make sure we have network connection.
+            if (!NetworkInterface.GetIsNetworkAvailable())
+                throw new Exception($"Cannot download file from '{source}'. No network connection!");
 
-            // Create a temporary file
-            string tempFile = Path.GetTempFileName();
+            // Lets download the file into a temporary file for now.
+            string temporaryFile = Path.GetTempFileName();
 
-            // Begin reading internet file
-            using (HttpResponseMessage response = await client.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead))
+            using(Task<Stream> httpStream = httpClient.GetStreamAsync(source))
             {
-                // Make sure that we've got a successful response
-                response.EnsureSuccessStatusCode();
+                // Wait for the stream task to complete
+                using(FileStream fileStream = new (temporaryFile, FileMode.OpenOrCreate))
+                    httpStream.Result.CopyTo(fileStream);
 
-                using (FileStream fs = File.Open(tempFile, FileMode.Open))
-                {
-                    using (Stream ns = await response.Content.ReadAsStreamAsync())
-                    {
-                        await ns.CopyToAsync(fs);
-                    }
-                }
             }
 
-            // Assuming that's all done, we can now copy the temporary file to our final
-            File.Copy(tempFile, destinationFile);
+            return temporaryFile;
         }
     }
 }
