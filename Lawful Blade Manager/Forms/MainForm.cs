@@ -30,7 +30,10 @@ namespace LawfulBladeManager.Forms
 
                         // Create the project
                         BusyDialog.Instance.ShowBusy();
-                        Program.ProjectManager.CreateProject(pcd.TargetPath, pcd.ProjectName, pcd.ProjectDescription);
+
+                        // refactor this shit jfc...
+                        Program.ProjectManager.CreateProject(new ProjectCreationArgs { Name = pcd.ProjectName, Description = pcd.ProjectDescription, Destination = pcd.TargetPath, InstanceUUID = pcd.TargetInstance, CreateEmpty = pcd.EmptyProject });
+
                         BusyDialog.Instance.HideBusy();
                         break;
                 }
@@ -74,33 +77,6 @@ namespace LawfulBladeManager.Forms
         }
 
         #endregion
-
-        void EnumurateProjectsInList()
-        {
-            // Exit early if the project list is null.
-            if (Program.ProjectManager == null || Program.ProjectManager.Projects == null)
-                return;
-
-            // Clear previous project controls
-            pcProjectList.Controls.Clear();
-
-            foreach (Project project in Program.ProjectManager.Projects)
-            {
-                pcProjectList.Controls.Add(new ProjectControl(project)
-                {
-                    Dock = DockStyle.Top
-                });
-            }
-        }
-
-        private void packageManagerToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            using (PackageManagerDialog pmf = new())
-            {
-                pmf.ShowDialog();
-            }
-        }
-
         #region Menu Strip - Packages
         private void msMainCreatePackage_Click(object sender, EventArgs e)
         {
@@ -112,7 +88,7 @@ namespace LawfulBladeManager.Forms
                 if (pcd.ShowDialog() == DialogResult.OK)
                 {
                     BusyDialog.Instance.ShowBusy();
-                    Program.PackageManager.PackageCreate(new PackageCreateArgs
+                    PackageManager.PackageCreate(new PackageCreateArgs
                     {
                         Name = pcd.PackageName,
                         Description = pcd.PackageDescription,
@@ -133,6 +109,50 @@ namespace LawfulBladeManager.Forms
         {
             using (PackageDeltaDialog pdf = new())
                 pdf.ShowDialog();
+        }
+        #endregion
+
+        #region Project Callbacks
+        void EnumurateProjectsInList()
+        {
+            // Exit early if the project list is null.
+            if (Program.ProjectManager == null || Program.ProjectManager.Projects == null)
+                return;
+
+            // Clear previous project controls
+            DestroyProjectsInList();
+
+            foreach (Project project in Program.ProjectManager.Projects)
+            {
+                ProjectControl projectControl = new(project)
+                {
+                    Dock = DockStyle.Top
+                };
+
+                projectControl.OnProjectDelete += OnProjectDelete;
+
+                pcProjectList.Controls.Add(projectControl);
+            }
+        }
+
+        void DestroyProjectsInList()
+        {
+            foreach(ProjectControl projectControl in pcProjectList.Controls)
+            {
+                projectControl.OnProjectDelete -= OnProjectDelete;
+
+                projectControl.ClearRetainedData();
+                projectControl.Dispose();
+            }
+
+            pcProjectList.Controls.Clear();
+        }
+
+
+        void OnProjectDelete(ProjectControl projectControl)
+        {
+            DestroyProjectsInList();
+            EnumurateProjectsInList();
         }
         #endregion
     }

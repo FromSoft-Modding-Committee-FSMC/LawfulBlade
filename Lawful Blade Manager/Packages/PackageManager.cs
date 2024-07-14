@@ -1,6 +1,7 @@
 ﻿using System.Drawing.Imaging;
 using System.IO.Compression;
 using System.Security.Cryptography;
+using System.Text;
 using System.Text.Json;
 
 namespace LawfulBladeManager.Packages
@@ -8,7 +9,7 @@ namespace LawfulBladeManager.Packages
     public class PackageManager
     {
         // Private Fields
-        List<string> packageList = new List<string>();
+        readonly List<string> packageList = new();
 
         // Public Fields
         public List<string> PackageList => packageList;
@@ -20,11 +21,8 @@ namespace LawfulBladeManager.Packages
                 packageList.Add(file);
         }
 
-        public void PackageCreate(PackageCreateArgs args)
+        public static void PackageCreate(PackageCreateArgs args)
         {
-            // In order to generate a unique ID for the package, we store an MD5 Crypto object here
-            MD5 accumMD5 = MD5.Create();
-
             // Scan all files in the source and generate PackageFiles for them
             List<PackageFile> packageFiles = new();
             foreach(string file in Directory.GetFileSystemEntries(args.SourceDirectory, "*", SearchOption.AllDirectories))
@@ -34,7 +32,7 @@ namespace LawfulBladeManager.Packages
                     continue;
 
                 // Generate an MD5 of the file
-                byte[] checksumBytes = accumMD5.ComputeHash(File.ReadAllBytes(file));
+                byte[] checksumBytes = MD5.HashData(File.ReadAllBytes(file));
 
                 packageFiles.Add(new PackageFile
                 {
@@ -43,18 +41,15 @@ namespace LawfulBladeManager.Packages
                 });
             }
 
-            if (accumMD5.Hash == null)
-                throw new Exception("MD5 cryptography weirdly doesn't exist");
-
             // Create the package structure
             Package package = new()
             {
-                Name = args.Name,
-                Description = args.Description,
-                Version = args.Version,
-                Authors = args.Authors,
-                Tags = args.Tags,
-                UUID = new Guid(accumMD5.Hash).ToString(),
+                Name            = args.Name,
+                Description     = args.Description,
+                Version         = args.Version,
+                Authors         = args.Authors,
+                Tags            = args.Tags,
+                UUID            = new Guid(MD5.HashData(Encoding.UTF8.GetBytes(args.Name))).ToString(),
                 ExpectOverwrite = args.ExpectOverwrite
             };
 

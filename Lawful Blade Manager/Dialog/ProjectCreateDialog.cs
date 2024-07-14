@@ -6,6 +6,7 @@
         public string ProjectDescription => tbDescription.Text;
         public string TargetInstance => cbTargetInstance.Text;
         public string TargetPath => tbTargetPath.Text;
+        public bool EmptyProject => (xbCreateEmpty.CheckState == CheckState.Checked);
 
         public ProjectCreateDialog()
         {

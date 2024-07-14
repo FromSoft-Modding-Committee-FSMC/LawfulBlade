@@ -41,13 +41,7 @@ namespace LawfulBladeManager
         }
 
         // Event Callbacks
-        void OnApplicationExit(object? sender, EventArgs e)
-        {
-            // Save program data
-            if (Program.ProjectManager == null)
-                return;
-
-            Program.ProjectManager.SaveProjectInfo();
-        }
+        void OnApplicationExit(object? sender, EventArgs e) =>
+            Program.Shutdown();
     }
 }

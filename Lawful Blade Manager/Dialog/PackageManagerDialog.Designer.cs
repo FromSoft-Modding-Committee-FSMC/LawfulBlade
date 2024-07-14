@@ -137,7 +137,7 @@
             exInfo.Size = new Size(272, 501);
             exInfo.TabIndex = 0;
             // 
-            // PackageManagerForm
+            // PackageManagerDialog
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -146,8 +146,9 @@
             Controls.Add(scMain);
             Icon = (Icon)resources.GetObject("$this.Icon");
             MinimumSize = new Size(960, 540);
-            Name = "PackageManagerForm";
+            Name = "PackageManagerDialog";
             Text = "Lawful Blade - Package Manager";
+            FormClosing += PackageManagerDialog_FormClosing;
             Load += PackageManagerForm_Load;
             scMain.Panel1.ResumeLayout(false);
             scMain.Panel1.PerformLayout();

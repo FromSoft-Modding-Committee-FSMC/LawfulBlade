@@ -30,19 +30,19 @@
         {
             pcMain = new Panel();
             pbIcon = new PictureBox();
-            panel1 = new Panel();
+            pcStatus = new Panel();
             lbStatus = new Label();
             lbName = new Label();
             pcMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pbIcon).BeginInit();
-            panel1.SuspendLayout();
+            pcStatus.SuspendLayout();
             SuspendLayout();
             // 
             // pcMain
             // 
             pcMain.BorderStyle = BorderStyle.FixedSingle;
             pcMain.Controls.Add(pbIcon);
-            pcMain.Controls.Add(panel1);
+            pcMain.Controls.Add(pcStatus);
             pcMain.Controls.Add(lbName);
             pcMain.Dock = DockStyle.Fill;
             pcMain.Location = new Point(0, 0);
@@ -61,15 +61,15 @@
             pbIcon.TabIndex = 3;
             pbIcon.TabStop = false;
             // 
-            // panel1
+            // pcStatus
             // 
-            panel1.Controls.Add(lbStatus);
-            panel1.Dock = DockStyle.Right;
-            panel1.Location = new Point(822, 0);
-            panel1.Name = "panel1";
-            panel1.Padding = new Padding(0, 5, 2, 2);
-            panel1.Size = new Size(200, 30);
-            panel1.TabIndex = 2;
+            pcStatus.Controls.Add(lbStatus);
+            pcStatus.Dock = DockStyle.Right;
+            pcStatus.Location = new Point(822, 0);
+            pcStatus.Name = "pcStatus";
+            pcStatus.Padding = new Padding(0, 5, 2, 2);
+            pcStatus.Size = new Size(200, 30);
+            pcStatus.TabIndex = 2;
             // 
             // lbStatus
             // 
@@ -113,15 +113,15 @@
             pcMain.ResumeLayout(false);
             pcMain.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pbIcon).EndInit();
-            panel1.ResumeLayout(false);
-            panel1.PerformLayout();
+            pcStatus.ResumeLayout(false);
+            pcStatus.PerformLayout();
             ResumeLayout(false);
         }
 
         #endregion
         private Label lbName;
         public Panel pcMain;
-        private Panel panel1;
+        private Panel pcStatus;
         private Label lbStatus;
         private PictureBox pbIcon;
     }

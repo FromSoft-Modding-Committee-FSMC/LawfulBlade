@@ -1,4 +1,6 @@
-﻿namespace LawfulBladeManager.Dialog
+﻿using System.Diagnostics;
+
+namespace LawfulBladeManager.Dialog
 {
     public partial class BusyDialog : Form
     {
@@ -35,32 +37,56 @@
         };
 
         // Singleton Implementation
-        static BusyDialog busyDialog = new BusyDialog();
-        static Random random = new Random();
+        static readonly BusyDialog busyDialog = new();
+        static readonly Random random = new();
 
         public static BusyDialog Instance => busyDialog;
+
+        enum BusyState
+        {
+            Closed,
+            WaitForOpen,
+            Open
+        }
+
+        BusyState state = BusyState.Closed;
 
         BusyDialog()
         {
             InitializeComponent();
+
+            // We need to know when the dialog is opened.
+            Shown += BusyDialog_Shown;
         }
 
         public void ShowBusy()
         {
+            // Set initial result to wait for open...
+            Task.Run(ShowDialog);
+
+            state = BusyState.WaitForOpen;
+
             // Set a random message to tell the user they're waiting an amount of time...
             tbMessage.Text = waitMessages[random.Next(waitMessages.Length)];
-
-            // Start a task for show dialog, so it keeps updating even when the
-            // main thread is frozen.
-            Task.Run(() =>
-            {
-                ShowDialog();
-            });
         }
+
+        void BusyDialog_Shown(object? sender, EventArgs e) =>
+            state = BusyState.Open;
 
         public void HideBusy()
         {
+            // Exit early if already closed...
+            if (state == BusyState.Closed)
+                return;
+
+            // If state is currently wait for open, we need to pause for a while
+            while (state == BusyState.WaitForOpen)
+                continue;
+
+            // Invoke an action to hide the busy dialog
             BeginInvoke(new Action(Hide));
-        }
+
+            state = BusyState.Closed;
+        }     
     }
 }

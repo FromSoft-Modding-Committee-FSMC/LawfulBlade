@@ -1,7 +1,7 @@
-﻿using System.Drawing.Imaging;
+﻿using LawfulBladeManager.Instances;
+using System.Diagnostics;
+using System.Drawing.Imaging;
 using System.Text.Json;
-
-using LawfulBladeManager.Tagging;
 
 namespace LawfulBladeManager.Projects
 {
@@ -3182,132 +3182,181 @@ namespace LawfulBladeManager.Projects
         #endregion
 
 
-        // Private Data
-        List<Project>? projects;
+        // Project Storage
+        public readonly string ProjectsFile = Path.Combine(ProgramContext.AppDataPath, @"projects.json");
+        public List<Project> Projects { get; private set; }
 
-        // Properties
-        public List<Project>? Projects => projects;
 
-        // Constructors
+        /// <summary>
+        /// Constructor is responsible for loading projects from disk.
+        /// </summary>
         public ProjectManager()
         {
-            if (!LoadProjectInfo() || projects == null)
-                projects = new List<Project>();
+            Projects = new List<Project>();
+
+            if (!LoadProjects())
+                Logger.ShortWarn("Failed to load any projects!");
+
+            // Save projects on shutdown
+            Program.OnShutdown += SaveProjects;
         }
 
         /// <summary>
-        /// Create a new SOM Project
+        /// Load all projects from the projects declaration file.
         /// </summary>
-        /// <param name="path">Target path for the project</param>
-        /// <param name="name">Name of the project</param>
-        /// <param name="description">Description of the project</param>
-        public void CreateProject(string path, string name, string description)
+        /// <returns>True on success, False otherwise.</returns>
+        bool LoadProjects()
         {
-            path = Path.Combine(path, name);
+            Logger.ShortInfo("Loading projects...");
 
-            // Make sure the directory exists
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
-
-            // Write PROJECT.DAT
-            using (StreamWriter sw = new(File.Open(Path.Combine(path, $"{name}.som"), FileMode.CreateNew)))
-            {
-                sw.WriteLine(name);
-                sw.WriteLine('0');
-            }
-
-            // Create data directories
-            Directory.CreateDirectory(Path.Combine(path, @"DATA"));
-            Directory.CreateDirectory(Path.Combine(path, @"DATA", @"BGM"));
-            Directory.CreateDirectory(Path.Combine(path, @"DATA", @"MAP"));
-            Directory.CreateDirectory(Path.Combine(path, @"DATA", @"MOVIE"));
-            Directory.CreateDirectory(Path.Combine(path, @"DATA", @"PICTURE"));
-
-            // Create simple parameters
-            Directory.CreateDirectory(Path.Combine(path, @"PARAM"));
-            CreateDefaultSequence(Path.Combine(path, @"PARAM", @"ENDING1.DAT"));
-            CreateDefaultSequence(Path.Combine(path, @"PARAM", @"ENDING2.DAT"));
-            CreateDefaultSequence(Path.Combine(path, @"PARAM", @"ENDING3.DAT"));
-            CreateDefaultSequence(Path.Combine(path, @"PARAM", @"OPENNING.DAT"));
-            CreateDefaultSequence(Path.Combine(path, @"PARAM", @"STAFF.DAT"));
-            CreateDefaultSequence(Path.Combine(path, @"PARAM", @"TITLE.DAT"));
-            CreateDefaultLevelTables(Path.Combine(path, @"PARAM"));
-            CreateDefaultShop(Path.Combine(path, @"PARAM", @"SHOP.DAT"));
-            CreateDefaultObj(Path.Combine(path, @"PARAM"));
-            CreateDefaultItem(Path.Combine(path, @"PARAM"));
-            CreateDefaultMagic(Path.Combine(path, @"PARAM"));
-            CreateDefaultNPC(Path.Combine(path, @"PARAM"));
-            CreateDefaultEnemy(Path.Combine(path, @"PARAM"));
-
-            // Write default SYS.DAT
-            File.WriteAllBytes(Path.Combine(path, @"PARAM", "SYS.DAT"), defaultProjectDat);
-
-            // Save default icon
-            Bitmap? bm = (Bitmap?)Properties.Resources.ResourceManager.GetObject("defaultProjectIcon");
-            bm?.Save(Path.Combine(path, "icon.png"), ImageFormat.Png);
-
-            // Create the project configuration
-            projects?.Add(new Project
-            {
-                Name = name,
-                Description = description,
-                Author = Environment.UserName,
-                InstanceUUID = "",
-                LastEditData = DateTime.Now.ToString("yyyy-MM-dd hh:mm tt"),
-                StoragePath = path,
-                IsManaged = true,
-                Tags = new string[] { "Project", "Managed" }
-            });
-        }
-
-        public static bool ProjectExists(ref Project project) =>
-            Directory.Exists(project.StoragePath) && File.Exists(Path.Combine(project.StoragePath, $"{project.Name}.som"));
-
-        /// <summary>
-        /// Deletes a pre existing project that is owned by Lawful Blade.
-        /// </summary>
-        /// <param name="path">Path to the project.</param>
-        /// <returns>True on success, false otherwise.</returns>
-        public bool DeleteProject(string path)
-        {
-            if (projects == null)
+            if (!File.Exists(ProjectsFile))
                 return false;
 
-            // Check if this path is owned by the project
-            bool isOwnedProject = false;
+            // If we already have loaded instances, clear them.
+            if (Projects.Count > 0)
+                Projects.Clear();
 
-            foreach (Project project in projects)
-                isOwnedProject |= (project.StoragePath == path);
+            // De-Serialize the projects file
+            Project[]? maybeProjects = JsonSerializer.Deserialize<Project[]>(File.ReadAllText(ProjectsFile), JsonSerializerOptions.Default);
 
-            // Exit when the given path is now owned
-            if (!isOwnedProject)
+            if (maybeProjects == null)
                 return false;
 
-            // We can start recursively deleting files...
-            string[] entities = Directory.GetFileSystemEntries(path, "*.*", SearchOption.AllDirectories);
-            
-            foreach(string entity in entities)
-            {
-                // Could be dangerous, but whatever...
-                if (Directory.Exists(entity))
-                    Directory.Delete(entity, true);
-            }
+            // Store each loaded instance inside the Instances list
+            foreach (Project project in maybeProjects)
+                Projects.Add(project);
 
-            // Remove reference to the project from the manager...
-            for (int i = 0; i < projects.Count; ++i)
-            {
-                if (projects[i].StoragePath == path)
-                {
-                    projects.RemoveAt(i);
-                    break;
-                }
+            Logger.ShortInfo($"Loaded {Projects.Count} project(s).");
 
-            }
-
-            // Duun
             return true;
         }
 
+        /// <summary>
+        /// Save all projects to the instance declaration file.
+        /// </summary>
+        /// <returns>True on success, False otherwise.</returns>
+        bool SaveProjects()
+        {
+            Logger.ShortInfo($"Saving {Projects.Count} project(s)!");
+
+            // Serialize the instances.json file, and save it to disk
+            File.WriteAllText(ProjectsFile, JsonSerializer.Serialize(Projects, JsonSerializerOptions.Default));
+
+            Logger.ShortInfo($"Done!");
+
+            return true;
+        }
+
+        /// <summary>
+        /// Creates a new project according to the arguments provided.
+        /// </summary>
+        /// <param name="args">Project creation settings</param>
+        public void CreateProject(ProjectCreationArgs args)
+        {
+            // Construct the absolute path of the project
+            string absolutePath = Path.Combine(args.Destination, args.Name);
+
+            // Make sure the directory exists
+            if (!Directory.Exists(absolutePath))
+                Directory.CreateDirectory(absolutePath);
+
+            if (!args.CreateEmpty)
+            {
+                // create default directories
+                Directory.CreateDirectory(Path.Combine(absolutePath, @"DATA"));
+                Directory.CreateDirectory(Path.Combine(absolutePath, @"DATA", @"BGM"));
+                Directory.CreateDirectory(Path.Combine(absolutePath, @"DATA", @"MAP"));
+                Directory.CreateDirectory(Path.Combine(absolutePath, @"DATA", @"MOVIE"));
+                Directory.CreateDirectory(Path.Combine(absolutePath, @"DATA", @"PICTURE"));
+                Directory.CreateDirectory(Path.Combine(absolutePath, @"PARAM"));
+
+                // create default assets
+                CreateDefaultSequence(Path.Combine(absolutePath, @"PARAM", @"ENDING1.DAT"));
+                CreateDefaultSequence(Path.Combine(absolutePath, @"PARAM", @"ENDING2.DAT"));
+                CreateDefaultSequence(Path.Combine(absolutePath, @"PARAM", @"ENDING3.DAT"));
+                CreateDefaultSequence(Path.Combine(absolutePath, @"PARAM", @"OPENNING.DAT"));
+                CreateDefaultSequence(Path.Combine(absolutePath, @"PARAM", @"STAFF.DAT"));
+                CreateDefaultSequence(Path.Combine(absolutePath, @"PARAM", @"TITLE.DAT"));
+                CreateDefaultLevelTables(Path.Combine(absolutePath, @"PARAM"));
+                CreateDefaultShop(Path.Combine(absolutePath, @"PARAM", @"SHOP.DAT"));
+                CreateDefaultObj(Path.Combine(absolutePath, @"PARAM"));
+                CreateDefaultItem(Path.Combine(absolutePath, @"PARAM"));
+                CreateDefaultMagic(Path.Combine(absolutePath, @"PARAM"));
+                CreateDefaultNPC(Path.Combine(absolutePath, @"PARAM"));
+                CreateDefaultEnemy(Path.Combine(absolutePath, @"PARAM"));
+                File.WriteAllBytes(Path.Combine(absolutePath, @"PARAM", "SYS.DAT"), defaultProjectDat);
+                File.WriteAllText(Path.Combine(absolutePath, $"{args.Name}.som"), $"{args.Name}\n0\n");
+
+                // create default icon
+                Properties.Resources.defaultProjectIcon.Save(Path.Combine(absolutePath, "icon.png"), ImageFormat.Png);
+            }
+
+            // Store the project information
+            Projects.Add(new Project
+            {
+                Name            = args.Name,
+                Description     = args.Description,
+                Author          = Environment.UserName,
+                InstanceUUID    = args.InstanceUUID,
+                LastEditData    = DateTime.Now.ToString("yyyy-MM-dd hh:mm tt"),
+                StoragePath     = absolutePath,
+                IsManaged       = true,
+                Tags            = new string[] { "Project", "Managed" }
+            });
+
+            // Save Projects File
+            SaveProjects();
+        }
+
+        /// <summary>
+        /// Removes a project from lawful blade, but doesn't remove files from the disc.
+        /// </summary>
+        /// <param name="project">The project instance</param>
+        public void RemoveProject(ref Project project)
+        {
+            for(int i = 0; i < Projects.Count; ++i)
+            {
+                if (Projects[i].StoragePath != project.StoragePath)
+                    continue;
+
+                // We found it, now remove it.
+                Projects.RemoveAt(i);
+                break;
+            }
+
+            return;
+        }
+
+        /// <summary>
+        /// Deletes a project, removing its entry from Lawful Blade and it's files from the disc.
+        /// </summary>
+        /// <param name="project">The project instance</param>
+        public void DeleteProject(ref Project project)
+        {
+            // Can we delete this project?
+            bool canDelete = true;
+
+            // Check #1 - The main directory exists
+            canDelete &= Directory.Exists(project.StoragePath);
+
+            // Final. If canDelete is false from any of the above conditions, we exit early.
+            if (!canDelete)
+                throw new Exception($"Couldn't delete project: '{project.StoragePath}'!");
+
+            // Remove the project from the manager
+            RemoveProject(ref project);
+
+            // Try to delete all project files
+            Directory.Delete(project.StoragePath, true);
+
+            // Save to retain changes
+            SaveProjects();
+        }
+
+        /// <summary>
+        /// Imports a externally created project, allowing management.
+        /// </summary>
+        /// <param name="path">Path to the project.</param>
         public void ImportProject(string path)
         {
             // Get the project name from the som file
@@ -3319,13 +3368,10 @@ namespace LawfulBladeManager.Projects
                 throw new Exception("Failed to import project (not a valid SOM file!)");
 
             // Get the project path
-            string? projectPath = Path.GetDirectoryName(path);
-
-            if(projectPath == null)
-                throw new Exception("Failed to import project (invalid directory!?)");
+            string? projectPath = Path.GetDirectoryName(path) ?? throw new Exception("Failed to import project (invalid directory!?)");
 
             // Start the process of importing...
-            projects?.Add(new Project
+            Projects.Add(new Project
             {
                 Name = projectName,
                 Description = "Legacy/Imported Project",
@@ -3336,38 +3382,25 @@ namespace LawfulBladeManager.Projects
                 IsManaged = false,
                 Tags = new string[] { "Project", "Legacy" }
             });
+
+            SaveProjects();
         }
 
         /// <summary>
-        /// Saves information on all projects
+        /// Compiles a project for distribution.
         /// </summary>
-        public void SaveProjectInfo()
-        {
-            string projectsAsJson = JsonSerializer.Serialize(projects, JsonSerializerOptions.Default);
-            File.WriteAllText(Path.Combine(ProgramContext.AppDataPath, @"projects.json"), projectsAsJson);
-        }
+        /// <param name="project">The project instance</param>
+        public void CompileProject(ref Project project) =>
+            throw new NotImplementedException();
 
         /// <summary>
-        /// Loads information on all projects
+        /// Writes SOM level tables to the disc
         /// </summary>
-        /// <returns>True on success, false otherwise.</returns>
-        public bool LoadProjectInfo()
-        {
-            if (!File.Exists(Path.Combine(ProgramContext.AppDataPath, @"projects.json")))
-                return false;
-
-            Console.WriteLine("Loading Projects");
-
-            projects = JsonSerializer.Deserialize<List<Project>>(File.ReadAllText(Path.Combine(ProgramContext.AppDataPath, @"projects.json")));
-
-            return true;
-        }
-
+        /// <param name="lvtFilePath">destination path</param>
         static void CreateDefaultLevelTables(string lvtFilePath)
         {
-            int tableID = 0;
-            foreach (byte[] table in levelTables)
-                File.WriteAllBytes(Path.Combine(lvtFilePath, $"{tableID++}.lvt"), table);
+            for (int i = 0; i < levelTables.Length; ++i)
+                File.WriteAllBytes(Path.Combine(lvtFilePath, $"{i}.lvt"), levelTables[i]);
         }
 
         /// <summary>

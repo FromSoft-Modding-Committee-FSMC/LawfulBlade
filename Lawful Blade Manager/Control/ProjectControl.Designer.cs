@@ -118,6 +118,7 @@
             tsFuncPackages.Name = "tsFuncPackages";
             tsFuncPackages.Size = new Size(28, 28);
             tsFuncPackages.Text = "Manage Packages...";
+            tsFuncPackages.Click += tsFuncPackages_Click;
             // 
             // tsFuncExport
             // 

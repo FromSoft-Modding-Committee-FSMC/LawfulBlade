@@ -13,6 +13,9 @@ namespace LawfulBladeManager.Control
 {
     public partial class PackageInfoControl : UserControl
     {
+        public delegate void OnVoidEvent();
+        public event OnVoidEvent? OnInstallPressed;
+
         public PackageInfoControl()
         {
             InitializeComponent();
@@ -35,5 +38,24 @@ namespace LawfulBladeManager.Control
 
             pbIcon.Image = icon;
         }
+
+
+        public void LoadStatus(PackageStatus status)
+        {
+            switch (status)
+            {
+                // If a package is installed, we want to replace the install button with an uninstall button.
+                case PackageStatus.Installed:
+                    btInstall.Text = "Uninstall";
+                    break;
+
+                case PackageStatus.Uninstalled:
+                    btInstall.Text = "Install";
+                    break;
+            }
+        }
+
+        private void Install_Click(object sender, EventArgs e) =>
+            OnInstallPressed?.Invoke();
     }
 }

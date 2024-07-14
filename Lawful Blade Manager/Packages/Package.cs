@@ -1,5 +1,4 @@
-﻿using LawfulBladeManager.Tagging;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace LawfulBladeManager.Packages
 {
