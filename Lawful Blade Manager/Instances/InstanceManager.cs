@@ -83,7 +83,7 @@ namespace LawfulBladeManager.Instances
             foreach(Instance i in Instances)
             {
                 // If it's not our instance skip this iteration...
-                if (i.InstanceUUID != UUID)
+                if (i.UUID != UUID)
                     continue;
 
                 // Found the instance

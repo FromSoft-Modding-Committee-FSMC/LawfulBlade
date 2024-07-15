@@ -1,32 +1,42 @@
-﻿using LawfulBladeManager.Tagging;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
+
+using LawfulBladeManager.Packages;
 
 namespace LawfulBladeManager.Projects
 {
-    public struct Project
+    public class Project : IPackageTarget
     {
         [JsonInclude]
-        public string Name;
+        public string Name          { get; set; } = string.Empty;
 
         [JsonInclude]
-        public string Description;
+        public string Description   { get; set; } = string.Empty;
 
         [JsonInclude]
-        public string Author;
+        public string Author        { get; set; } = string.Empty;
 
         [JsonInclude]
-        public string InstanceUUID;
+        public string InstanceUUID  { get; set; } = string.Empty;
+
+        [JsonInclude] 
+        public string LastEditDate  { get; set; } = string.Empty;
 
         [JsonInclude]
-        public string LastEditData;
+        public string StoragePath   { get; set; } = string.Empty;
 
         [JsonInclude]
-        public string StoragePath;
+        public string[] Tags        { get; set; } = Array.Empty<string>();
 
+        // IPackageTarget Implementation
         [JsonInclude]
-        public bool IsManaged;
+        public Dictionary<string, string> Library { get; set; } = new Dictionary<string, string>();
 
-        [JsonInclude]
-        public string[] Tags;
+        public string[] CompatiblePackages => new string[] { "Project", "Sample" };
+
+        public bool InstallPackage(Package package) =>
+            false;
+
+        public bool RentingPackage(Package package) =>
+            Library.ContainsKey(package.UUID);
     }
 }

@@ -3298,9 +3298,8 @@ namespace LawfulBladeManager.Projects
                 Description     = args.Description,
                 Author          = Environment.UserName,
                 InstanceUUID    = args.InstanceUUID,
-                LastEditData    = DateTime.Now.ToString("yyyy-MM-dd hh:mm tt"),
+                LastEditDate    = DateTime.Now.ToString("yyyy-MM-dd hh:mm tt"),
                 StoragePath     = absolutePath,
-                IsManaged       = true,
                 Tags            = new string[] { "Project", "Managed" }
             });
 
@@ -3377,9 +3376,9 @@ namespace LawfulBladeManager.Projects
                 Description = "Legacy/Imported Project",
                 Author = "n/a",
                 InstanceUUID = "",
-                LastEditData = File.GetLastAccessTime(path).ToString("yyyy-MM-dd hh:mm tt"),
+                LastEditDate = File.GetLastAccessTime(path).ToString("yyyy-MM-dd hh:mm tt"),
                 StoragePath = projectPath,
-                IsManaged = false,
+
                 Tags = new string[] { "Project", "Legacy" }
             });
 

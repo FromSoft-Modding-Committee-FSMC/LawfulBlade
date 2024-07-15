@@ -75,9 +75,6 @@ namespace LawfulBladeManager.Packages
 
         public PackageManagerState State { get; private set; } = PackageManagerState.None;
 
-        // cache our image quanitizer here...
-        static readonly PnnQuantizer ImageQuantizer = new ();
-
         /// <summary>
         /// Default Constructor. Responsible for loading packages from the package declaration file.
         /// </summary>
@@ -134,7 +131,7 @@ namespace LawfulBladeManager.Packages
             // Grab default packages from resources...
             string jsonSource = string.Empty;
 
-            using (StreamReader sr = new StreamReader(new MemoryStream(Properties.Resources.defaultPackages)))
+            using (StreamReader sr = new (new MemoryStream(Properties.Resources.defaultPackages)))
                 jsonSource = sr.ReadToEnd();
 
             if (jsonSource == null)
@@ -143,10 +140,10 @@ namespace LawfulBladeManager.Packages
             // Attempt to deserialize the default packages
             PackageSource defaultPackage = JsonSerializer.Deserialize<PackageSource>(jsonSource, JsonSerializerOptions.Default);
             defaultPackage.CreationDate = DateTime.Now;
-            defaultPackage.URI          = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Packages");
+            defaultPackage.URI          = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Packages", "defaultPackages.json");
 
             // Save the first package source to disk
-            File.WriteAllText(Path.Combine(defaultPackage.URI, "defaultPackages.json"), JsonSerializer.Serialize(defaultPackage, JsonSerializerOptions.Default));
+            File.WriteAllText(defaultPackage.URI, JsonSerializer.Serialize(defaultPackage, JsonSerializerOptions.Default));
         }
 
         /// <summary>
@@ -157,6 +154,8 @@ namespace LawfulBladeManager.Packages
             // Set State
             State = PackageManagerState.PreparingPackages;
 
+            PackagesData.AvaliablePackages = 0;
+
             // We must download each package source and compare the creation dates to look for updates.
             for(int i = 0; i < PackagesData.PackageSources.Length; ++i)
             {
@@ -164,9 +163,7 @@ namespace LawfulBladeManager.Packages
                 PackageSource currentPackage = PackagesData.PackageSources[i];
 
                 // Convert the URI string into a URI object
-                Uri? sourceUri;
-
-                if (!Uri.TryCreate(currentPackage.URI, UriKind.RelativeOrAbsolute, out sourceUri))
+                if (!Uri.TryCreate(currentPackage.URI, UriKind.RelativeOrAbsolute, out Uri? sourceUri))
                     Logger.ShortError($"Invalid package source URI = '{currentPackage.URI}'");
 
                 if (sourceUri == null)
@@ -249,31 +246,8 @@ namespace LawfulBladeManager.Packages
             if (packageDirectory == null)   // Would never happen but C# doesn't STFU
                 return;
 
-            // Generate a base64 encoded icon
-            string iconBase64 = string.Empty;
-
-            // Get the target icon or the default icon
-            args.IconSource ??= Properties.Resources._128x_package; // We don't want a null icon.
-
-            // Resize the icon to 128x128
-            args.IconSource = new Bitmap(args.IconSource, new Size(128, 128));
-
-            // Quantize the icon to an 8bpp palette
-            args.IconSource = ImageQuantizer.QuantizeImage(args.IconSource, PixelFormat.Format8bppIndexed, 256, true);
-
-            // Convert the icon to a base64 encoded png
-            using(MemoryStream stream = new())
-            {
-                // Encode PNG into a gzip compressed memory stream
-                using (GZipStream gzip = new GZipStream(stream, CompressionLevel.SmallestSize, true))
-                    args.IconSource.Save(gzip, ImageFormat.Png);
-
-                // Convert to base64 string
-                iconBase64 = Convert.ToBase64String(stream.ToArray(), Base64FormattingOptions.None);
-            }
-
             // Find package files
-            List<PackageFile> packageList = new List<PackageFile>();
+            List<PackageFile> packageList = new ();
             foreach(string filePath in Directory.EnumerateFileSystemEntries(args.SourceDirectory, "*.*", SearchOption.AllDirectories))
             {
                 // If the file doesn't exist, it must be a directory - which we don't want...
@@ -304,7 +278,7 @@ namespace LawfulBladeManager.Packages
                 BundleSourceUri = $"{args.TargetFile.Replace(packageDirectory, "")[1..]}",
                 
                 // The Base64 encoded icon (can also be an empty string)
-                IconBase64 = iconBase64
+                IconBase64 = Package.EncodeIcon(args.IconSource)
             };
 
             // Create package bundle
@@ -337,7 +311,7 @@ namespace LawfulBladeManager.Packages
                 return;
 
             // Find all package files
-            List<Package> packages = new List<Package>();
+            List<Package> packages = new ();
 
             foreach (string filePath in Directory.EnumerateFileSystemEntries(directory, "*.paz", SearchOption.AllDirectories))
             {
@@ -354,7 +328,7 @@ namespace LawfulBladeManager.Packages
                         continue;
 
                     // Read the json file
-                    using (StreamReader sr = new StreamReader(metaFile.Open()))
+                    using (StreamReader sr = new (metaFile.Open()))
                         jsonContent = sr.ReadToEnd();
                 }
 
@@ -371,7 +345,7 @@ namespace LawfulBladeManager.Packages
             }
 
             // Create the package source
-            PackageSource source = new PackageSource
+            PackageSource source = new ()
             {
                 CreationDate = DateTime.Now,
                 URI          = uri,

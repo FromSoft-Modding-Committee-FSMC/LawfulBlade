@@ -96,7 +96,7 @@
             lvPackageFilter.Size = new Size(184, 452);
             lvPackageFilter.TabIndex = 0;
             lvPackageFilter.ThreeDCheckBoxes = true;
-            lvPackageFilter.ItemCheck += lvPackageFilter_ItemCheck;
+            lvPackageFilter.ItemCheck += OnPackageFilterChecked;
             // 
             // scPackageView
             // 
@@ -148,8 +148,8 @@
             MinimumSize = new Size(960, 540);
             Name = "PackageManagerDialog";
             Text = "Lawful Blade - Package Manager";
-            FormClosing += PackageManagerDialog_FormClosing;
-            Load += PackageManagerForm_Load;
+            FormClosing += OnExitDialog;
+            Load += OnLoadDialog;
             scMain.Panel1.ResumeLayout(false);
             scMain.Panel1.PerformLayout();
             scMain.Panel2.ResumeLayout(false);

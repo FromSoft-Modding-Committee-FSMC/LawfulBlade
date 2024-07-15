@@ -1,8 +1,6 @@
 ﻿using LawfulBladeManager.Forms;
 using LawfulBladeManager.Projects;
 using LawfulBladeManager.Tagging;
-using System.Drawing;
-using static LawfulBladeManager.Control.ProjectControl;
 
 namespace LawfulBladeManager.Control
 {
@@ -10,14 +8,13 @@ namespace LawfulBladeManager.Control
     {
         public delegate void OnProjectControlEvent(ProjectControl self);
         public event OnProjectControlEvent? OnProjectDelete;
-        public event OnProjectControlEvent? OnProjectCreate;
+
+        Project? project;
 
         public ProjectControl()
         {
             InitializeComponent();
         }
-
-        Project project;
 
         public ProjectControl(Project project)
         {
@@ -45,8 +42,8 @@ namespace LawfulBladeManager.Control
             }
 
             // Disable the package manager when it's not a managed project.
-            if (!project.IsManaged)
-                tsFuncPackages.Enabled = false;
+            //if (!project.IsManaged)
+            //    tsFuncPackages.Enabled = false;
 
             // make a local copy of the project structure.
             this.project = project;
@@ -66,6 +63,9 @@ namespace LawfulBladeManager.Control
         #region Toolbar Functions
         void tsFuncDelete_Click(object sender, EventArgs e)
         {
+            if (project == null)    // Fuck you c#
+                return;
+
             // Make sure to confirm the user actually wants to delete the project
             if (MessageBox.Show($"Are you sure you want to delete '{project.Name}' in '{project.StoragePath}'?\n\n" +
                 "You will not be able to recover the project if you do.", "Lawful Blade", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) != DialogResult.OK)
@@ -91,16 +91,12 @@ namespace LawfulBladeManager.Control
 
         void tsFuncPackages_Click(object sender, EventArgs e)
         {
-            // Create new Package Manager Instance
-            using (PackageManagerDialog pmf = new())
-            {
-                // Configure package destination...
-                pmf.SuperFilter = new string[] { "Sample", "Project" };
-                pmf.InstallationRoot = project.StoragePath;
+            if (project == null)    // Fuck you c#
+                return;
 
-                // Open the package manager...
+            // Show the package manager
+            using (PackageManagerDialog pmf = new(project))
                 pmf.ShowDialog();
-            }
         }
         #endregion
     }

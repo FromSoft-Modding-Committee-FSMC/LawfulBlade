@@ -1,26 +1,37 @@
 ﻿using System.Text.Json.Serialization;
 
+using LawfulBladeManager.Packages;
+
 namespace LawfulBladeManager.Instances
 {
-    public struct Instance
+    public class Instance : IPackageTarget
     {
         [JsonInclude]
-        public string Name;
+        public string Name          { get; set; } = string.Empty;
 
         [JsonInclude]
-        public string Description;
+        public string Description   { get; set; } = string.Empty;
 
         [JsonInclude]
-        public string InstanceUUID;
+        public string UUID          { get; set; } = string.Empty;
 
         [JsonInclude]
-        public string StoragePath;
+        public string StoragePath   { get; set; } = string.Empty;
 
         [JsonInclude]
-        public string[] Tags;
+        public string[] Tags { get; set; } = Array.Empty<string>();
 
-        // To facilitate selection boxes, we must have an override for ToString.
-        public override string ToString() =>
-            Name;
+
+        // IPackageTarget Implementation
+        [JsonInclude]
+        public Dictionary<string, string> Library { get; set; } = new Dictionary<string, string>();
+
+        public string[] CompatiblePackages => new string[] { "Editor", "Instance" };
+
+        public bool InstallPackage(Package package) =>
+            false;
+
+        public bool RentingPackage(Package package) =>
+            Library.ContainsKey(package.UUID);
     }
 }

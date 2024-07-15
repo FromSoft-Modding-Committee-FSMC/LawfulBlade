@@ -27,13 +27,12 @@ namespace LawfulBladeManager.Control
 
 
         // Default Constructor
-        public PackageControl(Package package, Image? icon)
+        public PackageControl(Package package)
         {
             InitializeComponent();
 
             // Load Package Icon
-            if (icon != null)
-                pbIcon.Image = icon;
+            pbIcon.Image = Package.DecodeIcon(package.IconBase64);
 
             // Load Package Info
             lbName.Text = package.Name;
