@@ -22,6 +22,11 @@ namespace LawfulBladeManager.Networking
             };
         }
 
+        /// <summary>
+        /// Downloads a file from a URI, and returns a path to it.
+        /// </summary>
+        /// <param name="source">Uri to download the file from</param>
+        /// <returns>If the URI points into the local file system, this path will be to the true file. If it was a network URI, it will be to a temporary file.</returns>
         public string DownloadFileSync(Uri source)
         {
             // If this is a file Uri we just return the local path (?)

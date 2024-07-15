@@ -2,7 +2,6 @@
 {
     public interface IPackageTarget
     {
-
         /// <summary>
         /// Returns a list of compatible package types.
         /// </summary>

@@ -5,6 +5,9 @@ using System.Text.Json.Serialization;
 
 namespace LawfulBladeManager.Packages
 {
+    /// <summary>
+    /// Represents a single package
+    /// </summary>
     public class Package
     {
         [JsonInclude]
@@ -90,7 +93,9 @@ namespace LawfulBladeManager.Packages
         }
     }
 
-    // Local Packages have additional information.
+    /// <summary>
+    /// Additional package properties for ones already cached.
+    /// </summary>
     public class LocalPackage : Package
     {
         [JsonInclude]
@@ -98,5 +103,44 @@ namespace LawfulBladeManager.Packages
 
         [JsonInclude]
         public string BundleFilePath { get; set; } = string.Empty;
+    }
+
+    /// <summary>
+    /// Represents a source of packages (net or local file system)
+    /// </summary>
+    public struct PackageSource
+    {
+        /// <summary>
+        /// Creation Date is used to poll source updates.
+        /// </summary>
+        [JsonInclude]
+        public DateTime CreationDate { get; set; }
+
+        /// <summary>
+        /// URI is the origin of the package. Used when we need to pull updates.
+        /// </summary>
+        [JsonInclude]
+        public string URI { get; set; }
+
+        /// <summary>
+        /// Packages contained in the source.
+        /// </summary>
+        [JsonInclude]
+        public Package[] Packages { get; set; }
+    }
+
+    /// <summary>
+    /// Represents a file in a package or package target
+    /// </summary>
+    public struct PackageFile
+    {
+        [JsonInclude]
+        public string Filename;
+
+        [JsonInclude]
+        public string Checksum;
+
+        [JsonInclude]
+        public string Source;
     }
 }
