@@ -2,9 +2,6 @@
 using LawfulBladeManager.Dialog;
 using LawfulBladeManager.Packages;
 using LawfulBladeManager.Type;
-using System.IO.Compression;
-using System.Security.Cryptography;
-using System.Text.Json;
 
 namespace LawfulBladeManager.Forms
 {
@@ -35,18 +32,13 @@ namespace LawfulBladeManager.Forms
             // Set the installation target
             InstallationTarget = target;
             SuperFilter = target.CompatiblePackages;
-        }       
+        }
 
         /// <summary>
         /// When the form first loads, we need to create controls for all the possible packages...
         /// </summary>
         void OnLoadDialog(object sender, EventArgs e)
         {
-            // Clear ancient data from a bygone era
-            lvPackageFilter.Items.Clear();  // Tags
-            pcPackageList.Controls.Clear();
-            packageControls.Clear();
-
             // Scan for packages to display in the manager...
             Task packageSearchTask = new(() =>
             {
@@ -71,16 +63,21 @@ namespace LawfulBladeManager.Forms
                             {
                                 if (lvPackageFilter.Items.Contains(tag))
                                     continue;
+
                                 lvPackageFilter.Items.Add(tag, true);
                             }
 
-                            // Package Control
-                            PackageControl packageControl = new(package)
+                            // Package Control Flags
+                            PackageStatusFlag packageFlags = PackageStatusFlag.None;
+
+                            if (package.PackageExistsInCache())
+                                packageFlags |= PackageStatusFlag.Cached;
+
+                            // Construct a new package control
+                            PackageControl packageControl = new(package, packageFlags)
                             {
                                 // Style Configuration
                                 Dock = DockStyle.Top,
-
-                                // Package Properties
                             };
 
                             // Bind to selection event
@@ -88,7 +85,7 @@ namespace LawfulBladeManager.Forms
 
                             // Add control to lists...
                             pcPackageList.Controls.Add(packageControl);
-                            packageControls.Add(packageControl);            // Could potentially optimize this.
+                            packageControls.Add(packageControl);            // TO-DO: clean this up. (Enumerate Packages)
                         });
                     }
                 }
@@ -124,16 +121,8 @@ namespace LawfulBladeManager.Forms
         /// When a package is selected, we need to update the info pannel
         /// </summary>
         /// <param name="packageControl">The selected package control</param>
-        void OnPackageSelect(PackageControl packageControl)
-        {
-            // Set the current package to one selected...
-            currentPackage = packageControl;
-
-            // Load information into the info panel
-            exInfo.LoadMetadata(currentPackage.package);
-            exInfo.LoadStatus(currentPackage.Status);
-            exInfo.LoadIcon(currentPackage.icon);
-        }
+        void OnPackageSelect(PackageControl packageControl) =>
+            exInfo.LoadPackageControl(currentPackage = packageControl);
 
         /// <summary>
         /// When a package filter is checked/unchecked we need to re-enumurate the package controls.
@@ -146,7 +135,7 @@ namespace LawfulBladeManager.Forms
             // Loop through each package control
             foreach (PackageControl pkgControl in packageControls)
             {
-                Package package = pkgControl.package;
+                Package package = pkgControl.PackageReference;
 
                 // Store check state
                 bool packageFiltered = true;

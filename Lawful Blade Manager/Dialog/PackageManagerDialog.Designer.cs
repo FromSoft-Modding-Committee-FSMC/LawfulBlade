@@ -89,7 +89,6 @@
             lvPackageFilter.ForeColor = SystemColors.ButtonFace;
             lvPackageFilter.FormattingEnabled = true;
             lvPackageFilter.ImeMode = ImeMode.On;
-            lvPackageFilter.Items.AddRange(new object[] { "Samples; 1", "Primary, 4" });
             lvPackageFilter.Location = new Point(4, 27);
             lvPackageFilter.Name = "lvPackageFilter";
             lvPackageFilter.RightToLeft = RightToLeft.No;

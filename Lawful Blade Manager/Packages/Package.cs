@@ -6,6 +6,20 @@ using System.Text.Json.Serialization;
 namespace LawfulBladeManager.Packages
 {
     /// <summary>
+    /// Enum declaring different statues a package can be in
+    /// </summary>
+    [Flags]
+    public enum PackageStatusFlag : uint
+    {
+        OutOfDate   = (1 << 0),
+        Installed   = (1 << 1),
+        Cached      = (1 << 2),
+        Conflicting = (1 << 3),
+
+        None        = 0
+    }
+
+    /// <summary>
     /// Represents a single package
     /// </summary>
     public class Package
@@ -35,7 +49,14 @@ namespace LawfulBladeManager.Packages
         public string IconBase64      { get; set; } = string.Empty;
 
         /// <summary>
-        /// Helper to decode a PNG from a gzip'ed base64 stream
+        /// Helper to check if the package exists in the cache.
+        /// </summary>
+        /// <returns></returns>
+        public bool PackageExistsInCache() =>
+            File.Exists(Path.Combine(PackageManager.PackagesCache, $"{UUID}_{Version}.paz"));
+
+        /// <summary>
+        /// Global helper to decode a PNG from a gzip'ed base64 stream
         /// </summary>
         /// <param name="base64">The PNG file as compressed base64.</param>
         /// <returns>The PNG as a bitmap object</returns>
@@ -61,7 +82,7 @@ namespace LawfulBladeManager.Packages
         }
 
         /// <summary>
-        /// Helper to encode a PNG as a gzip'ed base64 stream
+        /// Global helper to encode a PNG as a gzip'ed base64 stream
         /// </summary>
         /// <param name="bitmap">The source png as a bitmap object</param>
         /// <returns>The png encoded as base64 and compressed with gzip</returns>
@@ -91,18 +112,6 @@ namespace LawfulBladeManager.Packages
 
             return result;
         }
-    }
-
-    /// <summary>
-    /// Additional package properties for ones already cached.
-    /// </summary>
-    public class LocalPackage : Package
-    {
-        [JsonInclude]
-        public bool IsBundleCached   { get; set; } = false;
-
-        [JsonInclude]
-        public string BundleFilePath { get; set; } = string.Empty;
     }
 
     /// <summary>

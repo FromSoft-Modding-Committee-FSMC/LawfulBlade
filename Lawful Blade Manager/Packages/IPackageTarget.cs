@@ -18,7 +18,13 @@
         /// Check if the package target is currently renting (contains) a package.
         /// </summary>
         /// <param name="package">The package to check for</param>
-        /// <returns>True if the package is rented, false otherwise.</returns>
+        /// <returns>True if the package is rented, false otherwise</returns>
         public bool RentingPackage(Package package);
+
+        /// <summary>
+        /// Check if the package target has any outdated packages.
+        /// </summary>
+        /// <returns>The number of outdated packages</returns>
+        public int CheckForOutdatedPackages();
     }
 }

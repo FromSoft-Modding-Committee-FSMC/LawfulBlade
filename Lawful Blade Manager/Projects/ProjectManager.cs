@@ -3248,6 +3248,27 @@ namespace LawfulBladeManager.Projects
         }
 
         /// <summary>
+        /// Performs a scan of all projects to find any outdated packages.
+        /// </summary>
+        /// <returns>True if there are outdated packages, false otherwise.</returns>
+        public bool CheckProjectsForOutdatedPackages()
+        {
+            int numberOfProjectsWithOutdatedPackages = 0;
+
+            // Check each project
+            foreach (Project project in Projects)
+                if (project.CheckForOutdatedPackages() > 0)
+                    numberOfProjectsWithOutdatedPackages++;
+
+            // Exit now if there are no projects with outdated packages.
+            if (numberOfProjectsWithOutdatedPackages == 0)
+                return false;
+
+            Logger.ShortWarn($"{numberOfProjectsWithOutdatedPackages} projects have outdated packages, update them with the package manager!");
+            return true;
+        }
+
+        /// <summary>
         /// Creates a new project according to the arguments provided.
         /// </summary>
         /// <param name="args">Project creation settings</param>

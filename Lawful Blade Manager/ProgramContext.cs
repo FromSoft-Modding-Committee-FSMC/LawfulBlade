@@ -1,6 +1,7 @@
 ﻿using LawfulBladeManager.Dialog;
 using LawfulBladeManager.Forms;
 using LawfulBladeManager.Packages;
+using LawfulBladeManager.Projects;
 
 namespace LawfulBladeManager
 {
@@ -48,6 +49,10 @@ namespace LawfulBladeManager
 
             // Re Enable window interaction
             mainWindow.BeginInvoke(() => mainWindow.Enabled = true);
+
+            // Check if any instances or projects have updates avaliable
+            Program.InstanceManager.CheckInstancesForOutdatedPackages();
+            Program.ProjectManager.CheckProjectsForOutdatedPackages();
 
             // Remove me from the event handler
             Program.PackageManager.OnPackagePrepareCompleted -= OnPackagesPrepared;

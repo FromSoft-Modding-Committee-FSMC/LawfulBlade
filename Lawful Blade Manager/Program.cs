@@ -29,9 +29,6 @@ namespace LawfulBladeManager
         [STAThread] static void Main()
         {
             ApplicationConfiguration.Initialize();
-
-            // PackageManager.CreatePackageSource("D:\\dev\\.NET Projects\\Lawful-Blade\\Lawful Blade Manager\\bin\\Debug\\net7.0-windows\\Packages", "D:\\dev\\.NET Projects\\Lawful-Blade\\Lawful Blade Manager\\bin\\Debug\\net7.0-windows\\Packages");
-
             Application.Run(Context);
         }
 

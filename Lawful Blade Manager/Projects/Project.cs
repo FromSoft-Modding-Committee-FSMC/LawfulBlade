@@ -38,5 +38,8 @@ namespace LawfulBladeManager.Projects
 
         public bool RentingPackage(Package package) =>
             Library.ContainsKey(package.UUID);
+
+        public int CheckForOutdatedPackages() =>
+            0;
     }
 }

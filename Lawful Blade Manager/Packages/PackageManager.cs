@@ -44,8 +44,7 @@ namespace LawfulBladeManager.Packages
                     }
                 },
 
-                AvaliablePackages = 0,
-                ReadyPackages = new List<LocalPackage>()
+                AvaliablePackages = 0
             };
 
             [JsonInclude]
@@ -53,20 +52,17 @@ namespace LawfulBladeManager.Packages
 
             [JsonInclude]
             public int AvaliablePackages;
-
-            [JsonInclude]
-            public List<LocalPackage> ReadyPackages;
         }
 
         /// <summary>
         /// The path of the package declaration file.
         /// </summary>
-        public string PackagesFile { get; private set; } = Path.Combine(ProgramContext.AppDataPath, @"packages.json");
+        public static string PackagesFile { get; private set; } = Path.Combine(ProgramContext.AppDataPath, @"packages.json");
 
         /// <summary>
         /// Cache location for downloaded packages.
         /// </summary>
-        public string PackagesCache { get; private set; } = Path.Combine(ProgramContext.AppDataPath, @"PackagesCache");
+        public static string PackagesCache { get; private set; } = Path.Combine(ProgramContext.AppDataPath, @"PackagesCache");
 
         /// <summary>
         /// Data for all packages.
@@ -87,6 +83,15 @@ namespace LawfulBladeManager.Packages
             Task.Run(PreparePackages)
                 .ContinueWith(PreparePackagesFinished);
 
+            // If the package cache directory doesn't exist, we can create it now.
+            if (!Directory.Exists(PackagesCache))
+            {
+                Logger.ShortInfo("Creating packages cache directory...");
+                Logger.ShortInfo($"\tPackagesCache = '{PackagesCache}'");
+
+                Directory.CreateDirectory(PackagesCache);
+            }
+                
             // Save packages on shutdown
             Program.OnShutdown += SavePackages;
         }
@@ -183,34 +188,11 @@ namespace LawfulBladeManager.Packages
                 }
 
                 // De serialize the package source
-                PackageSource temporaryPackage = JsonSerializer.Deserialize<PackageSource>(File.ReadAllText(localFile), JsonSerializerOptions.Default);
+                currentPackage = JsonSerializer.Deserialize<PackageSource>(File.ReadAllText(localFile), JsonSerializerOptions.Default);
 
-                // Is the loaded packageSource newer than our current one?
-                if (currentPackage.CreationDate.AddDays(7) < temporaryPackage.CreationDate)
-                {
-                    // Remove any local packages with a matching UUID
-                    foreach(Package sourcePackage in currentPackage.Packages)
-                    {
-                        // Loop through any local packages with matching UUID and non matching version
-                        foreach(LocalPackage invalidatedPackage in PackagesData.ReadyPackages.Where(x => (x.UUID == sourcePackage.UUID && x.Version != sourcePackage.Version)))
-                        {
-                            // Delete cached bundle
-                            if (invalidatedPackage.IsBundleCached)
-                                File.Delete(invalidatedPackage.BundleFilePath);
-
-                            // Remove from local packages list.
-                            PackagesData.ReadyPackages.Remove(invalidatedPackage);
-                        }
-                    }
-
-                    // Replace the current package in our package sources...
-                    PackagesData.PackageSources[i] = temporaryPackage;
-
-                    // Replace the current package copy
-                    currentPackage = temporaryPackage;
-
-                    Logger.ShortWrite("PkgM".Colourize(0x008000), $"\tUpdated Package '{temporaryPackage.URI}'".Colourize(0xFFFF00));
-                }
+                //
+                // TO-DO: Update Logic
+                //
 
                 // Increment the number of avaliable packages.
                 PackagesData.AvaliablePackages += currentPackage.Packages.Length;
@@ -226,7 +208,7 @@ namespace LawfulBladeManager.Packages
             // Set State
             State = PackageManagerState.Ready;
 
-            Logger.ShortInfo($"Loaded {PackagesData.AvaliablePackages} packages(s) from {PackagesData.PackageSources.Length} sources. [{PackagesData.ReadyPackages.Count} ready].");
+            Logger.ShortInfo($"Loaded {PackagesData.AvaliablePackages} packages(s) from {PackagesData.PackageSources.Length} sources.");
 
             // Save Packages
             SavePackages();

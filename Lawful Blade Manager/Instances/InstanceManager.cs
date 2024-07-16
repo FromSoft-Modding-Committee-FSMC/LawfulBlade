@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LawfulBladeManager.Projects;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -69,6 +70,27 @@ namespace LawfulBladeManager.Instances
 
             Logger.ShortInfo($"Done!");
 
+            return true;
+        }
+
+        /// <summary>
+        /// Performs a scan of all instances to find any outdated packages.
+        /// </summary>
+        /// <returns>True if there are outdated packages, false otherwise.</returns>
+        public bool CheckInstancesForOutdatedPackages()
+        {
+            int numberOfInstancesWithOutdatedPackages = 0;
+
+            // Check each instance
+            foreach (Instance instance in Instances)
+                if (instance.CheckForOutdatedPackages() > 0)
+                    numberOfInstancesWithOutdatedPackages++;
+
+            // Exit now if there are no instances with outdated packages.
+            if (numberOfInstancesWithOutdatedPackages == 0)
+                return false;
+
+            Logger.ShortWarn($"{numberOfInstancesWithOutdatedPackages} instances have outdated packages, update them with the package manager!");
             return true;
         }
 

@@ -11,10 +11,11 @@ namespace LawfulBladeManager.Control
 
         Project? project;
 
-        public ProjectControl()
-        {
+        /// <summary>
+        /// Default Constructor
+        /// </summary>
+        public ProjectControl() =>
             InitializeComponent();
-        }
 
         public ProjectControl(Project project)
         {
@@ -40,10 +41,6 @@ namespace LawfulBladeManager.Control
                     TextAlign = ContentAlignment.MiddleCenter
                 }); ;
             }
-
-            // Disable the package manager when it's not a managed project.
-            //if (!project.IsManaged)
-            //    tsFuncPackages.Enabled = false;
 
             // make a local copy of the project structure.
             this.project = project;
