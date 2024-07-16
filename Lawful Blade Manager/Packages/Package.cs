@@ -120,6 +120,18 @@ namespace LawfulBladeManager.Packages
     public struct PackageSource
     {
         /// <summary>
+        /// Default PackageSource is used when initializing new sources.
+        /// </summary>
+        [JsonIgnore]
+        public static PackageSource Default =>
+            new()
+            {
+                CreationDate = DateTime.MinValue,
+                URI          = string.Empty,
+                Packages     = Array.Empty<Package>()
+            };
+
+        /// <summary>
         /// Creation Date is used to poll source updates.
         /// </summary>
         [JsonInclude]
