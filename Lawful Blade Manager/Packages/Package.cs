@@ -1,7 +1,10 @@
 ﻿using PnnQuant;
 using System.Drawing.Imaging;
 using System.IO.Compression;
+using System.Text;
+using System.Text.Json;
 using System.Text.Json.Serialization;
+using ZstdSharp;
 
 namespace LawfulBladeManager.Packages
 {
@@ -69,11 +72,8 @@ namespace LawfulBladeManager.Packages
             Bitmap? result;
 
             // Decode base64 to byte array and uncompress the png
-            using (GZipStream gzip = new (new MemoryStream(Convert.FromBase64String(base64)), CompressionMode.Decompress))
-            {
-                // Create bitmap from the memory stream
-                result = new Bitmap(Image.FromStream(gzip));
-            }
+            using (MemoryStream stream = new(Convert.FromBase64String(base64)))
+                result = new Bitmap(Image.FromStream(stream));
                 
             // If the result ends up being null, return the default package icon.
             result ??= Properties.Resources._128x_package;
@@ -102,11 +102,10 @@ namespace LawfulBladeManager.Packages
             // Convert the icon to a base64 encoded png
             using (MemoryStream stream = new())
             {
-                // Encode PNG into a gzip compressed memory stream
-                using (GZipStream gzip = new (stream, CompressionLevel.SmallestSize, true))
-                    bitmap.Save(gzip, ImageFormat.Png);
+                // Write PNG into the stream
+                bitmap.Save(stream, ImageFormat.Png);
 
-                // Convert to base64 string
+                // Encode into Base64
                 result = Convert.ToBase64String(stream.ToArray(), Base64FormattingOptions.None);
             }
 
@@ -127,8 +126,8 @@ namespace LawfulBladeManager.Packages
             new()
             {
                 CreationDate = DateTime.MinValue,
-                URI          = string.Empty,
-                Packages     = Array.Empty<Package>()
+                URI = string.Empty,
+                Packages = Array.Empty<Package>()
             };
 
         /// <summary>
@@ -148,6 +147,34 @@ namespace LawfulBladeManager.Packages
         /// </summary>
         [JsonInclude]
         public Package[] Packages { get; set; }
+
+        public static byte[] Compress(ref PackageSource source)
+        {
+            // Serialize The Source
+            string serializedSource = JsonSerializer.Serialize(source, JsonSerializerOptions.Default);
+
+            // Get the source as bytes
+            byte[] bufferedSource = Encoding.UTF8.GetBytes(serializedSource);
+
+            // Compress as ZSTD and return it
+            using (Compressor zstdCompressor = new Compressor(5))
+                return zstdCompressor.Wrap(bufferedSource).ToArray();
+        }
+
+        public static PackageSource Decompress(ref byte[] source)
+        {
+            byte[] decompressedSource;
+
+            // Decompress the byte stream from ZSTD
+            using (Decompressor zstdDecompressor = new Decompressor())
+                decompressedSource = zstdDecompressor.Unwrap(source).ToArray();
+
+            // Get the source as a string...
+            string serializedSource = Encoding.UTF8.GetString(decompressedSource);
+
+            // Deserialize the source and return it
+            return JsonSerializer.Deserialize<PackageSource>(serializedSource, JsonSerializerOptions.Default);
+        }
     }
 
     /// <summary>
