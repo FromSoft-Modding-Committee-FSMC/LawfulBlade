@@ -5,9 +5,9 @@ using LawfulBladeManager.Projects;
 
 namespace LawfulBladeManager.Forms
 {
-    public partial class FormMain : Form
+    public partial class MainForm : Form
     {
-        public FormMain()
+        public MainForm()
         {
             InitializeComponent();
 
@@ -90,14 +90,14 @@ namespace LawfulBladeManager.Forms
                     BusyDialog.Instance.ShowBusy();
                     PackageManager.CreatePackage(new PackageCreateArgs
                     {
-                        SourceDirectory  = pcd.PackageSource,
-                        TargetFile       = pcd.PackageOutput,
-                        Name             = pcd.PackageName,
-                        Description      = pcd.PackageDescription,
-                        Version          = pcd.PackageVersion,
-                        Authors          = pcd.PackageAuthors,
-                        Tags             = pcd.PackageTags,
-                        IconSource       = pcd.PackageIcon,
+                        SourceDirectory = pcd.PackageSource,
+                        TargetFile = pcd.PackageOutput,
+                        Name = pcd.PackageName,
+                        Description = pcd.PackageDescription,
+                        Version = pcd.PackageVersion,
+                        Authors = pcd.PackageAuthors,
+                        Tags = pcd.PackageTags,
+                        IconSource = pcd.PackageIcon,
                         ExpectOverwrites = pcd.PackageExpectOW
                     });
 
@@ -156,5 +156,14 @@ namespace LawfulBladeManager.Forms
             EnumurateProjectsInList();
         }
         #endregion
+
+        private void FormMain_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void manageSourcesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+        }
     }
 }

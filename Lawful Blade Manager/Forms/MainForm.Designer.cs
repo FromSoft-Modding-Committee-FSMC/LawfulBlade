@@ -1,6 +1,6 @@
 ﻿namespace LawfulBladeManager.Forms
 {
-    partial class FormMain
+    partial class MainForm
     {
         /// <summary>
         ///  Required designer variable.
@@ -28,18 +28,30 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             msMain = new MenuStrip();
             msMainFile = new ToolStripMenuItem();
+            preferencesToolStripMenuItem = new ToolStripMenuItem();
+            toolStripSeparator3 = new ToolStripSeparator();
             msMainExit = new ToolStripMenuItem();
             msMainPackages = new ToolStripMenuItem();
-            msMainAddPackage = new ToolStripMenuItem();
-            msMainAddPackageLocal = new ToolStripMenuItem();
-            msMainAddPackageNet = new ToolStripMenuItem();
-            msMainCreatePackage = new ToolStripMenuItem();
+            manageSourcesToolStripMenuItem = new ToolStripMenuItem();
             toolStripSeparator1 = new ToolStripSeparator();
-            msMainPackageTool = new ToolStripMenuItem();
-            msMainPackageToolGDD = new ToolStripMenuItem();
+            msMainCreatePackage = new ToolStripMenuItem();
+            newToolStripMenuItem = new ToolStripMenuItem();
+            fromExistingPackageToolStripMenuItem = new ToolStripMenuItem();
+            toolStripSeparator2 = new ToolStripSeparator();
+            toolsToolStripMenuItem = new ToolStripMenuItem();
+            generateDeltaDirectoryToolStripMenuItem = new ToolStripMenuItem();
+            createSourceToolStripMenuItem = new ToolStripMenuItem();
+            newToolStripMenuItem1 = new ToolStripMenuItem();
+            fromExistingToolStripMenuItem = new ToolStripMenuItem();
+            helpToolStripMenuItem = new ToolStripMenuItem();
+            checkForUpdatesToolStripMenuItem = new ToolStripMenuItem();
+            toolStripSeparator4 = new ToolStripSeparator();
+            reportAProblemToolStripMenuItem = new ToolStripMenuItem();
+            releaseNotesToolStripMenuItem = new ToolStripMenuItem();
+            aboutToolStripMenuItem = new ToolStripMenuItem();
             tcMain = new TabControl();
             tpProjects = new TabPage();
             pcProjectList = new Panel();
@@ -61,7 +73,7 @@
             // 
             // msMain
             // 
-            msMain.Items.AddRange(new ToolStripItem[] { msMainFile, msMainPackages });
+            msMain.Items.AddRange(new ToolStripItem[] { msMainFile, msMainPackages, helpToolStripMenuItem });
             msMain.Location = new Point(0, 0);
             msMain.Name = "msMain";
             msMain.Size = new Size(944, 24);
@@ -70,69 +82,141 @@
             // 
             // msMainFile
             // 
-            msMainFile.DropDownItems.AddRange(new ToolStripItem[] { msMainExit });
+            msMainFile.DropDownItems.AddRange(new ToolStripItem[] { preferencesToolStripMenuItem, toolStripSeparator3, msMainExit });
             msMainFile.Name = "msMainFile";
             msMainFile.Size = new Size(37, 20);
             msMainFile.Text = "File";
             // 
+            // preferencesToolStripMenuItem
+            // 
+            preferencesToolStripMenuItem.Name = "preferencesToolStripMenuItem";
+            preferencesToolStripMenuItem.Size = new Size(180, 22);
+            preferencesToolStripMenuItem.Text = "Preferences";
+            preferencesToolStripMenuItem.Click += OnFileMenuPreferences;
+            // 
+            // toolStripSeparator3
+            // 
+            toolStripSeparator3.Name = "toolStripSeparator3";
+            toolStripSeparator3.Size = new Size(177, 6);
+            // 
             // msMainExit
             // 
             msMainExit.Name = "msMainExit";
-            msMainExit.Size = new Size(93, 22);
+            msMainExit.Size = new Size(180, 22);
             msMainExit.Text = "Exit";
             msMainExit.Click += msMainExit_Click;
             // 
             // msMainPackages
             // 
-            msMainPackages.DropDownItems.AddRange(new ToolStripItem[] { msMainAddPackage, msMainCreatePackage, toolStripSeparator1, msMainPackageTool });
+            msMainPackages.DropDownItems.AddRange(new ToolStripItem[] { manageSourcesToolStripMenuItem, toolStripSeparator1, msMainCreatePackage, createSourceToolStripMenuItem });
             msMainPackages.Name = "msMainPackages";
             msMainPackages.Size = new Size(68, 20);
             msMainPackages.Text = "Packages";
             // 
-            // msMainAddPackage
+            // manageSourcesToolStripMenuItem
             // 
-            msMainAddPackage.DropDownItems.AddRange(new ToolStripItem[] { msMainAddPackageLocal, msMainAddPackageNet });
-            msMainAddPackage.Name = "msMainAddPackage";
-            msMainAddPackage.Size = new Size(165, 22);
-            msMainAddPackage.Text = "Add Package(s)...";
-            // 
-            // msMainAddPackageLocal
-            // 
-            msMainAddPackageLocal.Name = "msMainAddPackageLocal";
-            msMainAddPackageLocal.Size = new Size(154, 22);
-            msMainAddPackageLocal.Text = "From Local File";
-            // 
-            // msMainAddPackageNet
-            // 
-            msMainAddPackageNet.Name = "msMainAddPackageNet";
-            msMainAddPackageNet.Size = new Size(154, 22);
-            msMainAddPackageNet.Text = "From URL";
-            // 
-            // msMainCreatePackage
-            // 
-            msMainCreatePackage.Name = "msMainCreatePackage";
-            msMainCreatePackage.Size = new Size(165, 22);
-            msMainCreatePackage.Text = "Create Package...";
-            msMainCreatePackage.Click += msMainCreatePackage_Click;
+            manageSourcesToolStripMenuItem.Name = "manageSourcesToolStripMenuItem";
+            manageSourcesToolStripMenuItem.Size = new Size(164, 22);
+            manageSourcesToolStripMenuItem.Text = "Manage Sources";
+            manageSourcesToolStripMenuItem.Click += manageSourcesToolStripMenuItem_Click;
             // 
             // toolStripSeparator1
             // 
             toolStripSeparator1.Name = "toolStripSeparator1";
-            toolStripSeparator1.Size = new Size(162, 6);
+            toolStripSeparator1.Size = new Size(161, 6);
             // 
-            // msMainPackageTool
+            // msMainCreatePackage
             // 
-            msMainPackageTool.DropDownItems.AddRange(new ToolStripItem[] { msMainPackageToolGDD });
-            msMainPackageTool.Name = "msMainPackageTool";
-            msMainPackageTool.Size = new Size(165, 22);
-            msMainPackageTool.Text = "Tools...";
+            msMainCreatePackage.DropDownItems.AddRange(new ToolStripItem[] { newToolStripMenuItem, fromExistingPackageToolStripMenuItem, toolStripSeparator2, toolsToolStripMenuItem });
+            msMainCreatePackage.Name = "msMainCreatePackage";
+            msMainCreatePackage.Size = new Size(164, 22);
+            msMainCreatePackage.Text = "Create Package...";
+            msMainCreatePackage.Click += msMainCreatePackage_Click;
             // 
-            // msMainPackageToolGDD
+            // newToolStripMenuItem
             // 
-            msMainPackageToolGDD.Name = "msMainPackageToolGDD";
-            msMainPackageToolGDD.Size = new Size(202, 22);
-            msMainPackageToolGDD.Text = "Generate Delta Directory";
-            msMainPackageToolGDD.Click += msMainPackageToolGDD_Click;
+            newToolStripMenuItem.Name = "newToolStripMenuItem";
+            newToolStripMenuItem.Size = new Size(146, 22);
+            newToolStripMenuItem.Text = "New";
+            // 
+            // fromExistingPackageToolStripMenuItem
+            // 
+            fromExistingPackageToolStripMenuItem.Name = "fromExistingPackageToolStripMenuItem";
+            fromExistingPackageToolStripMenuItem.Size = new Size(146, 22);
+            fromExistingPackageToolStripMenuItem.Text = "From Existing";
+            // 
+            // toolStripSeparator2
+            // 
+            toolStripSeparator2.Name = "toolStripSeparator2";
+            toolStripSeparator2.Size = new Size(143, 6);
+            // 
+            // toolsToolStripMenuItem
+            // 
+            toolsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { generateDeltaDirectoryToolStripMenuItem });
+            toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
+            toolsToolStripMenuItem.Size = new Size(146, 22);
+            toolsToolStripMenuItem.Text = "Tools...";
+            // 
+            // generateDeltaDirectoryToolStripMenuItem
+            // 
+            generateDeltaDirectoryToolStripMenuItem.Name = "generateDeltaDirectoryToolStripMenuItem";
+            generateDeltaDirectoryToolStripMenuItem.Size = new Size(152, 22);
+            generateDeltaDirectoryToolStripMenuItem.Text = "Delta Directory";
+            // 
+            // createSourceToolStripMenuItem
+            // 
+            createSourceToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { newToolStripMenuItem1, fromExistingToolStripMenuItem });
+            createSourceToolStripMenuItem.Name = "createSourceToolStripMenuItem";
+            createSourceToolStripMenuItem.Size = new Size(164, 22);
+            createSourceToolStripMenuItem.Text = "Create Source...";
+            // 
+            // newToolStripMenuItem1
+            // 
+            newToolStripMenuItem1.Name = "newToolStripMenuItem1";
+            newToolStripMenuItem1.Size = new Size(146, 22);
+            newToolStripMenuItem1.Text = "New";
+            // 
+            // fromExistingToolStripMenuItem
+            // 
+            fromExistingToolStripMenuItem.Name = "fromExistingToolStripMenuItem";
+            fromExistingToolStripMenuItem.Size = new Size(146, 22);
+            fromExistingToolStripMenuItem.Text = "From Existing";
+            // 
+            // helpToolStripMenuItem
+            // 
+            helpToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { checkForUpdatesToolStripMenuItem, toolStripSeparator4, reportAProblemToolStripMenuItem, releaseNotesToolStripMenuItem, aboutToolStripMenuItem });
+            helpToolStripMenuItem.Name = "helpToolStripMenuItem";
+            helpToolStripMenuItem.Size = new Size(44, 20);
+            helpToolStripMenuItem.Text = "Help";
+            // 
+            // checkForUpdatesToolStripMenuItem
+            // 
+            checkForUpdatesToolStripMenuItem.Name = "checkForUpdatesToolStripMenuItem";
+            checkForUpdatesToolStripMenuItem.Size = new Size(171, 22);
+            checkForUpdatesToolStripMenuItem.Text = "Check for Updates";
+            // 
+            // toolStripSeparator4
+            // 
+            toolStripSeparator4.Name = "toolStripSeparator4";
+            toolStripSeparator4.Size = new Size(168, 6);
+            // 
+            // reportAProblemToolStripMenuItem
+            // 
+            reportAProblemToolStripMenuItem.Name = "reportAProblemToolStripMenuItem";
+            reportAProblemToolStripMenuItem.Size = new Size(171, 22);
+            reportAProblemToolStripMenuItem.Text = "Report a Problem ";
+            // 
+            // releaseNotesToolStripMenuItem
+            // 
+            releaseNotesToolStripMenuItem.Name = "releaseNotesToolStripMenuItem";
+            releaseNotesToolStripMenuItem.Size = new Size(171, 22);
+            releaseNotesToolStripMenuItem.Text = "Release Notes";
+            // 
+            // aboutToolStripMenuItem
+            // 
+            aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+            aboutToolStripMenuItem.Size = new Size(171, 22);
+            aboutToolStripMenuItem.Text = "About";
             // 
             // tcMain
             // 
@@ -295,7 +379,7 @@
             btInstNew.TextImageRelation = TextImageRelation.ImageBeforeText;
             btInstNew.UseVisualStyleBackColor = false;
             // 
-            // FormMain
+            // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -306,8 +390,9 @@
             Icon = (Icon)resources.GetObject("$this.Icon");
             MainMenuStrip = msMain;
             MinimumSize = new Size(960, 540);
-            Name = "FormMain";
+            Name = "MainForm";
             Text = "Lawful Blade Manager";
+            Load += FormMain_Load;
             msMain.ResumeLayout(false);
             msMain.PerformLayout();
             tcMain.ResumeLayout(false);
@@ -338,11 +423,23 @@
         private Button btInstLegacy;
         private Button btInstNew;
         private Panel pcInstanceList;
-        private ToolStripMenuItem msMainPackageTool;
-        private ToolStripMenuItem msMainPackageToolGDD;
-        private ToolStripMenuItem msMainAddPackage;
         private ToolStripSeparator toolStripSeparator1;
-        private ToolStripMenuItem msMainAddPackageLocal;
-        private ToolStripMenuItem msMainAddPackageNet;
+        private ToolStripMenuItem manageSourcesToolStripMenuItem;
+        private ToolStripMenuItem createSourceToolStripMenuItem;
+        private ToolStripMenuItem preferencesToolStripMenuItem;
+        private ToolStripSeparator toolStripSeparator3;
+        private ToolStripMenuItem newToolStripMenuItem;
+        private ToolStripMenuItem fromExistingPackageToolStripMenuItem;
+        private ToolStripSeparator toolStripSeparator2;
+        private ToolStripMenuItem toolsToolStripMenuItem;
+        private ToolStripMenuItem generateDeltaDirectoryToolStripMenuItem;
+        private ToolStripMenuItem newToolStripMenuItem1;
+        private ToolStripMenuItem fromExistingToolStripMenuItem;
+        private ToolStripMenuItem helpToolStripMenuItem;
+        private ToolStripMenuItem checkForUpdatesToolStripMenuItem;
+        private ToolStripSeparator toolStripSeparator4;
+        private ToolStripMenuItem reportAProblemToolStripMenuItem;
+        private ToolStripMenuItem releaseNotesToolStripMenuItem;
+        private ToolStripMenuItem aboutToolStripMenuItem;
     }
 }

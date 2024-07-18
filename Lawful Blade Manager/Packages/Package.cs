@@ -1,4 +1,5 @@
-﻿using PnnQuant;
+﻿using LawfulBladeManager.Core;
+using PnnQuant;
 using System.Drawing.Imaging;
 using System.IO.Compression;
 using System.Text;
@@ -20,6 +21,16 @@ namespace LawfulBladeManager.Packages
         Conflicting = (1 << 3),
 
         None        = 0
+    }
+
+    /// <summary>
+    /// Defines the current state of the package manager.
+    /// </summary>
+    public enum PackageManagerState
+    {
+        None,
+        PreparingPackages,
+        Ready,
     }
 
     /// <summary>
@@ -56,7 +67,7 @@ namespace LawfulBladeManager.Packages
         /// </summary>
         /// <returns></returns>
         public bool PackageExistsInCache() =>
-            File.Exists(Path.Combine(PackageManager.PackagesCache, $"{UUID}_{Version}.paz"));
+            File.Exists(Path.Combine(Program.Preferences.PackageCacheDirectory, $"{UUID}_{Version}.paz"));
 
         /// <summary>
         /// Global helper to decode a PNG from a gzip'ed base64 stream
@@ -190,5 +201,34 @@ namespace LawfulBladeManager.Packages
 
         [JsonInclude]
         public string Source;
+    }
+
+    /// <summary>
+    /// Used in the package manager to store information about packages.
+    /// </summary>
+    public struct PackageData
+    {
+        /// <summary>
+        /// The default PackageData structure.
+        /// </summary>
+        public static PackageData Default => new()
+        {
+            PackageSources = new PackageSource[] {
+                    new PackageSource
+                    {
+                        CreationDate = DateTime.MinValue,
+                        URI          = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Packages", "defaultPackages.json"),
+                        Packages     = Array.Empty<Package>()
+                    }
+                },
+
+            AvaliablePackages = 0
+        };
+
+        [JsonInclude]
+        public PackageSource[] PackageSources;
+
+        [JsonInclude]
+        public int AvaliablePackages;
     }
 }

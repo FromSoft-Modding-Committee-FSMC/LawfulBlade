@@ -10,7 +10,7 @@ namespace LawfulBladeManager
         // Private Data
         static readonly string pathAppData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "FSMC", "LawfulBlade");
         static readonly string pathProgram = Application.StartupPath;
-        readonly FormMain mainWindow;
+        readonly MainForm mainWindow;
 
         // Properties
         public static string AppDataPath => pathAppData;
@@ -25,12 +25,12 @@ namespace LawfulBladeManager
             // Basic Initialization
             InitializeFirstTime();
 
-            mainWindow = new FormMain();
+            mainWindow = new MainForm();
             mainWindow.FormClosing += OnApplicationExit;    // Yeah... The other one isn't firing?
             mainWindow.Show();
 
             // Lets check if we must wait now for packages to be finished...
-            if(Program.PackageManager.State != PackageManager.PackageManagerState.Ready)
+            if(Program.PackageManager.State != PackageManagerState.Ready)
             {
                 Program.PackageManager.OnPackagePrepareCompleted += OnPackagesPrepared;
 

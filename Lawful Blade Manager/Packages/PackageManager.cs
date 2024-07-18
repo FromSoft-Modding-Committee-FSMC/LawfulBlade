@@ -1,4 +1,5 @@
-﻿using PnnQuant;
+﻿using LawfulBladeManager.Core;
+using PnnQuant;
 using System.Buffers.Text;
 using System.Drawing.Imaging;
 using System.IO.Compression;
@@ -16,53 +17,9 @@ namespace LawfulBladeManager.Packages
         public event OnVoidEvent? OnPackagePrepareCompleted;
 
         /// <summary>
-        /// Defines the current state of the package manager.
-        /// </summary>
-        public enum PackageManagerState
-        {
-            None,
-            PreparingPackages,
-            Ready,
-        }
-
-        /// <summary>
-        /// Used to store information about packages.
-        /// </summary>
-        public struct PackageData
-        {
-            /// <summary>
-            /// The default PackageData structure.
-            /// </summary>
-            public static PackageData Default => new()
-            {
-                PackageSources = new PackageSource[] { 
-                    new PackageSource
-                    {
-                        CreationDate = DateTime.MinValue,
-                        URI          = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Packages", "defaultPackages.json"),
-                        Packages     = Array.Empty<Package>()
-                    }
-                },
-
-                AvaliablePackages = 0
-            };
-
-            [JsonInclude]
-            public PackageSource[] PackageSources;
-
-            [JsonInclude]
-            public int AvaliablePackages;
-        }
-
-        /// <summary>
         /// The path of the package declaration file.
         /// </summary>
         public static string PackagesFile { get; private set; } = Path.Combine(ProgramContext.AppDataPath, @"packages.json");
-
-        /// <summary>
-        /// Cache location for downloaded packages.
-        /// </summary>
-        public static string PackagesCache { get; private set; } = Path.Combine(ProgramContext.AppDataPath, @"PackagesCache");
 
         /// <summary>
         /// Data for all packages.
@@ -84,12 +41,12 @@ namespace LawfulBladeManager.Packages
                 .ContinueWith(PreparePackagesFinished);
 
             // If the package cache directory doesn't exist, we can create it now.
-            if (!Directory.Exists(PackagesCache))
+            if (!Directory.Exists(Program.Preferences.PackageCacheDirectory))
             {
                 Logger.ShortInfo("Creating packages cache directory...");
-                Logger.ShortInfo($"\tPackagesCache = '{PackagesCache}'");
+                Logger.ShortInfo($"\tPackagesCache = '{Program.Preferences.PackageCacheDirectory}'");
 
-                Directory.CreateDirectory(PackagesCache);
+                Directory.CreateDirectory(Program.Preferences.PackageCacheDirectory);
             }
                 
             // Save packages on shutdown

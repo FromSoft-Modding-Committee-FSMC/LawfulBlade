@@ -1,3 +1,4 @@
+using LawfulBladeManager.Core;
 using LawfulBladeManager.Instances;
 using LawfulBladeManager.Networking;
 using LawfulBladeManager.Packages;
@@ -8,11 +9,14 @@ namespace LawfulBladeManager
 {
     public static class Program
     {
+        // Configuration
+        public readonly static Preferences Preferences = Preferences.Load();
+
         // Delegates
         public delegate bool OnBoolEvent();
 
         // Events
-        public static event OnBoolEvent OnShutdown = () => { Environment.Exit(0); return true; };
+        public static event OnBoolEvent OnShutdown = () => { Preferences.Save(); Environment.Exit(0); return true; };
 
         // Managers
         public readonly static DownloadManager DownloadManager = new();
