@@ -73,6 +73,16 @@ namespace LawfulBladeManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap _576X128_lawfulbladebanner {
+            get {
+                object obj = ResourceManager.GetObject("_576X128_lawfulbladebanner", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap _64x_delete {
             get {
                 object obj = ResourceManager.GetObject("64x_delete", resourceCulture);
@@ -107,6 +117,19 @@ namespace LawfulBladeManager.Properties {
             get {
                 object obj = ResourceManager.GetObject("64x_packages", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {\rtf1\ansi\ansicpg1252\deff0\nouicompat\deflang1033\deflangfe2052{\fonttbl{\f0\froman\fprq2\fcharset0 Times New Roman;}}
+        ///{\colortbl ;\red75\green172\blue198;\red0\green0\blue255;\red240\green240\blue240;\red156\green133\blue192;}
+        ///{\*\generator Riched20 10.0.22621}{\*\mmathPr\mnaryLim0\mdispDef1\mwrapIndent1440 }\viewkind4\uc1 
+        ///\pard\widctlpar\qc {\cf1\f0\fs24{\field{\*\fldinst{HYPERLINK &quot;https://www.modding-committees.net&quot; }}{\fldrslt{\ul\cf2\ul\b Homepage}}}}\cf1\f0\fs24\lang1033\par
+        ///{{\field{\*\fldin [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string about {
+            get {
+                return ResourceManager.GetString("about", resourceCulture);
             }
         }
         

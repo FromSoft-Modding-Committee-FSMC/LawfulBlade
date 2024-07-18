@@ -9,5 +9,14 @@
                 isAlphanumeric &= Char.IsAsciiLetterOrDigit(c);
             return isAlphanumeric;
         }
+
+        /// <summary>
+        /// Removes any occurances of a character literal.
+        /// </summary>
+        /// <param name="charToRemove">The char to remove</param>
+        /// <returns>original string but with the char removed</returns>
+        public static string Remove(this string str, char c) =>
+            str.Replace(c.ToString(), string.Empty);
+
     }
 }

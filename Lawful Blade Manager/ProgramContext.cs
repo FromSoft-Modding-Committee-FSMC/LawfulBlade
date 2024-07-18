@@ -16,6 +16,12 @@ namespace LawfulBladeManager
         public static string AppDataPath => pathAppData;
         public static string ProgramPath => pathProgram;
 
+        /**
+         * The normal version string you can set in the program properties is crap.
+         *   D = Development Build, S = Stable Build
+         **/
+        public static string Version => "0.26D";
+
         // Constructors
         public ProgramContext()
         {

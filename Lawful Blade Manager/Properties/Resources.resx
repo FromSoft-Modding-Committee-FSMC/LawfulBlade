@@ -145,4 +145,10 @@
   <data name="defaultPackages" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\defaultPackages.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="_576X128_lawfulbladebanner" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\576X128_lawfulbladebanner.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="about" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\about.rtf;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
 </root>

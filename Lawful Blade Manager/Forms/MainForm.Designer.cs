@@ -90,21 +90,21 @@
             // preferencesToolStripMenuItem
             // 
             preferencesToolStripMenuItem.Name = "preferencesToolStripMenuItem";
-            preferencesToolStripMenuItem.Size = new Size(180, 22);
+            preferencesToolStripMenuItem.Size = new Size(135, 22);
             preferencesToolStripMenuItem.Text = "Preferences";
             preferencesToolStripMenuItem.Click += OnFileMenuPreferences;
             // 
             // toolStripSeparator3
             // 
             toolStripSeparator3.Name = "toolStripSeparator3";
-            toolStripSeparator3.Size = new Size(177, 6);
+            toolStripSeparator3.Size = new Size(132, 6);
             // 
             // msMainExit
             // 
             msMainExit.Name = "msMainExit";
-            msMainExit.Size = new Size(180, 22);
+            msMainExit.Size = new Size(135, 22);
             msMainExit.Text = "Exit";
-            msMainExit.Click += msMainExit_Click;
+            msMainExit.Click += OnFileMenuExit;
             // 
             // msMainPackages
             // 
@@ -118,7 +118,6 @@
             manageSourcesToolStripMenuItem.Name = "manageSourcesToolStripMenuItem";
             manageSourcesToolStripMenuItem.Size = new Size(164, 22);
             manageSourcesToolStripMenuItem.Text = "Manage Sources";
-            manageSourcesToolStripMenuItem.Click += manageSourcesToolStripMenuItem_Click;
             // 
             // toolStripSeparator1
             // 
@@ -192,31 +191,35 @@
             // checkForUpdatesToolStripMenuItem
             // 
             checkForUpdatesToolStripMenuItem.Name = "checkForUpdatesToolStripMenuItem";
-            checkForUpdatesToolStripMenuItem.Size = new Size(171, 22);
+            checkForUpdatesToolStripMenuItem.Size = new Size(180, 22);
             checkForUpdatesToolStripMenuItem.Text = "Check for Updates";
+            checkForUpdatesToolStripMenuItem.Click += OnHelpMenuCheckForUpdates;
             // 
             // toolStripSeparator4
             // 
             toolStripSeparator4.Name = "toolStripSeparator4";
-            toolStripSeparator4.Size = new Size(168, 6);
+            toolStripSeparator4.Size = new Size(177, 6);
             // 
             // reportAProblemToolStripMenuItem
             // 
             reportAProblemToolStripMenuItem.Name = "reportAProblemToolStripMenuItem";
-            reportAProblemToolStripMenuItem.Size = new Size(171, 22);
+            reportAProblemToolStripMenuItem.Size = new Size(180, 22);
             reportAProblemToolStripMenuItem.Text = "Report a Problem ";
+            reportAProblemToolStripMenuItem.Click += OnHelpMenuReportAProblem;
             // 
             // releaseNotesToolStripMenuItem
             // 
             releaseNotesToolStripMenuItem.Name = "releaseNotesToolStripMenuItem";
-            releaseNotesToolStripMenuItem.Size = new Size(171, 22);
+            releaseNotesToolStripMenuItem.Size = new Size(180, 22);
             releaseNotesToolStripMenuItem.Text = "Release Notes";
+            releaseNotesToolStripMenuItem.Click += OnHelpMenuReleaseNotes;
             // 
             // aboutToolStripMenuItem
             // 
             aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            aboutToolStripMenuItem.Size = new Size(171, 22);
+            aboutToolStripMenuItem.Size = new Size(180, 22);
             aboutToolStripMenuItem.Text = "About";
+            aboutToolStripMenuItem.Click += OnHelpMenuAbout;
             // 
             // tcMain
             // 
@@ -392,7 +395,6 @@
             MinimumSize = new Size(960, 540);
             Name = "MainForm";
             Text = "Lawful Blade Manager";
-            Load += FormMain_Load;
             msMain.ResumeLayout(false);
             msMain.PerformLayout();
             tcMain.ResumeLayout(false);

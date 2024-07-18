@@ -135,7 +135,7 @@
             ShowInTaskbar = false;
             SizeGripStyle = SizeGripStyle.Hide;
             StartPosition = FormStartPosition.CenterParent;
-            Text = "Lawful Blade - Project Creator";
+            Text = "Lawful Blade - Preferences";
             TopMost = true;
             ResumeLayout(false);
             PerformLayout();

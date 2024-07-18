@@ -102,7 +102,7 @@ namespace LawfulBladeManager.Packages
             // Attempt to deserialize the default packages
             PackageSource defaultPackage = JsonSerializer.Deserialize<PackageSource>(jsonSource, JsonSerializerOptions.Default);
             defaultPackage.CreationDate = DateTime.Now;
-            defaultPackage.URI          = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Packages", "defaultPackages.json");
+            defaultPackage.URI          = Path.Combine(ProgramContext.ProgramPath, "Packages", "defaultPackages.json");
 
             // Save the first package source to disk
             File.WriteAllText(defaultPackage.URI, JsonSerializer.Serialize(defaultPackage, JsonSerializerOptions.Default));

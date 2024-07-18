@@ -24,7 +24,7 @@ namespace LawfulBladeManager.Dialog
         /// <param name="preferences">The current preferences</param>
         public void CopyPreferences(Preferences preferences)
         {
-            tbPackageCacheLocation.Text = Program.Preferences.PackageCacheDirectory;
+            tbPackageCacheLocation.Text = preferences.PackageCacheDirectory;
         }
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace LawfulBladeManager.Dialog
                 return;
 
             // Warn the user about side effects, make sure they're okay with them
-            if(MessageBox.Show("Are you sure you want to change the package cache location?\nYou will need to re download any cached packages!", "Lawful Blade", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+            if (MessageBox.Show("Are you sure you want to change the package cache location?\nYou will need to re download any cached packages!", "Lawful Blade", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
             {
                 // Set the package cache location option
                 tbPackageCacheLocation.Text = fbd.SelectedPath;

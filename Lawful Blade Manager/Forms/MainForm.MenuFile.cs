@@ -3,8 +3,7 @@
 namespace LawfulBladeManager.Forms
 {
 
-    // We use this (slightly awkward with Winforms) partial class to define callbacks for the Menu Bar of MainForm
-
+    // We use these (slightly awkward with Winforms) partial classes to define callbacks for the Menu Bar of MainForm
     public partial class MainForm
     {
         /// <summary>
@@ -22,5 +21,11 @@ namespace LawfulBladeManager.Forms
             if (preferencesDialog.ShowDialog() == DialogResult.OK)
                 preferencesDialog.StorePreferences(Program.Preferences);
         }
+
+        /// <summary>
+        /// Called when a user clicks the 'exit' option
+        /// </summary>
+        void OnFileMenuExit(object sender, EventArgs e) =>
+            Application.Exit();
     }
 }

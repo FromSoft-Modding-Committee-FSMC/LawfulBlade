@@ -70,13 +70,6 @@ namespace LawfulBladeManager.Forms
 
         #endregion
 
-        #region Menu Strip - File
-        private void msMainExit_Click(object sender, EventArgs e)
-        {
-            Application.Exit();
-        }
-
-        #endregion
         #region Menu Strip - Packages
         private void msMainCreatePackage_Click(object sender, EventArgs e)
         {
@@ -157,13 +150,6 @@ namespace LawfulBladeManager.Forms
         }
         #endregion
 
-        private void FormMain_Load(object sender, EventArgs e)
-        {
 
-        }
-
-        private void manageSourcesToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-        }
     }
 }
