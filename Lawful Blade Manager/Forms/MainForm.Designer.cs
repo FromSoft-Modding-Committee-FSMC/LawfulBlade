@@ -38,8 +38,8 @@
             manageSourcesToolStripMenuItem = new ToolStripMenuItem();
             toolStripSeparator1 = new ToolStripSeparator();
             msMainCreatePackage = new ToolStripMenuItem();
-            newToolStripMenuItem = new ToolStripMenuItem();
-            fromExistingPackageToolStripMenuItem = new ToolStripMenuItem();
+            msPackagesCreateNew = new ToolStripMenuItem();
+            msPackagesCreateFromExisting = new ToolStripMenuItem();
             toolStripSeparator2 = new ToolStripSeparator();
             toolsToolStripMenuItem = new ToolStripMenuItem();
             generateDeltaDirectoryToolStripMenuItem = new ToolStripMenuItem();
@@ -116,57 +116,60 @@
             // manageSourcesToolStripMenuItem
             // 
             manageSourcesToolStripMenuItem.Name = "manageSourcesToolStripMenuItem";
-            manageSourcesToolStripMenuItem.Size = new Size(164, 22);
+            manageSourcesToolStripMenuItem.Size = new Size(180, 22);
             manageSourcesToolStripMenuItem.Text = "Manage Sources";
+            manageSourcesToolStripMenuItem.Click += OnPackagesMenuManageSources;
             // 
             // toolStripSeparator1
             // 
             toolStripSeparator1.Name = "toolStripSeparator1";
-            toolStripSeparator1.Size = new Size(161, 6);
+            toolStripSeparator1.Size = new Size(177, 6);
             // 
             // msMainCreatePackage
             // 
-            msMainCreatePackage.DropDownItems.AddRange(new ToolStripItem[] { newToolStripMenuItem, fromExistingPackageToolStripMenuItem, toolStripSeparator2, toolsToolStripMenuItem });
+            msMainCreatePackage.DropDownItems.AddRange(new ToolStripItem[] { msPackagesCreateNew, msPackagesCreateFromExisting, toolStripSeparator2, toolsToolStripMenuItem });
             msMainCreatePackage.Name = "msMainCreatePackage";
-            msMainCreatePackage.Size = new Size(164, 22);
+            msMainCreatePackage.Size = new Size(180, 22);
             msMainCreatePackage.Text = "Create Package...";
-            msMainCreatePackage.Click += msMainCreatePackage_Click;
             // 
-            // newToolStripMenuItem
+            // msPackagesCreateNew
             // 
-            newToolStripMenuItem.Name = "newToolStripMenuItem";
-            newToolStripMenuItem.Size = new Size(146, 22);
-            newToolStripMenuItem.Text = "New";
+            msPackagesCreateNew.Name = "msPackagesCreateNew";
+            msPackagesCreateNew.Size = new Size(180, 22);
+            msPackagesCreateNew.Text = "New";
+            msPackagesCreateNew.Click += OnPackagesMenuCreatePackage;
             // 
-            // fromExistingPackageToolStripMenuItem
+            // msPackagesCreateFromExisting
             // 
-            fromExistingPackageToolStripMenuItem.Name = "fromExistingPackageToolStripMenuItem";
-            fromExistingPackageToolStripMenuItem.Size = new Size(146, 22);
-            fromExistingPackageToolStripMenuItem.Text = "From Existing";
+            msPackagesCreateFromExisting.Name = "msPackagesCreateFromExisting";
+            msPackagesCreateFromExisting.Size = new Size(180, 22);
+            msPackagesCreateFromExisting.Text = "From Existing";
+            msPackagesCreateFromExisting.Click += OnPackagesMenuCreatePackage;
             // 
             // toolStripSeparator2
             // 
             toolStripSeparator2.Name = "toolStripSeparator2";
-            toolStripSeparator2.Size = new Size(143, 6);
+            toolStripSeparator2.Size = new Size(177, 6);
             // 
             // toolsToolStripMenuItem
             // 
             toolsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { generateDeltaDirectoryToolStripMenuItem });
             toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
-            toolsToolStripMenuItem.Size = new Size(146, 22);
+            toolsToolStripMenuItem.Size = new Size(180, 22);
             toolsToolStripMenuItem.Text = "Tools...";
             // 
             // generateDeltaDirectoryToolStripMenuItem
             // 
             generateDeltaDirectoryToolStripMenuItem.Name = "generateDeltaDirectoryToolStripMenuItem";
-            generateDeltaDirectoryToolStripMenuItem.Size = new Size(152, 22);
+            generateDeltaDirectoryToolStripMenuItem.Size = new Size(180, 22);
             generateDeltaDirectoryToolStripMenuItem.Text = "Delta Directory";
+            generateDeltaDirectoryToolStripMenuItem.Click += this.OnPackagesMenuDeltaDirectoryTool;
             // 
             // createSourceToolStripMenuItem
             // 
             createSourceToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { newToolStripMenuItem1, fromExistingToolStripMenuItem });
             createSourceToolStripMenuItem.Name = "createSourceToolStripMenuItem";
-            createSourceToolStripMenuItem.Size = new Size(164, 22);
+            createSourceToolStripMenuItem.Size = new Size(180, 22);
             createSourceToolStripMenuItem.Text = "Create Source...";
             // 
             // newToolStripMenuItem1
@@ -191,33 +194,33 @@
             // checkForUpdatesToolStripMenuItem
             // 
             checkForUpdatesToolStripMenuItem.Name = "checkForUpdatesToolStripMenuItem";
-            checkForUpdatesToolStripMenuItem.Size = new Size(180, 22);
+            checkForUpdatesToolStripMenuItem.Size = new Size(171, 22);
             checkForUpdatesToolStripMenuItem.Text = "Check for Updates";
             checkForUpdatesToolStripMenuItem.Click += OnHelpMenuCheckForUpdates;
             // 
             // toolStripSeparator4
             // 
             toolStripSeparator4.Name = "toolStripSeparator4";
-            toolStripSeparator4.Size = new Size(177, 6);
+            toolStripSeparator4.Size = new Size(168, 6);
             // 
             // reportAProblemToolStripMenuItem
             // 
             reportAProblemToolStripMenuItem.Name = "reportAProblemToolStripMenuItem";
-            reportAProblemToolStripMenuItem.Size = new Size(180, 22);
+            reportAProblemToolStripMenuItem.Size = new Size(171, 22);
             reportAProblemToolStripMenuItem.Text = "Report a Problem ";
             reportAProblemToolStripMenuItem.Click += OnHelpMenuReportAProblem;
             // 
             // releaseNotesToolStripMenuItem
             // 
             releaseNotesToolStripMenuItem.Name = "releaseNotesToolStripMenuItem";
-            releaseNotesToolStripMenuItem.Size = new Size(180, 22);
+            releaseNotesToolStripMenuItem.Size = new Size(171, 22);
             releaseNotesToolStripMenuItem.Text = "Release Notes";
             releaseNotesToolStripMenuItem.Click += OnHelpMenuReleaseNotes;
             // 
             // aboutToolStripMenuItem
             // 
             aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            aboutToolStripMenuItem.Size = new Size(180, 22);
+            aboutToolStripMenuItem.Size = new Size(171, 22);
             aboutToolStripMenuItem.Text = "About";
             aboutToolStripMenuItem.Click += OnHelpMenuAbout;
             // 
@@ -285,7 +288,7 @@
             btLocalProject.Text = "    &Import Project";
             btLocalProject.TextImageRelation = TextImageRelation.ImageBeforeText;
             btLocalProject.UseVisualStyleBackColor = false;
-            btLocalProject.Click += btLocalProject_Click;
+            btLocalProject.Click += OnProjectImport;
             // 
             // btNewProject
             // 
@@ -306,7 +309,7 @@
             btNewProject.Text = "    &Create New Project";
             btNewProject.TextImageRelation = TextImageRelation.ImageBeforeText;
             btNewProject.UseVisualStyleBackColor = false;
-            btNewProject.Click += btNewProject_Click;
+            btNewProject.Click += OnProjectNew;
             // 
             // tpInstances
             // 
@@ -430,8 +433,8 @@
         private ToolStripMenuItem createSourceToolStripMenuItem;
         private ToolStripMenuItem preferencesToolStripMenuItem;
         private ToolStripSeparator toolStripSeparator3;
-        private ToolStripMenuItem newToolStripMenuItem;
-        private ToolStripMenuItem fromExistingPackageToolStripMenuItem;
+        private ToolStripMenuItem msPackagesCreateNew;
+        private ToolStripMenuItem msPackagesCreateFromExisting;
         private ToolStripSeparator toolStripSeparator2;
         private ToolStripMenuItem toolsToolStripMenuItem;
         private ToolStripMenuItem generateDeltaDirectoryToolStripMenuItem;

@@ -11,145 +11,55 @@ namespace LawfulBladeManager.Forms
         {
             InitializeComponent();
 
-            EnumurateProjectsInList();
+            EnumurateProjects();
         }
 
-        #region Main Tab View - Projects
-        private void btNewProject_Click(object sender, EventArgs e)
+        void EnumurateProjects()
         {
-            // This won't happen, but VS doesn't STFU about it.
-            if (Program.ProjectManager == null)
-                return;
-
-            // Show Dialog
-            using (ProjectCreateDialog pcd = new())
-            {
-                switch (pcd.ShowDialog())
-                {
-                    case DialogResult.OK:
-
-                        // Create the project
-                        BusyDialog.Instance.ShowBusy();
-
-                        // refactor this shit jfc...
-                        Program.ProjectManager.CreateProject(new ProjectCreateArgs { Name = pcd.ProjectName, Description = pcd.ProjectDescription, Destination = pcd.TargetPath, InstanceUUID = pcd.TargetInstance, CreateEmpty = pcd.EmptyProject });
-
-                        BusyDialog.Instance.HideBusy();
-                        break;
-                }
-            }
-
-            EnumurateProjectsInList();
-        }
-
-        private void btLocalProject_Click(object sender, EventArgs e)
-        {
-            if (Program.ProjectManager == null)
-                return;
-
-            // Show Dialog
-            using (OpenFileDialog ofd = new())
-            {
-                ofd.Filter = "Sword of Moonlight Project (*.som)|*.som";
-
-                switch (ofd.ShowDialog())
-                {
-                    case DialogResult.OK:
-                        Program.ProjectManager.ImportProject(ofd.FileName);
-                        break;
-                }
-            }
-
-            EnumurateProjectsInList();
-        }
-
-        private void btPackageProject_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        #endregion
-
-        #region Menu Strip - Packages
-        private void msMainCreatePackage_Click(object sender, EventArgs e)
-        {
-            if (Program.PackageManager == null)
-                return;
-
-            using (PackageCreateDialog pcd = new())
-            {
-                if (pcd.ShowDialog() == DialogResult.OK)
-                {
-                    BusyDialog.Instance.ShowBusy();
-                    PackageManager.CreatePackage(new PackageCreateArgs
-                    {
-                        SourceDirectory = pcd.PackageSource,
-                        TargetFile = pcd.PackageOutput,
-                        Name = pcd.PackageName,
-                        Description = pcd.PackageDescription,
-                        Version = pcd.PackageVersion,
-                        Authors = pcd.PackageAuthors,
-                        Tags = pcd.PackageTags,
-                        IconSource = pcd.PackageIcon,
-                        ExpectOverwrites = pcd.PackageExpectOW
-                    });
-
-                    BusyDialog.Instance.HideBusy();
-                }
-            }
-        }
-
-        private void msMainPackageToolGDD_Click(object sender, EventArgs e)
-        {
-            using (PackageDeltaDialog pdf = new())
-                pdf.ShowDialog();
-        }
-        #endregion
-
-        #region Project Callbacks
-        void EnumurateProjectsInList()
-        {
-            // Exit early if the project list is null.
-            if (Program.ProjectManager == null || Program.ProjectManager.Projects == null)
-                return;
-
-            // Clear previous project controls
-            DestroyProjectsInList();
+            // Restore project controls to cache...
+            CacheProjectControls();
 
             foreach (Project project in Program.ProjectManager.Projects)
             {
-                ProjectControl projectControl = new(project)
+                // Before we create new controls, try and grab one from the cache
+                ProjectControl? projectControl;
+
+                if (!projectControlCache.TryDequeue(out projectControl))
                 {
-                    Dock = DockStyle.Top
-                };
+                    // We failed to de-queue, so we must create a new control...
+                    projectControl = new ProjectControl(project)
+                    {
+                        Dock = DockStyle.Top,
+                    };
 
-                projectControl.OnProjectDelete += OnProjectDelete;
+                    projectControl.OnProjectDelete += OnProjectDelete;
+                    projectControl.OnProjectManagePackages += OnProjectPackages;
+                    projectControl.OnProjectGenerateRuntime += OnProjectGenerateRuntime;
+                    projectControl.OnProjectOpen += OnProjectOpen;
+                }
+                else
+                    // We recovered a project control from the cache, load it with info
+                    projectControl.LoadProject(project);
 
+                // Add project control to list
                 pcProjectList.Controls.Add(projectControl);
             }
         }
 
-        void DestroyProjectsInList()
+        void CacheProjectControls()
         {
+            // Add each project control back into the cache
             foreach (ProjectControl projectControl in pcProjectList.Controls)
             {
-                projectControl.OnProjectDelete -= OnProjectDelete;
+                // Clear it...
+                projectControl.Reset();
 
-                projectControl.ClearRetainedData();
-                projectControl.Dispose();
+                // Queue it...
+                projectControlCache.Enqueue(projectControl);
             }
 
+            // Clear the project controls list...
             pcProjectList.Controls.Clear();
         }
-
-
-        void OnProjectDelete(ProjectControl projectControl)
-        {
-            DestroyProjectsInList();
-            EnumurateProjectsInList();
-        }
-        #endregion
-
-
     }
 }

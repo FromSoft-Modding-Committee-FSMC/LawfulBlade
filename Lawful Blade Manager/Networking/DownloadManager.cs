@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.NetworkInformation;
 using System.Security.Policy;
@@ -49,6 +50,19 @@ namespace LawfulBladeManager.Networking
             }
 
             return temporaryFile;
+        }
+
+        public bool DownloadFileExists(Uri source)
+        {
+            // Make sure we're connected to the internet...
+            if (!NetworkInterface.GetIsNetworkAvailable())
+                throw new Exception("No internet connection!");
+
+            // Poll for the file by doing a web request
+            using HttpRequestMessage  request = new (HttpMethod.Head, source);
+            using HttpResponseMessage response = httpClient.Send(request);
+
+            return (response.StatusCode == HttpStatusCode.OK);
         }
     }
 }

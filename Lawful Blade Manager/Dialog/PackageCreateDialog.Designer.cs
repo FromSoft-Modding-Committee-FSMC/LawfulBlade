@@ -178,7 +178,7 @@
             pbIcon.TabIndex = 16;
             pbIcon.TabStop = false;
             ttMain.SetToolTip(pbIcon, "Icon for the package. Double click to change.");
-            pbIcon.DoubleClick += pbIcon_DoubleClick;
+            pbIcon.DoubleClick += OnDoubleClickIcon;
             // 
             // xbExpectOverwrites
             // 
@@ -232,7 +232,7 @@
             btSourceSelect.TabIndex = 13;
             btSourceSelect.Text = "Select...";
             btSourceSelect.UseVisualStyleBackColor = true;
-            btSourceSelect.Click += btSourceSelect_Click;
+            btSourceSelect.Click += OnClickSelect;
             // 
             // lbDescription
             // 
@@ -254,7 +254,7 @@
             btCancel.TabIndex = 18;
             btCancel.Text = "Ca&ncel";
             btCancel.UseVisualStyleBackColor = true;
-            btCancel.Click += btCancel_Click;
+            btCancel.Click += OnClickCancel;
             // 
             // btCreate
             // 
@@ -267,7 +267,7 @@
             btCreate.TabIndex = 17;
             btCreate.Text = "&Create";
             btCreate.UseVisualStyleBackColor = false;
-            btCreate.Click += btCreate_Click;
+            btCreate.Click += OnClickCreate;
             // 
             // lbIcon
             // 

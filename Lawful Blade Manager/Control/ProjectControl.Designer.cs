@@ -108,7 +108,6 @@
             tsFuncDelete.Name = "tsFuncDelete";
             tsFuncDelete.Size = new Size(28, 28);
             tsFuncDelete.Text = "Delete Project...";
-            tsFuncDelete.Click += tsFuncDelete_Click;
             // 
             // tsFuncPackages
             // 
@@ -117,8 +116,7 @@
             tsFuncPackages.ImageTransparentColor = Color.Magenta;
             tsFuncPackages.Name = "tsFuncPackages";
             tsFuncPackages.Size = new Size(28, 28);
-            tsFuncPackages.Text = "Manage Packages...";
-            tsFuncPackages.Click += tsFuncPackages_Click;
+
             // 
             // tsFuncExport
             // 

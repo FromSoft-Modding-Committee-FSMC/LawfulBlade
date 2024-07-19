@@ -1,12 +1,8 @@
-﻿using LawfulBladeManager.Core;
-using PnnQuant;
-using System.Buffers.Text;
-using System.Drawing.Imaging;
-using System.IO.Compression;
+﻿using System.IO.Compression;
+using System.IO.Packaging;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace LawfulBladeManager.Packages
 {
@@ -119,7 +115,7 @@ namespace LawfulBladeManager.Packages
             PackagesData.AvaliablePackages = 0;
 
             // We must download each package source and compare the creation dates to look for updates.
-            for(int i = 0; i < PackagesData.PackageSources.Length; ++i)
+            for(int i = 0; i < PackagesData.PackageSources.Count; ++i)
             {
                 // Grab the current package
                 PackageSource currentPackage = PackagesData.PackageSources[i];
@@ -165,7 +161,7 @@ namespace LawfulBladeManager.Packages
             // Set State
             State = PackageManagerState.Ready;
 
-            Logger.ShortInfo($"Loaded {PackagesData.AvaliablePackages} packages(s) from {PackagesData.PackageSources.Length} sources.");
+            Logger.ShortInfo($"Loaded {PackagesData.AvaliablePackages} packages(s) from {PackagesData.PackageSources.Count} sources.");
 
             // Save Packages
             SavePackages();
@@ -220,7 +216,10 @@ namespace LawfulBladeManager.Packages
                 IconBase64 = Package.EncodeIcon(args.IconSource)
             };
 
-            // Create package bundle
+            // Create package bundle -- if the file exists, delete it.
+            if (File.Exists(args.TargetFile))
+                File.Delete(args.TargetFile);
+
             using (ZipArchive packageBundle = ZipFile.Open(args.TargetFile, ZipArchiveMode.Create))
             {
                 // Write meta to the bundle
@@ -240,59 +239,36 @@ namespace LawfulBladeManager.Packages
         }
 
         /// <summary>
-        /// Creates a package source from a directory of packages.<br/>
-        /// For development purposes only.
+        /// Adds a new package source
         /// </summary>
-        public static void CreatePackageSource(string uri, string directory)
+        /// <param name="uri">URI of the source</param>
+        public void AddPackageSource(Uri uri)
         {
-            // Make sure the directory exists
-            if (!Directory.Exists(directory))
-                return;
+            // Download the source file...
+            string sourceFile   = Program.DownloadManager.DownloadFileSync(uri);
 
-            // Find all package files
-            List<Package> packages = new ();
+            // Read the returned file...
+            byte[] sourceBuffer = File.ReadAllBytes(sourceFile);
 
-            foreach (string filePath in Directory.EnumerateFileSystemEntries(directory, "*.paz", SearchOption.AllDirectories))
-            {
-                string jsonContent = string.Empty;
+            // Decompress and add the source...
+            PackagesData.PackageSources.Add(PackageSource.Decompress(ref sourceBuffer));
 
-                // Get Package Meta
-                using (ZipArchive packageBundle = ZipFile.OpenRead(filePath))
-                {
-                    // Get the meta file...
-                    ZipArchiveEntry? metaFile = packageBundle.GetEntry(@"package.meta.json");
+            // Save...
+            SavePackages();
+        }
 
-                    // Skip paz files with invalid meta files...
-                    if (metaFile == null)
-                        continue;
+        /// <summary>
+        /// Check if the package source is already in the manager..
+        /// </summary>
+        /// <param name="uri">URI of the source</param>
+        /// <returns>True if it is contained, false otherwise</returns>
+        public bool ContainsPackageSource(string uri)
+        {
+            foreach (PackageSource source in PackagesData.PackageSources)
+                if (source.URI == uri)
+                    return true;
 
-                    // Read the json file
-                    using (StreamReader sr = new (metaFile.Open()))
-                        jsonContent = sr.ReadToEnd();
-                }
-
-                // Make sure json content is valid.
-                if (jsonContent == string.Empty)
-                    continue;
-
-                // De Serialize the json file
-                Package? package = JsonSerializer.Deserialize<Package>(jsonContent, JsonSerializerOptions.Default);
-
-                // Add package to list if it's not null.
-                if (package != null)
-                    packages.Add(package);
-            }
-
-            // Create the package source
-            PackageSource source = new ()
-            {
-                CreationDate = DateTime.Now,
-                URI          = uri,
-                Packages     = packages.ToArray()
-            };
-
-            // Save PackageSource file to directory with packages
-            File.WriteAllText(Path.Combine(directory, "packages.json"), JsonSerializer.Serialize(source, JsonSerializerOptions.Default));
+            return false;
         }
     }
 }

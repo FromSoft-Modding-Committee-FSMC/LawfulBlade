@@ -33,7 +33,19 @@
     <Compile Update="Dialog\AboutDialog.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="Dialog\ManageSourcesDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="Dialog\PreferencesDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\MainForm.TabInstances.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\MainForm.TabProjects.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\MainForm.MenuPackages.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="Forms\MainForm.MenuHelp.cs">

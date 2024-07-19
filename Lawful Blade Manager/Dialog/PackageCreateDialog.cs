@@ -1,53 +1,76 @@
-﻿using LawfulBladeManager.Tagging;
+﻿using LawfulBladeManager.Packages;
 using LawfulBladeManager.Type;
 using System.Drawing.Imaging;
-using System.Security.Cryptography;
 
 namespace LawfulBladeManager.Dialog
 {
     public partial class PackageCreateDialog : Form
     {
-        // These properties will return the package information
-        public string PackageName => tbName.Text;
-        public string[] PackageAuthors
-        {
-            get
-            {
-                string[] strings = tbAuthors.Text.Split(';');
-                for (int i = 0; i < strings.Length; ++i)
-                    strings[i] = strings[i].Trim();
-                return strings;
-            }
-        }
-        public string[] PackageTags
-        {
-            get
-            {
-                string[] strings = tbTags.Text.Split(';');
+        /// <summary>
+        /// Arguments for the create package call.
+        /// </summary>
+        public PackageCreateArgs? CreationArguments { get; private set; }
 
-                for (int i = 0; i < strings.Length; ++i)
-                    strings[i] = strings[i].Trim();
-
-                return strings;
-            }
-        }
-        public string PackageVersion => tbVersion.Text;
-        public string PackageSource => tbSource.Text;
-        public string PackageDescription => tbDescription.Text;
-        public Bitmap PackageIcon => (Bitmap)pbIcon.Image;
-        public string PackageOutput = string.Empty;
-        public bool PackageExpectOW => xbExpectOverwrites.Checked;
-
-        public PackageCreateDialog()
+        /// <summary>
+        /// Default Constructor.<br/>
+        /// Can take an optional package as a parameter, 
+        /// </summary>
+        /// <param name="package">Optional. Loads information from this package as the defaults.</param>
+        public PackageCreateDialog(Package? package = null)
         {
             InitializeComponent();
+
+            // If package is null, we are creating one from scratch.
+            if (package == null)
+                return;
+
+            // Load initial data from the supplied package...
+            tbName.Text        = package.Name;
+            tbDescription.Text = package.Description;
+            tbVersion.Text     = package.Version;
+            tbAuthors.Text     = MergeStringSpecial(package.Authors);
+            tbTags.Text        = MergeStringSpecial(package.Tags);
+            tbSource.Text      = string.Empty;  // Source will not be copied - it is assumed a new source will be provided.
+            pbIcon.Image       = Package.DecodeIcon(package.IconBase64);
         }
 
-        private void btCreate_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Splits the tags or authors string into an array
+        /// </summary>
+        /// <param name="str">String, seperated with colons</param>
+        /// <returns>String array</returns>
+        static string[] SplitStringSpecial(string str)
+        {
+            // Basic sanity: if the last character is a semi colon, the user didn't know any better. is oki.
+            str = str.TrimEnd(';');
+
+            // Split the string with semi colon
+            string[] splits = str.Split(';');
+
+            // Clean up each string of spaces
+            for(int i = 0; i < splits.Length; i++)
+                splits[i] = splits[i].Trim();
+
+            return splits;
+        }
+
+        /// <summary>
+        /// Merges the tags or authors string array into a single string
+        /// </summary>
+        /// <param name="strs">String array</param>
+        /// <returns>String, seperated with colons</returns>
+        static string MergeStringSpecial(string[] strs) =>
+            string.Join(';', strs);
+
+        /// <summary>
+        /// Callback event for when the user clicks the "Create" button
+        /// </summary>
+        void OnClickCreate(object sender, EventArgs e)
         {
             // Data Validation
             try
             {
+                // Validate simple properties
                 if (tbName.Text == string.Empty)
                     throw new Exception("The package field 'Name' must be filled!");
                 if (tbAuthors.Text == string.Empty)
@@ -61,46 +84,69 @@ namespace LawfulBladeManager.Dialog
                 if (!PathExtensions.IsValid(tbSource.Text))
                     throw new Exception("The package source is an invalid path!");
 
-                // Validate Each Tag
-                foreach (string tag in tbTags.Text.Split(';'))
-                {
-                    string fixedTag = tag.Trim();
-                    if (fixedTag == string.Empty || !fixedTag.IsAlphanumeric())
-                        throw new Exception($"The tag '{fixedTag}' is invalid (tags must only contain letters/numbers!)");
-                }
+                // Validate Tags
+                string[] tempTags = SplitStringSpecial(tbTags.Text);
 
+                if(tempTags.Length == 0)
+                    throw new Exception($"You must specify at least one tag! ('Runtime', 'Project', 'Editor')\n\nCheck the documentation for a list of default tags!");
+
+                foreach (string tag in tempTags)
+                    if (tag == string.Empty || !tag.IsAlphanumeric())
+                        throw new Exception($"The tag '{tag}' is invalid (tags must only contain letters/numbers!)");
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, @"Lawful Blade", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show(ex.Message, "Lawful Blade", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
 
-            // Ask for the output directory
-            using (SaveFileDialog sfd = new())
+            // Lets find the output directory
+            using SaveFileDialog sfd = new()
             {
-                // Configure Dialog
-                sfd.Filter = $"Possibly A Zip (*.paz)|*.paz";
-                sfd.InitialDirectory = tbSource.Text;
+                Filter           = "Possibly A Zip (*.paz)|*.paz",
+                DefaultExt       = "paz",
+                FileName         = "package.paz",
 
-                // Do Dialog (with logic inversion)
-                if (sfd.ShowDialog() != DialogResult.OK)
-                    return;
+                InitialDirectory = tbSource.Text,
+                CheckPathExists  = true,
+                CheckWriteAccess = true,
+            };
+                
+            if (sfd.ShowDialog() != DialogResult.OK)
+                return;
 
-                PackageOutput = sfd.FileName;
-            }
+            // Set the creation arguments
+            CreationArguments = new PackageCreateArgs
+            {
+                SourceDirectory  = tbSource.Text,
+                TargetFile       = sfd.FileName,
+                Name             = tbName.Text,
+                Description      = tbDescription.Text,
+                Version          = tbVersion.Text,
+                Authors          = SplitStringSpecial(tbAuthors.Text),
+                Tags             = SplitStringSpecial(tbTags.Text),
+                IconSource       = (Bitmap)pbIcon.Image,
+                ExpectOverwrites = xbExpectOverwrites.CheckState == CheckState.Checked
+            };
 
+            // Finish with the dialog by setting the result to OK and closing it.
             DialogResult = DialogResult.OK;
             Close();
         }
 
-        private void btCancel_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Callback event for when the user clicks the "Cancel" button
+        /// </summary>
+        void OnClickCancel(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             Close();
         }
 
-        private void btSourceSelect_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Callback event for when the user clicks the "Select" button
+        /// </summary>
+        void OnClickSelect(object sender, EventArgs e)
         {
             using (FolderBrowserDialog fbd = new())
             {
@@ -113,29 +159,37 @@ namespace LawfulBladeManager.Dialog
             }
         }
 
-        private void pbIcon_DoubleClick(object sender, EventArgs e)
+        /// <summary>
+        /// Callback event for when the user double clicks the icon
+        /// </summary>
+        void OnDoubleClickIcon(object sender, EventArgs e)
         {
-            using (OpenFileDialog ofd = new())
+            // Create the open file dialog
+            using OpenFileDialog ofd = new()
             {
-                // Configure the dialog
-                ofd.Filter = $"All Files (*.*)|*.*";
-                foreach (ImageCodecInfo codec in ImageCodecInfo.GetImageDecoders())
-                    ofd.Filter = $"{ofd.Filter}|{codec.FormatDescription} Files ({codec.FilenameExtension})|{codec.FilenameExtension}";
+                Filter = $"All Files (*.*)|*.*"
+            };
 
-                switch (ofd.ShowDialog())
-                {
-                    case DialogResult.OK:
-                        try
-                        {
-                            pbIcon.Image = Image.FromFile(ofd.FileName);
-                        }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show(ex.Message, @"Lawful Blade", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                            return;
-                        }
-                        break;
-                }
+            // Add any additional supported image codec...
+            foreach(ImageCodecInfo imageCodec in ImageCodecInfo.GetImageDecoders())
+                ofd.Filter = $"{ofd.Filter}|{imageCodec.FormatDescription} Files ({imageCodec.FilenameExtension})|{imageCodec.FilenameExtension}";
+
+            // Make sure a file was selected...
+            if (ofd.ShowDialog() != DialogResult.OK)
+                return;
+
+            // Try to create the icon
+            try
+            {
+                pbIcon.Image = Image.FromFile(ofd.FileName);
+            }
+            catch (Exception ex)
+            {
+                // we failed - Set back to default
+                pbIcon.Image = Properties.Resources._128x_package;
+
+                // tell the user something fucked up.
+                MessageBox.Show(ex.Message, "Lawful Blade", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
         }
     }

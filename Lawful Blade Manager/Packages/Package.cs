@@ -70,9 +70,9 @@ namespace LawfulBladeManager.Packages
             File.Exists(Path.Combine(Program.Preferences.PackageCacheDirectory, $"{UUID}_{Version}.paz"));
 
         /// <summary>
-        /// Global helper to decode a PNG from a gzip'ed base64 stream
+        /// Global helper to decode a PNG from a base64 stream
         /// </summary>
-        /// <param name="base64">The PNG file as compressed base64.</param>
+        /// <param name="base64">The PNG file as base64</param>
         /// <returns>The PNG as a bitmap object</returns>
         public static Bitmap DecodeIcon(string? base64)
         {
@@ -93,10 +93,10 @@ namespace LawfulBladeManager.Packages
         }
 
         /// <summary>
-        /// Global helper to encode a PNG as a gzip'ed base64 stream
+        /// Global helper to encode a PNG as a base64 string
         /// </summary>
         /// <param name="bitmap">The source png as a bitmap object</param>
-        /// <returns>The png encoded as base64 and compressed with gzip</returns>
+        /// <returns>The png encoded as base64</returns>
         public static string EncodeIcon(Bitmap? bitmap)
         {
             string result = string.Empty;
@@ -121,6 +121,33 @@ namespace LawfulBladeManager.Packages
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Loads a package from disc...
+        /// </summary>
+        /// <param name="file">The package file</param>
+        /// <returns>The package meta</returns>
+        public static Package Load(string file)
+        {
+            // Open the file as a zip archive
+            using ZipArchive paz = ZipFile.OpenRead(file);
+
+            // Get the meta entry (or null)
+            ZipArchiveEntry? metaEntry = paz.GetEntry(@"package.meta.json") ?? throw new Exception($"Invalid Package: '{file}'");
+
+            // Deserialize the meta entry
+            using (StreamReader sr = new (metaEntry.Open()))
+            {
+                // Read the json
+                string metaJson = sr.ReadToEnd();
+
+                // Deserialize it...
+                Package? metaTemp = JsonSerializer.Deserialize<Package>(metaJson);
+
+                // Return the loaded package.
+                return metaTemp ?? throw new Exception($"Invalid Package: '{file}'");
+            }
         }
     }
 
@@ -159,6 +186,43 @@ namespace LawfulBladeManager.Packages
         [JsonInclude]
         public Package[] Packages { get; set; }
 
+        /// <summary>
+        /// Creates a new package source
+        /// </summary>
+        /// <param name="uri">the -final- location of the source (i.e your webserver)</param>
+        /// <param name="packages">Packages to include in the source</param>
+        /// <returns>A package source</returns>
+        public static PackageSource Create(string uri, List<Package> packages)
+        {
+            // Create the package source
+            PackageSource source = new()
+            {
+                CreationDate = DateTime.Now,
+                URI = uri,
+                Packages = packages.ToArray()
+            };
+
+            return source;
+        }
+
+        /// <summary>
+        /// Opens a previously created source and returns a buffer
+        /// </summary>
+        /// <param name="file">The package source file</param>
+        /// <returns>A buffer containing the content of the source</returns>
+        public static byte[] Open(string file)
+        {
+            if (!File.Exists(file))
+                throw new Exception($"File does not exist: '{file}'");
+
+            return File.ReadAllBytes(file);
+        }
+
+        /// <summary>
+        /// Compresses a package source with zstd, and returns a buffer with the compressed data
+        /// </summary>
+        /// <param name="source">The source to compress</param>
+        /// <returns>Compressed buffer</returns>
         public static byte[] Compress(ref PackageSource source)
         {
             // Serialize The Source
@@ -168,16 +232,21 @@ namespace LawfulBladeManager.Packages
             byte[] bufferedSource = Encoding.UTF8.GetBytes(serializedSource);
 
             // Compress as ZSTD and return it
-            using (Compressor zstdCompressor = new Compressor(5))
+            using (Compressor zstdCompressor = new (8))
                 return zstdCompressor.Wrap(bufferedSource).ToArray();
         }
 
+        /// <summary>
+        /// Decompresses a package source and returns it.
+        /// </summary>
+        /// <param name="source">compressed package source buffer</param>
+        /// <returns>The decompressed package source</returns>
         public static PackageSource Decompress(ref byte[] source)
         {
             byte[] decompressedSource;
 
             // Decompress the byte stream from ZSTD
-            using (Decompressor zstdDecompressor = new Decompressor())
+            using (Decompressor zstdDecompressor = new ())
                 decompressedSource = zstdDecompressor.Unwrap(source).ToArray();
 
             // Get the source as a string...
@@ -213,7 +282,7 @@ namespace LawfulBladeManager.Packages
         /// </summary>
         public static PackageData Default => new()
         {
-            PackageSources = new PackageSource[] {
+            PackageSources = new List<PackageSource>() {
                     new PackageSource
                     {
                         CreationDate = DateTime.MinValue,
@@ -226,7 +295,7 @@ namespace LawfulBladeManager.Packages
         };
 
         [JsonInclude]
-        public PackageSource[] PackageSources;
+        public List<PackageSource> PackageSources;
 
         [JsonInclude]
         public int AvaliablePackages;
