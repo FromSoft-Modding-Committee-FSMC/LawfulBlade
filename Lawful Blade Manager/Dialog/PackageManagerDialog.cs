@@ -46,10 +46,10 @@ namespace LawfulBladeManager.Forms
                 BusyDialog.Instance.ShowBusy();
 
                 // We go through each package source and package currently in the mananger...
-                foreach (PackageSource source in Program.PackageManager.PackagesData.PackageSources)
+                foreach (PackageRepository repo in Program.PackageManager.Repositories)
                 {
                     // With each source...
-                    foreach (Package package in source.Packages)
+                    foreach (Package package in repo.Packages)
                     {
                         // Is this package included by the super filter?
                         if (!SuperFilter.Contains(package.Tags))

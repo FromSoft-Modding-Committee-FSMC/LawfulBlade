@@ -3,7 +3,6 @@ using LawfulBladeManager.Instances;
 using LawfulBladeManager.Networking;
 using LawfulBladeManager.Packages;
 using LawfulBladeManager.Projects;
-using System.Text.Json;
 
 namespace LawfulBladeManager
 {

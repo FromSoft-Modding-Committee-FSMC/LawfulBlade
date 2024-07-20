@@ -10,20 +10,54 @@ namespace LawfulBladeManager.Forms
     public partial class MainForm
     {
         // Define the URL for bug reports, and file path for release notes
-        const string reportAProblemURL   = @"https://github.com/FromSoft-Modding-Committee-FSMC/Lawful-Blade/issues";
         readonly string releaseNotesFile = Path.Combine(ProgramContext.ProgramPath, $"release-notes-v{ProgramContext.Version.Remove(c:'.')}.txt");
+
+        // I scrub these URLs from the repository, you have to add your own if you want to build the project.
+        const string reportAProblemURL = "";
+        const string updatesURL        = "";
 
         /// <summary>
         /// Called when a user clicks the 'Check For Updates' option
         /// </summary>
-        void OnHelpMenuCheckForUpdates(object sender, EventArgs e) =>
-            MessageBox.Show("Unimplemented", "Lawful Blade", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        void OnHelpMenuCheckForUpdates(object sender, EventArgs e)
+        {
+            if(updatesURL == string.Empty)
+            {
+                MessageBox.Show("'websitesURL' field was not set in 'MainForm.MenuHelp.cs'!", "Lawful Blade", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // Download the version file...
+            string tempFile = Program.DownloadManager.DownloadFileSync(new Uri(updatesURL));
+
+            // Inspect the version - are we up to date?
+            string netVLine = File.ReadAllText(tempFile);
+
+            if (netVLine == ProgramContext.Version)
+            {
+                MessageBox.Show("Up to date!", "Lawful Blade", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            // Not up to date...
+            if (MessageBox.Show($"A new version of Lawful Blade is avaliable!\nYours: {ProgramContext.Version}, Avaliable: {netVLine}\nDo you want to update?", "Lawful Blade", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.No)
+                return;
+
+            // TO-DO:
+            //  Update logic and updater tool...
+        }
 
         /// <summary>
         /// Called when a user clicks the 'Report a Problem' option
         /// </summary>
         void OnHelpMenuReportAProblem(object sender, EventArgs e)
         {
+            if (reportAProblemURL == string.Empty)
+            {
+                MessageBox.Show("'reportAProblemURL' field was not set in 'MainForm.MenuHelp.cs'!", "Lawful Blade", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             try
             {
                 if (!NetworkInterface.GetIsNetworkAvailable())

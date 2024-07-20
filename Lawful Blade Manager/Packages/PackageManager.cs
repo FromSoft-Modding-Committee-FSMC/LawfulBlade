@@ -1,4 +1,6 @@
-﻿using System.IO.Compression;
+﻿using LawfulBladeManager.Type;
+using System.Diagnostics;
+using System.IO.Compression;
 using System.IO.Packaging;
 using System.Security.Cryptography;
 using System.Text;
@@ -13,29 +15,35 @@ namespace LawfulBladeManager.Packages
         public event OnVoidEvent? OnPackagePrepareCompleted;
 
         /// <summary>
-        /// The path of the package declaration file.
+        /// Current state of the package manager...
         /// </summary>
-        public static string PackagesFile { get; private set; } = Path.Combine(ProgramContext.AppDataPath, @"packages.json");
-
-        /// <summary>
-        /// Data for all packages.
-        /// </summary>
-        public PackageData PackagesData;
-
         public PackageManagerState State { get; private set; } = PackageManagerState.None;
 
         /// <summary>
-        /// Default Constructor. Responsible for loading packages from the package declaration file.
+        /// Path to the repositories file.
+        /// </summary>
+        public static string RepositoriesFile { get; private set; } = Path.Combine(ProgramContext.AppDataPath, @"repositories.json");
+
+        /// <summary>
+        /// A list of repositories
+        /// </summary>
+        public List<PackageRepository> Repositories { get; private set; } = new();
+
+        /// <summary>
+        /// The number of repositories
+        /// </summary>
+        public int RepositoryCount { get; private set; } = 0;
+
+        /// <summary>
+        /// The number of packages
+        /// </summary>
+        public int PackageCount    { get; private set; } = 0;
+
+        /// <summary>
+        /// Default Constructor. Responsible for loading cached repositories
         /// </summary>
         public PackageManager()
         {
-            if (!LoadPackages())
-                DefaultPackages();
-
-            Logger.ShortInfo("Preparing packages...");
-            Task.Run(PreparePackages)
-                .ContinueWith(PreparePackagesFinished);
-
             // If the package cache directory doesn't exist, we can create it now.
             if (!Directory.Exists(Program.Preferences.PackageCacheDirectory))
             {
@@ -44,127 +52,90 @@ namespace LawfulBladeManager.Packages
 
                 Directory.CreateDirectory(Program.Preferences.PackageCacheDirectory);
             }
-                
+
+            // Attempt to load cached repositories. If we fail, initialize default ones...
+            if (!LoadRepositories())
+                DefaultRepositories();
+
+            // Start a task to prepare our repositories...
+            Logger.ShortInfo("Preparing repositories...");
+            Task.Run(PrepareRepositories)
+                .ContinueWith(PrepareRepositoriesFinished);
+
             // Save packages on shutdown
-            Program.OnShutdown += SavePackages;
+            Program.OnShutdown += SaveRepositories;
         }
 
         /// <summary>
-        /// Load all packages from the package declaration file.
+        /// Load all repositories from the file system
         /// </summary>
         /// <returns>True on success, False otherwise.</returns>
-        bool LoadPackages()
+        bool LoadRepositories()
         {
-            Logger.ShortInfo("Loading packages...");
+            Logger.ShortInfo("Loading cached repositories...");
 
-            if (!File.Exists(PackagesFile))
+            if (!File.Exists(RepositoriesFile))
                 return false;
 
-            // Check Each Package List
-            PackagesData = JsonSerializer.Deserialize<PackageData>(File.ReadAllText(PackagesFile));
+            // Load the repositories file...
+            PackageRepository[]? tempRepositories = JsonSerializer.Deserialize<PackageRepository[]>(File.ReadAllText(RepositoriesFile), JsonSerializerOptions.Default);
 
+            // Check if we successfully loaded the file...
+            if (tempRepositories == null)
+            {
+                Logger.ShortError("Couldn't load cached repositories! The file is probably corrupt!");
+                return false;
+            }
+
+            // We did successfully load it.
+            Repositories = tempRepositories.ToList();
+
+            // Success - return true.
             return true;
         }
 
         /// <summary>
-        /// Saves PackagesData to the file system.
+        /// Saves cached repositories to the file system.
         /// </summary>
-        /// <returns></returns>
-        bool SavePackages()
+        bool SaveRepositories()
         {
-            File.WriteAllText(PackagesFile, JsonSerializer.Serialize(PackagesData, JsonSerializerOptions.Default));
+            File.WriteAllText(RepositoriesFile, JsonSerializer.Serialize(Repositories, JsonSerializerOptions.Default));
             return true;
         }
             
         /// <summary>
-        /// Initializes default packages for lawful blade
+        /// Initializes default repositories for lawful blade
         /// </summary>
-        void DefaultPackages()
+        void DefaultRepositories()
         {
-            Logger.ShortWarn("Writing Default PackagesData...");
 
-            // Set PackagesData to the default
-            PackagesData = PackageData.Default;
-
-            // Grab default packages from resources...
-            string jsonSource = string.Empty;
-
-            using (StreamReader sr = new (new MemoryStream(Properties.Resources.defaultPackages)))
-                jsonSource = sr.ReadToEnd();
-
-            if (jsonSource == null)
-                throw new Exception("Cannot get default packages from resources");
-
-            // Attempt to deserialize the default packages
-            PackageSource defaultPackage = JsonSerializer.Deserialize<PackageSource>(jsonSource, JsonSerializerOptions.Default);
-            defaultPackage.CreationDate = DateTime.Now;
-            defaultPackage.URI          = Path.Combine(ProgramContext.ProgramPath, "Packages", "defaultPackages.json");
-
-            // Save the first package source to disk
-            File.WriteAllText(defaultPackage.URI, JsonSerializer.Serialize(defaultPackage, JsonSerializerOptions.Default));
         }
 
         /// <summary>
-        /// Prepares packages by polling for updates, deleting invalid caches etc...
+        /// Prepares repositories by polling for updates etc
         /// </summary>
-        void PreparePackages()
+        void PrepareRepositories()
         {
-            // Set State
+            // Set State for preparing packages...
             State = PackageManagerState.PreparingPackages;
 
-            PackagesData.AvaliablePackages = 0;
+            // Set the number of repositories
+            RepositoryCount = Repositories.Count;
 
-            // We must download each package source and compare the creation dates to look for updates.
-            for(int i = 0; i < PackagesData.PackageSources.Count; ++i)
-            {
-                // Grab the current package
-                PackageSource currentPackage = PackagesData.PackageSources[i];
-
-                // Convert the URI string into a URI object
-                if (!Uri.TryCreate(currentPackage.URI, UriKind.RelativeOrAbsolute, out Uri? sourceUri))
-                    Logger.ShortError($"Invalid package source URI = '{currentPackage.URI}'");
-
-                if (sourceUri == null)
-                    continue;
-
-                // Attempt to download the package source.
-                string localFile;
-
-                try
-                {
-                    localFile = Program.DownloadManager.DownloadFileSync(sourceUri);
-                }
-                catch (Exception ex)
-                {
-                    Logger.ShortError($"Couldn't download package source '{currentPackage.URI}':\n\t{ex.Message}");
-                    continue;
-                }
-
-                // De serialize the package source
-                currentPackage = JsonSerializer.Deserialize<PackageSource>(File.ReadAllText(localFile), JsonSerializerOptions.Default);
-
-                //
-                // TO-DO: Update Logic
-                //
-
-                // Increment the number of avaliable packages.
-                PackagesData.AvaliablePackages += currentPackage.Packages.Length;
-            }
+            // Count the number of packages...
+            foreach (PackageRepository repo in Repositories)
+                PackageCount += repo.Packages.Length;
         }
 
         /// <summary>
-        /// Called by the prepare packages task when PreparePackages has been completed.
+        /// Called by the prepare repositories task on completion.
         /// </summary>
-        /// <param name="obj"></param>
-        void PreparePackagesFinished(Task obj)
+        void PrepareRepositoriesFinished(Task obj)
         {
             // Set State
             State = PackageManagerState.Ready;
 
-            Logger.ShortInfo($"Loaded {PackagesData.AvaliablePackages} packages(s) from {PackagesData.PackageSources.Count} sources.");
-
-            // Save Packages
-            SavePackages();
+            Logger.ShortInfo($"Loaded {PackageCount} packages(s) from {RepositoryCount} repositories!");
 
             // Invoke any events waiting for packages to complete...
             OnPackagePrepareCompleted?.Invoke();
@@ -178,7 +149,7 @@ namespace LawfulBladeManager.Packages
         {
             // Get the directory of the package
             string? packageDirectory = Path.GetDirectoryName(args.TargetFile);
-            if (packageDirectory == null)   // Would never happen but C# doesn't STFU
+            if (packageDirectory == null)   // Should never happen but C# doesn't STFU
                 return;
 
             // Find package files
@@ -239,35 +210,106 @@ namespace LawfulBladeManager.Packages
         }
 
         /// <summary>
-        /// Adds a new package source
+        /// Creates a new package repository in the file system.
         /// </summary>
-        /// <param name="uri">URI of the source</param>
-        public void AddPackageSource(Uri uri)
+        /// <param name="args">Properties to create the package repository with</param>
+        public static void CreateRepository(PackageRepositoryCreateArgs args)
         {
-            // Download the source file...
-            string sourceFile   = Program.DownloadManager.DownloadFileSync(uri);
+            // Generate a safe file name using the package name...
+            string repoFilename = args.Name.Replace(" ", "_");    // Replace spaces with underscores....
 
-            // Read the returned file...
-            byte[] sourceBuffer = File.ReadAllBytes(sourceFile);
+            // Generate directories and filepaths
+            string infFile = Path.Combine(args.OutputDirectory, $"{repoFilename}.inf");
+            string cpkFile = Path.Combine(args.OutputDirectory, $"{repoFilename}.cpk");
+            string bundles = Path.Combine(args.OutputDirectory, repoFilename);
 
-            // Decompress and add the source...
-            PackagesData.PackageSources.Add(PackageSource.Decompress(ref sourceBuffer));
+            if (!Directory.Exists(bundles))
+                Directory.CreateDirectory(bundles);
 
-            // Save...
-            SavePackages();
+            // Create the info data for serialization, then serialize and write it to the file system.
+            PackageRepositoryInfo info = new PackageRepositoryInfo
+            {
+                Name         = args.Name,
+                Description  = args.Description,
+                CreationDate = DateTime.Now,
+                // The URI field is only used for the local cache.
+                URI          = string.Empty
+            };
+
+            File.WriteAllText(infFile, JsonSerializer.Serialize(info, JsonSerializerOptions.Default));
+
+            // Create the package list and copy bundles...
+            List<Package> bundleList = new();
+
+            foreach(string bundleFile in args.BundleSources)
+            {
+                // Load the package
+                Package tempPackage = Package.Load(bundleFile);
+
+                // Get the filename and target path for the bundle
+                string? bundleFileName = Path.GetFileName(bundleFile) ?? throw new Exception($"Couldn't get package filename! '{bundleFile}'");
+                string  bundleFilePath = Path.Combine(bundles, bundleFileName);
+
+                // Alter the URI to be relative to the inf and cpk files...
+                tempPackage.BundleSourceUri = bundleFileName;
+
+                // Add to the list of packages to get bundle-ized
+                bundleList.Add(tempPackage);
+
+                // Copy the bundle file relative to the inf and cpk files...
+                File.Copy(bundleFile, Path.Combine(bundles, bundleFileName), true);
+            }
+                
+            PackageRepository.SaveBundle(cpkFile, bundleList.ToArray());
         }
 
         /// <summary>
-        /// Check if the package source is already in the manager..
+        /// Adds a new repository to the package manager
+        /// </summary>
+        /// <param name="uri">Base URI of the repository</param>
+        public void AddRepository(Uri uri)
+        {
+            // Download the repository...
+            Uri fileUri       = uri.Append(".inf");
+            string fileInfo   = Program.DownloadManager.DownloadFileSync(fileUri);
+
+            Uri bundleUri     = uri.Append(".cpk");
+            string fileBundle = Program.DownloadManager.DownloadFileSync(bundleUri);
+
+            // Create a repository object with the downloaded things...
+            PackageRepositoryInfo info   = PackageRepository.LoadInfo(fileInfo);
+            Package[] bundle             = PackageRepository.LoadBundle(fileBundle);
+
+            // Add URI to the info field for the local cache...
+            info.URI = uri.ToString();
+
+            PackageRepository repository = new PackageRepository(info, bundle);
+
+            // Add repository to the repository list...
+            Repositories.Add(repository);
+
+            // Save cached repositories...
+            SaveRepositories();
+        }
+
+        /// <summary>
+        /// Check if a repository already exists in the manager.
         /// </summary>
         /// <param name="uri">URI of the source</param>
+        /// <param name="repository">[OUT] Reference to the package repository</param>
         /// <returns>True if it is contained, false otherwise</returns>
-        public bool ContainsPackageSource(string uri)
+        public bool FindRepositoryByURI(string uri, out PackageRepository? repository)
         {
-            foreach (PackageSource source in PackagesData.PackageSources)
-                if (source.URI == uri)
-                    return true;
+            foreach (PackageRepository repo in Repositories)
+            {
+                if (repo.Info.URI != uri)
+                    continue;
 
+                repository = repo;
+                return true;
+            }
+
+            repository = null;
             return false;
         }
     }

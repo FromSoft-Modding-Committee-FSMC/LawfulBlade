@@ -1,6 +1,6 @@
 ﻿namespace LawfulBladeManager.Dialog
 {
-    partial class ManageSourcesDialog
+    partial class RepositoryManagerDialog
     {
         /// <summary>
         /// Required designer variable.
@@ -29,16 +29,19 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ManageSourcesDialog));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RepositoryManagerDialog));
             lbTitle = new Label();
             ttPrimary = new ToolTip(components);
             lvSourceList = new ListView();
-            clSourceURI = new ColumnHeader();
-            clSourceDate = new ColumnHeader();
-            clSourcePackageCount = new ColumnHeader();
+            clName = new ColumnHeader();
+            clDescription = new ColumnHeader();
+            clCreationDate = new ColumnHeader();
+            clURI = new ColumnHeader();
+            clPackageCount = new ColumnHeader();
             btSourceAdd = new Button();
             btSourceRemove = new Button();
             tbSourceField = new TextBox();
+            btDone = new Button();
             SuspendLayout();
             // 
             // lbTitle
@@ -48,48 +51,58 @@
             lbTitle.ForeColor = SystemColors.ButtonFace;
             lbTitle.Location = new Point(12, 9);
             lbTitle.Name = "lbTitle";
-            lbTitle.Size = new Size(182, 30);
+            lbTitle.Size = new Size(222, 30);
             lbTitle.TabIndex = 0;
-            lbTitle.Text = "Manage Sources...";
+            lbTitle.Text = "Manage Repositories...";
             // 
             // lvSourceList
             // 
             lvSourceList.BackColor = Color.FromArgb(32, 32, 32);
-            lvSourceList.Columns.AddRange(new ColumnHeader[] { clSourceURI, clSourceDate, clSourcePackageCount });
+            lvSourceList.Columns.AddRange(new ColumnHeader[] { clName, clDescription, clCreationDate, clURI, clPackageCount });
             lvSourceList.ForeColor = SystemColors.ButtonFace;
             lvSourceList.FullRowSelect = true;
             lvSourceList.HeaderStyle = ColumnHeaderStyle.Nonclickable;
             lvSourceList.Location = new Point(12, 42);
             lvSourceList.MultiSelect = false;
             lvSourceList.Name = "lvSourceList";
-            lvSourceList.Size = new Size(600, 289);
+            lvSourceList.Size = new Size(600, 329);
             lvSourceList.TabIndex = 2;
             ttPrimary.SetToolTip(lvSourceList, "All current sources registered with Lawful Blade.");
             lvSourceList.UseCompatibleStateImageBehavior = false;
             lvSourceList.View = View.Details;
             // 
-            // clSourceURI
+            // clName
             // 
-            clSourceURI.Text = "URI";
-            clSourceURI.Width = 300;
+            clName.Text = "Name";
+            clName.Width = 96;
             // 
-            // clSourceDate
+            // clDescription
             // 
-            clSourceDate.Text = "Creation Date";
-            clSourceDate.Width = 128;
+            clDescription.Text = "Description";
+            clDescription.Width = 256;
             // 
-            // clSourcePackageCount
+            // clCreationDate
             // 
-            clSourcePackageCount.Text = "Package Count";
-            clSourcePackageCount.TextAlign = HorizontalAlignment.Center;
-            clSourcePackageCount.Width = 128;
+            clCreationDate.Text = "Creation Date";
+            clCreationDate.Width = 128;
+            // 
+            // clURI
+            // 
+            clURI.Text = "URI";
+            clURI.Width = 256;
+            // 
+            // clPackageCount
+            // 
+            clPackageCount.Text = "Package Count";
+            clPackageCount.TextAlign = HorizontalAlignment.Center;
+            clPackageCount.Width = 96;
             // 
             // btSourceAdd
             // 
             btSourceAdd.BackColor = Color.FromArgb(32, 192, 32);
             btSourceAdd.FlatStyle = FlatStyle.Popup;
             btSourceAdd.ForeColor = SystemColors.ButtonFace;
-            btSourceAdd.Location = new Point(456, 337);
+            btSourceAdd.Location = new Point(456, 377);
             btSourceAdd.Name = "btSourceAdd";
             btSourceAdd.Size = new Size(75, 23);
             btSourceAdd.TabIndex = 12;
@@ -103,7 +116,7 @@
             btSourceRemove.BackColor = Color.FromArgb(192, 32, 32);
             btSourceRemove.FlatStyle = FlatStyle.Popup;
             btSourceRemove.ForeColor = SystemColors.ButtonFace;
-            btSourceRemove.Location = new Point(537, 337);
+            btSourceRemove.Location = new Point(537, 377);
             btSourceRemove.Name = "btSourceRemove";
             btSourceRemove.Size = new Size(75, 23);
             btSourceRemove.TabIndex = 13;
@@ -116,17 +129,31 @@
             tbSourceField.BackColor = Color.FromArgb(32, 32, 32);
             tbSourceField.BorderStyle = BorderStyle.FixedSingle;
             tbSourceField.ForeColor = SystemColors.ButtonFace;
-            tbSourceField.Location = new Point(12, 337);
+            tbSourceField.Location = new Point(12, 377);
             tbSourceField.Name = "tbSourceField";
             tbSourceField.Size = new Size(438, 23);
             tbSourceField.TabIndex = 3;
             // 
-            // ManageSourcesDialog
+            // btDone
+            // 
+            btDone.BackColor = Color.FromArgb(120, 66, 135);
+            btDone.FlatStyle = FlatStyle.Popup;
+            btDone.ForeColor = SystemColors.ButtonFace;
+            btDone.Location = new Point(537, 406);
+            btDone.Name = "btDone";
+            btDone.Size = new Size(75, 23);
+            btDone.TabIndex = 14;
+            btDone.Text = "Done";
+            btDone.UseVisualStyleBackColor = false;
+            btDone.Click += OnClickDone;
+            // 
+            // RepositoryManagerDialog
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(32, 32, 32);
             ClientSize = new Size(624, 441);
+            Controls.Add(btDone);
             Controls.Add(btSourceRemove);
             Controls.Add(btSourceAdd);
             Controls.Add(tbSourceField);
@@ -139,11 +166,11 @@
             MdiChildrenMinimizedAnchorBottom = false;
             MinimizeBox = false;
             MinimumSize = new Size(640, 480);
-            Name = "ManageSourcesDialog";
+            Name = "RepositoryManagerDialog";
             ShowInTaskbar = false;
             SizeGripStyle = SizeGripStyle.Hide;
             StartPosition = FormStartPosition.CenterParent;
-            Text = "Lawful Blade - Manage Sources...";
+            Text = "Lawful Blade - Manage Repositories...";
             TopMost = true;
             Load += OnDialogLoad;
             ResumeLayout(false);
@@ -155,11 +182,14 @@
         private Label lbTitle;
         private ToolTip ttPrimary;
         private ListView lvSourceList;
-        private ColumnHeader clSourceDate;
-        private ColumnHeader clSourceURI;
-        private ColumnHeader clSourcePackageCount;
         private TextBox tbSourceField;
         private Button btSourceAdd;
         private Button btSourceRemove;
+        private Button btDone;
+        private ColumnHeader clName;
+        private ColumnHeader clDescription;
+        private ColumnHeader clCreationDate;
+        private ColumnHeader clURI;
+        private ColumnHeader clPackageCount;
     }
 }

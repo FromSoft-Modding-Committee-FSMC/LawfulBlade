@@ -1,8 +1,5 @@
 ﻿using LawfulBladeManager.Dialog;
 using LawfulBladeManager.Packages;
-using LawfulBladeManager.Type;
-using System.Diagnostics;
-using System.Net.NetworkInformation;
 
 namespace LawfulBladeManager.Forms
 {
@@ -13,9 +10,9 @@ namespace LawfulBladeManager.Forms
         /// <summary>
         /// Called when a user clicks the 'Manage Sources' option
         /// </summary>
-        void OnPackagesMenuManageSources(object sender, EventArgs e)
+        void OnPackagesMenuManageRepositories(object sender, EventArgs e)
         {
-            using ManageSourcesDialog msd = new();
+            using RepositoryManagerDialog msd = new();
             msd.ShowDialog();
         }
 
@@ -28,7 +25,7 @@ namespace LawfulBladeManager.Forms
             Package? package = null;
 
             // Existing package... The other caller is 'msPackagesCreateNew'
-            if (sender == msPackagesCreateFromExisting)
+            if (sender == msPackagesCreatePackageFromExisting)
             {
                 // We must load the package...
                 using OpenFileDialog ofd = new ()
@@ -65,6 +62,39 @@ namespace LawfulBladeManager.Forms
 
             // Create Package
             PackageManager.CreatePackage(pcd.CreationArguments);
+
+            // No longer busy...
+            BusyDialog.Instance.HideBusy();
+        }
+
+        /// <summary>
+        /// Called when a user clicks the 'Create Repository.../New' or 'Create Repository.../From Existing' option
+        /// </summary>
+        void OnPackagesMenuCreateRepository(object sender, EventArgs e)
+        {
+            // Which one did they press?
+            PackageRepository? repository = null;
+
+            // Existing repository...
+            if (sender == msPackagesCreateRepositoryFromExisting)
+            {
+                using OpenFileDialog ofd = new()
+                {
+                    Filter = "Package Repository Info (*.inf)|*.inf",
+                    DefaultExt = "inf",
+                    FileName = "repository.inf",
+                };
+            }
+
+            using RepositoryCreateDialog rcd = new(repository);
+
+            if (rcd.ShowDialog() != DialogResult.OK || rcd.CreationArguments == null)
+                return;
+
+            // About to be -VERY- busy...
+            BusyDialog.Instance.ShowBusy();
+
+            PackageManager.CreateRepository(rcd.CreationArguments);
 
             // No longer busy...
             BusyDialog.Instance.HideBusy();
