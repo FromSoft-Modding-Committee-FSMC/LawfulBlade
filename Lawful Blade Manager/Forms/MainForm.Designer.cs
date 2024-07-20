@@ -36,6 +36,9 @@
             msMainExit = new ToolStripMenuItem();
             msMainPackages = new ToolStripMenuItem();
             msPackagesManageRepositories = new ToolStripMenuItem();
+            msPackagesCreateRepository = new ToolStripMenuItem();
+            msPackagesCreateRepositoryNew = new ToolStripMenuItem();
+            msPackagesCreateRepositoryFromExisting = new ToolStripMenuItem();
             toolStripSeparator1 = new ToolStripSeparator();
             msPackagesCreatePackage = new ToolStripMenuItem();
             msPackagesCreatePackageNew = new ToolStripMenuItem();
@@ -43,9 +46,6 @@
             toolStripSeparator2 = new ToolStripSeparator();
             toolsToolStripMenuItem = new ToolStripMenuItem();
             generateDeltaDirectoryToolStripMenuItem = new ToolStripMenuItem();
-            msPackagesCreateRepository = new ToolStripMenuItem();
-            msPackagesCreateRepositoryNew = new ToolStripMenuItem();
-            msPackagesCreateRepositoryFromExisting = new ToolStripMenuItem();
             helpToolStripMenuItem = new ToolStripMenuItem();
             checkForUpdatesToolStripMenuItem = new ToolStripMenuItem();
             toolStripSeparator4 = new ToolStripSeparator();
@@ -120,6 +120,27 @@
             msPackagesManageRepositories.Text = "Manage Repositories";
             msPackagesManageRepositories.Click += OnPackagesMenuManageRepositories;
             // 
+            // msPackagesCreateRepository
+            // 
+            msPackagesCreateRepository.DropDownItems.AddRange(new ToolStripItem[] { msPackagesCreateRepositoryNew, msPackagesCreateRepositoryFromExisting });
+            msPackagesCreateRepository.Name = "msPackagesCreateRepository";
+            msPackagesCreateRepository.Size = new Size(184, 22);
+            msPackagesCreateRepository.Text = "Create Repository...";
+            // 
+            // msPackagesCreateRepositoryNew
+            // 
+            msPackagesCreateRepositoryNew.Name = "msPackagesCreateRepositoryNew";
+            msPackagesCreateRepositoryNew.Size = new Size(146, 22);
+            msPackagesCreateRepositoryNew.Text = "New";
+            msPackagesCreateRepositoryNew.Click += OnPackagesMenuCreateRepository;
+            // 
+            // msPackagesCreateRepositoryFromExisting
+            // 
+            msPackagesCreateRepositoryFromExisting.Name = "msPackagesCreateRepositoryFromExisting";
+            msPackagesCreateRepositoryFromExisting.Size = new Size(146, 22);
+            msPackagesCreateRepositoryFromExisting.Text = "From Existing";
+            msPackagesCreateRepositoryFromExisting.Click += OnPackagesMenuCreateRepository;
+            // 
             // toolStripSeparator1
             // 
             toolStripSeparator1.Name = "toolStripSeparator1";
@@ -164,27 +185,6 @@
             generateDeltaDirectoryToolStripMenuItem.Size = new Size(152, 22);
             generateDeltaDirectoryToolStripMenuItem.Text = "Delta Directory";
             generateDeltaDirectoryToolStripMenuItem.Click += OnPackagesMenuDeltaDirectoryTool;
-            // 
-            // msPackagesCreateRepository
-            // 
-            msPackagesCreateRepository.DropDownItems.AddRange(new ToolStripItem[] { msPackagesCreateRepositoryNew, msPackagesCreateRepositoryFromExisting });
-            msPackagesCreateRepository.Name = "msPackagesCreateRepository";
-            msPackagesCreateRepository.Size = new Size(184, 22);
-            msPackagesCreateRepository.Text = "Create Repository...";
-            // 
-            // msPackagesCreateRepositoryNew
-            // 
-            msPackagesCreateRepositoryNew.Name = "msPackagesCreateRepositoryNew";
-            msPackagesCreateRepositoryNew.Size = new Size(180, 22);
-            msPackagesCreateRepositoryNew.Text = "New";
-            msPackagesCreateRepositoryNew.Click += OnPackagesMenuCreateRepository;
-            // 
-            // msPackagesCreateRepositoryFromExisting
-            // 
-            msPackagesCreateRepositoryFromExisting.Name = "msPackagesCreateRepositoryFromExisting";
-            msPackagesCreateRepositoryFromExisting.Size = new Size(180, 22);
-            msPackagesCreateRepositoryFromExisting.Text = "From Existing";
-            msPackagesCreateRepositoryFromExisting.Click += OnPackagesMenuCreateRepository;
             // 
             // helpToolStripMenuItem
             // 
@@ -366,6 +366,7 @@
             btInstLegacy.Text = "    Import &Legacy Instance";
             btInstLegacy.TextImageRelation = TextImageRelation.ImageBeforeText;
             btInstLegacy.UseVisualStyleBackColor = false;
+            btInstLegacy.Click += this.OnInstanceImport;
             // 
             // btInstNew
             // 
@@ -386,6 +387,7 @@
             btInstNew.Text = "    &Create New Instance";
             btInstNew.TextImageRelation = TextImageRelation.ImageBeforeText;
             btInstNew.UseVisualStyleBackColor = false;
+            btInstNew.Click += OnInstanceNew;
             // 
             // MainForm
             // 

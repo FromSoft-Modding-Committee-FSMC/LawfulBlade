@@ -73,6 +73,116 @@ namespace LawfulBladeManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap _256xInstDarkSlayer {
+            get {
+                object obj = ResourceManager.GetObject("_256xInstDarkSlayer", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap _256xInstDragonFlower {
+            get {
+                object obj = ResourceManager.GetObject("_256xInstDragonFlower", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap _256xInstExcellector {
+            get {
+                object obj = ResourceManager.GetObject("_256xInstExcellector", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap _256xInstIdolOfSorrow {
+            get {
+                object obj = ResourceManager.GetObject("_256xInstIdolOfSorrow", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap _256xInstKingsCrown {
+            get {
+                object obj = ResourceManager.GetObject("_256xInstKingsCrown", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap _256xInstLawfulBlade {
+            get {
+                object obj = ResourceManager.GetObject("_256xInstLawfulBlade", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap _256xInstLightCrystal {
+            get {
+                object obj = ResourceManager.GetObject("_256xInstLightCrystal", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap _256xInstMoonlightSword {
+            get {
+                object obj = ResourceManager.GetObject("_256xInstMoonlightSword", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap _256xInstSkull {
+            get {
+                object obj = ResourceManager.GetObject("_256xInstSkull", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap _256xInstTripleFang {
+            get {
+                object obj = ResourceManager.GetObject("_256xInstTripleFang", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap _256xInstWaveCrasher {
+            get {
+                object obj = ResourceManager.GetObject("_256xInstWaveCrasher", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap _576X128_lawfulbladebanner {
             get {
                 object obj = ResourceManager.GetObject("_576X128_lawfulbladebanner", resourceCulture);
@@ -116,6 +226,16 @@ namespace LawfulBladeManager.Properties {
         internal static System.Drawing.Bitmap _64x_packages {
             get {
                 object obj = ResourceManager.GetObject("64x_packages", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap _64x_settings {
+            get {
+                object obj = ResourceManager.GetObject("_64x_settings", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

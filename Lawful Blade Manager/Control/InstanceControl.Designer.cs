@@ -1,6 +1,6 @@
 ﻿namespace LawfulBladeManager.Control
 {
-    partial class ProjectControl
+    partial class InstanceControl
     {
         /// <summary> 
         /// Required designer variable.
@@ -28,27 +28,29 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             pbIcon = new PictureBox();
             lbTitle = new Label();
             lbDescription = new Label();
             flTagList = new FlowLayoutPanel();
             tsFunctions = new ToolStrip();
             tsFuncDelete = new ToolStripButton();
-            tsFuncSettings = new ToolStripButton();
             tsFuncPackages = new ToolStripButton();
-            tsFuncExport = new ToolStripButton();
             toolStripSeparator1 = new ToolStripSeparator();
             tsFuncOpen = new ToolStripButton();
             pcMain = new Panel();
+            cmRightC = new ContextMenuStrip(components);
+            cmShowInExplorer = new ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)pbIcon).BeginInit();
             tsFunctions.SuspendLayout();
             pcMain.SuspendLayout();
+            cmRightC.SuspendLayout();
             SuspendLayout();
             // 
             // pbIcon
             // 
             pbIcon.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
-            pbIcon.BackColor = Color.FromArgb(120, 66, 135);
+            pbIcon.BackColor = Color.FromArgb(16, 16, 16);
             pbIcon.Location = new Point(8, 8);
             pbIcon.Name = "pbIcon";
             pbIcon.Size = new Size(112, 112);
@@ -66,9 +68,9 @@
             lbTitle.Location = new Point(118, -4);
             lbTitle.Margin = new Padding(0);
             lbTitle.Name = "lbTitle";
-            lbTitle.Size = new Size(327, 59);
+            lbTitle.Size = new Size(354, 59);
             lbTitle.TabIndex = 1;
-            lbTitle.Text = "Sample Project";
+            lbTitle.Text = "Sample Instance";
             lbTitle.TextAlign = ContentAlignment.TopCenter;
             lbTitle.UseMnemonic = false;
             // 
@@ -79,9 +81,9 @@
             lbDescription.ForeColor = SystemColors.ButtonFace;
             lbDescription.Location = new Point(126, 54);
             lbDescription.Name = "lbDescription";
-            lbDescription.Size = new Size(386, 40);
+            lbDescription.Size = new Size(170, 40);
             lbDescription.TabIndex = 2;
-            lbDescription.Text = "This sample project is for people who really like samples.\r\nTest";
+            lbDescription.Text = "Sample Instance Control\r\nSecond Line Laddd\r\n";
             // 
             // flTagList
             // 
@@ -97,11 +99,11 @@
             tsFunctions.BackgroundImageLayout = ImageLayout.None;
             tsFunctions.Dock = DockStyle.None;
             tsFunctions.ImageScalingSize = new Size(24, 24);
-            tsFunctions.Items.AddRange(new ToolStripItem[] { tsFuncDelete, tsFuncSettings, tsFuncPackages, tsFuncExport, toolStripSeparator1, tsFuncOpen });
-            tsFunctions.Location = new Point(860, 89);
+            tsFunctions.Items.AddRange(new ToolStripItem[] { tsFuncDelete, tsFuncPackages, toolStripSeparator1, tsFuncOpen });
+            tsFunctions.Location = new Point(916, 89);
             tsFunctions.Name = "tsFunctions";
             tsFunctions.RightToLeft = RightToLeft.Yes;
-            tsFunctions.Size = new Size(158, 31);
+            tsFunctions.Size = new Size(102, 31);
             tsFunctions.TabIndex = 9;
             // 
             // tsFuncDelete
@@ -113,15 +115,6 @@
             tsFuncDelete.Size = new Size(28, 28);
             tsFuncDelete.Text = "Delete...";
             // 
-            // tsFuncSettings
-            // 
-            tsFuncSettings.DisplayStyle = ToolStripItemDisplayStyle.Image;
-            tsFuncSettings.Image = Properties.Resources._64x_settings;
-            tsFuncSettings.ImageTransparentColor = Color.Magenta;
-            tsFuncSettings.Name = "tsFuncSettings";
-            tsFuncSettings.Size = new Size(28, 28);
-            tsFuncSettings.Text = "Settings...";
-            // 
             // tsFuncPackages
             // 
             tsFuncPackages.DisplayStyle = ToolStripItemDisplayStyle.Image;
@@ -130,15 +123,6 @@
             tsFuncPackages.Name = "tsFuncPackages";
             tsFuncPackages.Size = new Size(28, 28);
             tsFuncPackages.Text = "Packages...";
-            // 
-            // tsFuncExport
-            // 
-            tsFuncExport.DisplayStyle = ToolStripItemDisplayStyle.Image;
-            tsFuncExport.Image = Properties.Resources._64x_export;
-            tsFuncExport.ImageTransparentColor = Color.Magenta;
-            tsFuncExport.Name = "tsFuncExport";
-            tsFuncExport.Size = new Size(28, 28);
-            tsFuncExport.Text = "Generate Runtime...";
             // 
             // toolStripSeparator1
             // 
@@ -158,18 +142,32 @@
             // 
             pcMain.BackColor = Color.FromArgb(32, 32, 32);
             pcMain.BorderStyle = BorderStyle.FixedSingle;
+            pcMain.ContextMenuStrip = cmRightC;
             pcMain.Controls.Add(tsFunctions);
             pcMain.Controls.Add(pbIcon);
             pcMain.Controls.Add(flTagList);
-            pcMain.Controls.Add(lbDescription);
             pcMain.Controls.Add(lbTitle);
+            pcMain.Controls.Add(lbDescription);
             pcMain.Dock = DockStyle.Fill;
             pcMain.Location = new Point(0, 0);
             pcMain.Name = "pcMain";
             pcMain.Size = new Size(1024, 128);
             pcMain.TabIndex = 10;
             // 
-            // ProjectControl
+            // cmRightC
+            // 
+            cmRightC.Items.AddRange(new ToolStripItem[] { cmShowInExplorer });
+            cmRightC.Name = "cmRightC";
+            cmRightC.Size = new Size(220, 48);
+            // 
+            // cmShowInExplorer
+            // 
+            cmShowInExplorer.Name = "cmShowInExplorer";
+            cmShowInExplorer.Size = new Size(219, 22);
+            cmShowInExplorer.Text = "Open Folder in File Explorer";
+            cmShowInExplorer.Click += OnMenuShowInExplorer;
+            // 
+            // InstanceControl
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -177,7 +175,7 @@
             Controls.Add(pcMain);
             MaximumSize = new Size(4096, 132);
             MinimumSize = new Size(0, 132);
-            Name = "ProjectControl";
+            Name = "InstanceControl";
             Padding = new Padding(0, 0, 0, 4);
             Size = new Size(1024, 132);
             ((System.ComponentModel.ISupportInitialize)pbIcon).EndInit();
@@ -185,6 +183,7 @@
             tsFunctions.PerformLayout();
             pcMain.ResumeLayout(false);
             pcMain.PerformLayout();
+            cmRightC.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -198,9 +197,9 @@
         private ToolStripButton tsFuncDelete;
         private ToolStripButton tsFuncOpen;
         private ToolStripButton tsFuncPackages;
-        private ToolStripButton tsFuncExport;
         private ToolStripSeparator toolStripSeparator1;
-        private ToolStripButton tsFuncSettings;
         private Panel pcMain;
+        private ContextMenuStrip cmRightC;
+        private ToolStripMenuItem cmShowInExplorer;
     }
 }

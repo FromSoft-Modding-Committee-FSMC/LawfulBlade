@@ -148,4 +148,40 @@
   <data name="about" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\about.rtf;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
+  <data name="_64x_settings" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\64x_settings.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="_256xInstDarkSlayer" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\256xInstDarkSlayer.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="_256xInstDragonFlower" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\256xInstDragonFlower.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="_256xInstExcellector" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\256xInstExcellector.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="_256xInstIdolOfSorrow" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\256xInstIdolOfSorrow.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="_256xInstKingsCrown" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\256xInstKingsCrown.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="_256xInstLawfulBlade" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\256xInstLawfulBlade.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="_256xInstLightCrystal" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\256xInstLightCrystal.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="_256xInstMoonlightSword" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\256xInstMoonlightSword.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="_256xInstSkull" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\256xInstSkull.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="_256xInstTripleFang" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\256xInstTripleFang.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="_256xInstWaveCrasher" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\256xInstWaveCrasher.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

@@ -25,13 +25,13 @@ namespace LawfulBladeManager.Dialog
                 return;
 
             // Load initial data from the supplied package...
-            tbName.Text        = package.Name;
+            tbName.Text = package.Name;
             tbDescription.Text = package.Description;
-            tbVersion.Text     = package.Version;
-            tbAuthors.Text     = MergeStringSpecial(package.Authors);
-            tbTags.Text        = MergeStringSpecial(package.Tags);
-            tbSource.Text      = string.Empty;  // Source will not be copied - it is assumed a new source will be provided.
-            pbIcon.Image       = Package.DecodeIcon(package.IconBase64);
+            tbVersion.Text = package.Version;
+            tbAuthors.Text = MergeStringSpecial(package.Authors);
+            tbTags.Text = MergeStringSpecial(package.Tags);
+            tbSource.Text = string.Empty;  // Source will not be copied - it is assumed a new source will be provided.
+            pbIcon.Image = Package.DecodeIcon(package.IconBase64);
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace LawfulBladeManager.Dialog
             string[] splits = str.Split(';');
 
             // Clean up each string of spaces
-            for(int i = 0; i < splits.Length; i++)
+            for (int i = 0; i < splits.Length; i++)
                 splits[i] = splits[i].Trim();
 
             return splits;
@@ -87,7 +87,7 @@ namespace LawfulBladeManager.Dialog
                 // Validate Tags
                 string[] tempTags = SplitStringSpecial(tbTags.Text);
 
-                if(tempTags.Length == 0)
+                if (tempTags.Length == 0)
                     throw new Exception($"You must specify at least one tag! ('Runtime', 'Project', 'Editor')\n\nCheck the documentation for a list of default tags!");
 
                 foreach (string tag in tempTags)
@@ -103,29 +103,29 @@ namespace LawfulBladeManager.Dialog
             // Lets find the output directory
             using SaveFileDialog sfd = new()
             {
-                Filter           = "Possibly A Zip (*.paz)|*.paz",
-                DefaultExt       = "paz",
-                FileName         = "package.paz",
+                Filter = "Possibly A Zip (*.paz)|*.paz",
+                DefaultExt = "paz",
+                FileName = "package.paz",
 
                 InitialDirectory = tbSource.Text,
-                CheckPathExists  = true,
+                CheckPathExists = true,
                 CheckWriteAccess = true,
             };
-                
+
             if (sfd.ShowDialog() != DialogResult.OK)
                 return;
 
             // Set the creation arguments
             CreationArguments = new PackageCreateArgs
             {
-                SourceDirectory  = tbSource.Text,
-                TargetFile       = sfd.FileName,
-                Name             = tbName.Text,
-                Description      = tbDescription.Text,
-                Version          = tbVersion.Text,
-                Authors          = SplitStringSpecial(tbAuthors.Text),
-                Tags             = SplitStringSpecial(tbTags.Text),
-                IconSource       = (Bitmap)pbIcon.Image,
+                SourceDirectory = tbSource.Text,
+                TargetFile = sfd.FileName,
+                Name = tbName.Text,
+                Description = tbDescription.Text,
+                Version = tbVersion.Text,
+                Authors = SplitStringSpecial(tbAuthors.Text),
+                Tags = SplitStringSpecial(tbTags.Text),
+                IconSource = (Bitmap)pbIcon.Image,
                 ExpectOverwrites = xbExpectOverwrites.CheckState == CheckState.Checked
             };
 
@@ -171,7 +171,7 @@ namespace LawfulBladeManager.Dialog
             };
 
             // Add any additional supported image codec...
-            foreach(ImageCodecInfo imageCodec in ImageCodecInfo.GetImageDecoders())
+            foreach (ImageCodecInfo imageCodec in ImageCodecInfo.GetImageDecoders())
                 ofd.Filter = $"{ofd.Filter}|{imageCodec.FormatDescription} Files ({imageCodec.FilenameExtension})|{imageCodec.FilenameExtension}";
 
             // Make sure a file was selected...

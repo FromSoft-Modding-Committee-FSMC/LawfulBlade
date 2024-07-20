@@ -97,7 +97,7 @@ namespace LawfulBladeManager.Control
             if (GetFlag(PackageStatusFlag.Installed) && GetFlag(PackageStatusFlag.OutOfDate))
             {
                 // First when a package is installed but out of date...
-                lbStatus.Text      = "Update Available";
+                lbStatus.Text = "Update Available";
                 lbStatus.BackColor = Color.Yellow;
             }
             else

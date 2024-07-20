@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 
@@ -11,8 +12,26 @@ namespace LawfulBladeManager.Instances
     {
         // Instance Storage
         public readonly string InstancesFile = Path.Combine(ProgramContext.AppDataPath, @"instances.json");
+
+        // This array stores instance icon images... We use fixed icons so we can have shortcuts (to-do)
+        public readonly Image[] InstanceIcons = new Image[]
+        {
+            Properties.Resources._256xInstMoonlightSword,
+            Properties.Resources._256xInstDarkSlayer,
+            Properties.Resources._256xInstDragonFlower,
+            Properties.Resources._256xInstExcellector,
+            Properties.Resources._256xInstIdolOfSorrow,
+            Properties.Resources._256xInstKingsCrown,
+            Properties.Resources._256xInstLightCrystal,
+            Properties.Resources._256xInstLawfulBlade,
+            Properties.Resources._256xInstSkull,
+            Properties.Resources._256xInstTripleFang,
+            Properties.Resources._256xInstWaveCrasher
+        };
+
         public List<Instance> Instances { get; private set; }
-        
+        public int InstanceCount => Instances.Count;
+
         /// <summary>
         /// Constructor is responsible for loading instances from disk.
         /// </summary>
@@ -94,13 +113,63 @@ namespace LawfulBladeManager.Instances
             return true;
         }
 
+
+        /// <summary>
+        /// Creates a new instance according to the arguments provided.
+        /// </summary>
+        /// <param name="args">Instance creation settings</param>
+        public void CreateInstance(InstanceCreateArgs args)
+        {
+            // Construct the absolute path of the project
+            string absolutePath = Path.Combine(args.Destination, args.Name);
+
+            // Make sure the directory exists
+            if (!Directory.Exists(absolutePath))
+                Directory.CreateDirectory(absolutePath);
+
+            // Store the project information
+            Instances.Add(new Instance
+            {
+                Name        = args.Name,
+                Description = args.Description,
+                IconID      = args.IconID,
+                UUID        = new Guid(MD5.HashData(Encoding.UTF8.GetBytes($"{DateTime.Now}{args.Name}{args.Description}"))).ToString(),
+                StoragePath = absolutePath,
+                Tags        = new string[] { "Instance", "Managed" }
+            });
+
+            // Save Instances File
+            SaveInstances();
+        }
+
+        /// <summary>
+        /// Imports a legacy instance located at the absolute path
+        /// </summary>
+        /// <param name="absolutePath">Path to an instance</param>
+        public void ImportInstance(string absolutePath)
+        {
+            // Store the project information
+            Instances.Add(new Instance
+            {
+                Name        = Path.GetFileName(absolutePath),
+                Description = $"Legacy Sword of Moonlight instance.",
+                IconID      = 0,
+                UUID        = new Guid(MD5.HashData(Encoding.UTF8.GetBytes($"{DateTime.Now}{Path.GetFileName(absolutePath)}{absolutePath}"))).ToString(),
+                StoragePath = absolutePath,
+                Tags        = new string[] { "Instance", "Legacy" }
+            });
+
+            // Save Instances File
+            SaveInstances();
+        }
+
         /// <summary>
         /// Finds an instance and returns it.
         /// </summary>
-        /// <param name="instance">[OUT] the found instance</param>
         /// <param name="UUID">The UUID of an instance</param>
+        /// <param name="instance">[OUT] the found instance</param>
         /// <returns>True on success, False otherwise</returns>
-        public bool FindInstanceByUUID(out Instance? instance, string UUID)
+        public bool FindInstanceByUUID(string UUID, out Instance? instance)
         {
             foreach(Instance i in Instances)
             {

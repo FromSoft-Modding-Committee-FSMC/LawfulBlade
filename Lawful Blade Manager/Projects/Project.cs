@@ -27,7 +27,10 @@ namespace LawfulBladeManager.Projects
         [JsonInclude]
         public string[] Tags        { get; set; } = Array.Empty<string>();
 
+
+        //
         // IPackageTarget Implementation
+        //
         [JsonInclude]
         public Dictionary<string, string> Library { get; set; } = new Dictionary<string, string>();
 

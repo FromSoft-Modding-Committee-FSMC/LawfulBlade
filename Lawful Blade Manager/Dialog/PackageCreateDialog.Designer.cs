@@ -155,7 +155,8 @@
             // 
             // tbDescription
             // 
-            tbDescription.BackColor = Color.FromArgb(32, 32, 32);
+            tbDescription.BackColor = Color.FromArgb(24, 24, 24);
+            tbDescription.BorderStyle = BorderStyle.FixedSingle;
             tbDescription.ForeColor = SystemColors.ButtonFace;
             tbDescription.Location = new Point(12, 315);
             tbDescription.Multiline = true;

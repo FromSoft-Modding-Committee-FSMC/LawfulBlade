@@ -11,6 +11,7 @@ namespace LawfulBladeManager.Control
 
         // Event Declaration
         public event OnProjectEvent? OnProjectDelete;
+        public event OnProjectEvent? OnProjectSettings;
         public event OnProjectEvent? OnProjectManagePackages;
         public event OnProjectEvent? OnProjectGenerateRuntime;
         public event OnProjectEvent? OnProjectOpen;
@@ -30,12 +31,13 @@ namespace LawfulBladeManager.Control
             LoadProject(Project = project);
 
             // Winforms redirection
-            tsFuncDelete.Click   += (_, _) => OnProjectDelete?.Invoke(project);
+            tsFuncDelete.Click += (_, _) => OnProjectDelete?.Invoke(project);
+            tsFuncSettings.Click += (_, _) => OnProjectSettings?.Invoke(project);
             tsFuncPackages.Click += (_, _) => OnProjectManagePackages?.Invoke(project);
-            tsFuncExport.Click   += (_, _) => OnProjectGenerateRuntime?.Invoke(project);
-            tsFuncOpen.Click     += (_, _) => OnProjectOpen?.Invoke(project);
+            tsFuncExport.Click += (_, _) => OnProjectGenerateRuntime?.Invoke(project);
+            tsFuncOpen.Click += (_, _) => OnProjectOpen?.Invoke(project);
         }
-        
+
         /// <summary>
         /// Loads data from a project into the project control
         /// </summary>
@@ -43,7 +45,7 @@ namespace LawfulBladeManager.Control
         public void LoadProject(Project project)
         {
             // Copy basic details
-            lbTitle.Text       = project.Name;
+            lbTitle.Text = project.Name;
             lbDescription.Text = project.Description;
 
             // Generate tags
@@ -75,7 +77,7 @@ namespace LawfulBladeManager.Control
         /// </summary>
         public void Reset()
         {
-            lbTitle.Text       = string.Empty;
+            lbTitle.Text = string.Empty;
             lbDescription.Text = string.Empty;
             flTagList.Controls.Clear();
 

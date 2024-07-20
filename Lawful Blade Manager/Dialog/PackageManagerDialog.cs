@@ -112,10 +112,8 @@ namespace LawfulBladeManager.Forms
         /// <summary>
         /// When the form closes...
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void OnExitDialog(object sender, FormClosingEventArgs e) =>
-            throw new NotImplementedException();
+        void OnExitDialog(object sender, FormClosingEventArgs e)
+        { }
 
         /// <summary>
         /// When a package is selected, we need to update the info pannel

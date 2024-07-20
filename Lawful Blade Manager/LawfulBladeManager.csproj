@@ -30,7 +30,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Control\InstanceControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Update="Dialog\AboutDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Dialog\InstanceCreateDialog.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="Dialog\RepositoryCreateDialog.cs">

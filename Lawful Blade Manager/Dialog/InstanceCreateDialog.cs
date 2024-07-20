@@ -1,30 +1,27 @@
-﻿using LawfulBladeManager.Projects;
+﻿using LawfulBladeManager.Instances;
 
 namespace LawfulBladeManager.Dialog
 {
-    public partial class ProjectCreateDialog : Form
+    public partial class InstanceCreateDialog : Form
     {
         /// <summary>
-        /// Arguments for the create project call.
+        /// Arguments for the create instance call.
         /// </summary>
-        public ProjectCreateArgs? CreationArguments { get; private set; }
+        public InstanceCreateArgs? CreationArguments { get; private set; }
+
+        // We store the current Icon ID in here...
+        int IconID = 0;
 
         /// <summary>
         /// Default Constructor<br/>
         /// </summary>
-        public ProjectCreateDialog()
+        public InstanceCreateDialog()
         {
             // Winforms Garbage...
             InitializeComponent();
 
             // Default dialog result to cancel...
             DialogResult = DialogResult.Cancel;
-
-            // We must enumurate any avaliable instances...
-            cbTargetInstance.DataSource = Program.InstanceManager.Instances.Select(i => new KeyValuePair<string, string>(i.Name, i.UUID)).ToList();
-            cbTargetInstance.DisplayMember = "Key";
-            cbTargetInstance.ValueMember = "Value";
-            cbTargetInstance.SelectedIndex = 0;
         }
 
         /// <summary>
@@ -35,14 +32,11 @@ namespace LawfulBladeManager.Dialog
             try
             {
                 // Simple Validation
-                if (tbProjectName.Text == string.Empty)
-                    throw new Exception("You must enter a project name!");
+                if (tbName.Text == string.Empty)
+                    throw new Exception("You must enter an instance name!");
 
                 if (tbTargetPath.Text == string.Empty)
                     throw new Exception("You must enter a target path!");
-
-                if (cbTargetInstance.SelectedValue == null)
-                    throw new Exception("You must select an instance!");
             }
             catch (Exception ex)
             {
@@ -51,13 +45,12 @@ namespace LawfulBladeManager.Dialog
             }
 
             // Construct creation arguments...
-            CreationArguments = new ProjectCreateArgs
+            CreationArguments = new InstanceCreateArgs
             {
-                Name = tbProjectName.Text,
+                Name        = tbName.Text,
                 Description = tbDescription.Text,
                 Destination = tbTargetPath.Text,
-                CreateEmpty = xbCreateEmpty.CheckState == CheckState.Checked,
-                InstanceUUID = (string)cbTargetInstance.SelectedValue
+                IconID      = IconID
             };
 
             DialogResult = DialogResult.OK;
@@ -82,6 +75,30 @@ namespace LawfulBladeManager.Dialog
                 return;
 
             tbTargetPath.Text = fbd.SelectedPath;
+        }
+
+        /// <summary>
+        /// Callback event for when the user clicks either the "<" or ">" icon buttons...
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void OnChangeIcon(object sender, EventArgs e)
+        {
+            if (sender == btIconLeft)
+                IconID -= 1;
+            else
+            if (sender == btIconRight)
+                IconID += 1;
+
+            // Wrap the ID if it's less than 0
+            if (IconID < 0)
+                IconID = (Program.InstanceManager.InstanceIcons.Length - 1);
+
+            // Wrap the ID if it's above the max icon count
+            IconID %= Program.InstanceManager.InstanceIcons.Length;
+
+            // Set the image in the picture box..
+            pbIcon.Image = Program.InstanceManager.InstanceIcons[IconID];
         }
     }
 }

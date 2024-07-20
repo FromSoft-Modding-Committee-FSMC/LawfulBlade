@@ -1,6 +1,6 @@
 ﻿namespace LawfulBladeManager.Dialog
 {
-    partial class ProjectCreateDialog
+    partial class InstanceCreateDialog
     {
         /// <summary>
         /// Required designer variable.
@@ -29,21 +29,24 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ProjectCreateDialog));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(InstanceCreateDialog));
             lbCreateProject = new Label();
-            lbProjectName = new Label();
-            tbProjectName = new TextBox();
+            lbName = new Label();
+            tbName = new TextBox();
             lbTargetPath = new Label();
             tbTargetPath = new TextBox();
             btTargetSelect = new Button();
-            cbTargetInstance = new ComboBox();
-            lbTargetInstance = new Label();
             lbDescription = new Label();
             tbDescription = new TextBox();
             btCreate = new Button();
             btCancel = new Button();
-            xbCreateEmpty = new CheckBox();
             ttPrimary = new ToolTip(components);
+            pbIcon = new PictureBox();
+            btIconRight = new Button();
+            btIconLeft = new Button();
+            lbIcon = new Label();
+            panel1 = new Panel();
+            ((System.ComponentModel.ISupportInitialize)pbIcon).BeginInit();
             SuspendLayout();
             // 
             // lbCreateProject
@@ -53,33 +56,33 @@
             lbCreateProject.ForeColor = SystemColors.ButtonFace;
             lbCreateProject.Location = new Point(12, 9);
             lbCreateProject.Name = "lbCreateProject";
-            lbCreateProject.Size = new Size(201, 30);
+            lbCreateProject.Size = new Size(215, 30);
             lbCreateProject.TabIndex = 0;
-            lbCreateProject.Text = "Create New Project..";
+            lbCreateProject.Text = "Create New Instance..";
             // 
-            // lbProjectName
+            // lbName
             // 
-            lbProjectName.AutoSize = true;
-            lbProjectName.ForeColor = SystemColors.ButtonFace;
-            lbProjectName.Location = new Point(9, 53);
-            lbProjectName.Name = "lbProjectName";
-            lbProjectName.Size = new Size(39, 15);
-            lbProjectName.TabIndex = 1;
-            lbProjectName.Text = "Name";
+            lbName.AutoSize = true;
+            lbName.ForeColor = SystemColors.ButtonFace;
+            lbName.Location = new Point(9, 53);
+            lbName.Name = "lbName";
+            lbName.Size = new Size(39, 15);
+            lbName.TabIndex = 1;
+            lbName.Text = "Name";
             // 
-            // tbProjectName
+            // tbName
             // 
-            tbProjectName.BackColor = Color.FromArgb(32, 32, 32);
-            tbProjectName.BorderStyle = BorderStyle.FixedSingle;
-            tbProjectName.ForeColor = SystemColors.ButtonFace;
-            tbProjectName.Location = new Point(12, 74);
-            tbProjectName.MaxLength = 64;
-            tbProjectName.Name = "tbProjectName";
-            tbProjectName.PlaceholderText = "Magnificent name here...";
-            tbProjectName.Size = new Size(519, 23);
-            tbProjectName.TabIndex = 2;
-            ttPrimary.SetToolTip(tbProjectName, "The name of the project");
-            tbProjectName.WordWrap = false;
+            tbName.BackColor = Color.FromArgb(32, 32, 32);
+            tbName.BorderStyle = BorderStyle.FixedSingle;
+            tbName.ForeColor = SystemColors.ButtonFace;
+            tbName.Location = new Point(12, 74);
+            tbName.MaxLength = 64;
+            tbName.Name = "tbName";
+            tbName.PlaceholderText = "Wonderful name here...";
+            tbName.Size = new Size(519, 23);
+            tbName.TabIndex = 2;
+            ttPrimary.SetToolTip(tbName, "The name of the instance");
+            tbName.WordWrap = false;
             // 
             // lbTargetPath
             // 
@@ -101,7 +104,7 @@
             tbTargetPath.PlaceholderText = "Where'd you want it?..";
             tbTargetPath.Size = new Size(519, 23);
             tbTargetPath.TabIndex = 4;
-            ttPrimary.SetToolTip(tbTargetPath, "The target path of the directory. An additional sub directory will be created in the path to store the project.");
+            ttPrimary.SetToolTip(tbTargetPath, "The target path of the instance. An additional sub directory will be created in the selected path to store the instance");
             tbTargetPath.WordWrap = false;
             // 
             // btTargetSelect
@@ -117,37 +120,14 @@
             btTargetSelect.UseVisualStyleBackColor = true;
             btTargetSelect.Click += OnClickSelect;
             // 
-            // cbTargetInstance
-            // 
-            cbTargetInstance.BackColor = Color.FromArgb(32, 32, 32);
-            cbTargetInstance.FlatStyle = FlatStyle.Flat;
-            cbTargetInstance.ForeColor = SystemColors.ButtonFace;
-            cbTargetInstance.FormattingEnabled = true;
-            cbTargetInstance.Location = new Point(12, 183);
-            cbTargetInstance.Name = "cbTargetInstance";
-            cbTargetInstance.Size = new Size(519, 23);
-            cbTargetInstance.TabIndex = 6;
-            cbTargetInstance.Text = "Select an instance...";
-            ttPrimary.SetToolTip(cbTargetInstance, "Choose which Sword of Moonlight instance the project will be edited with.");
-            // 
-            // lbTargetInstance
-            // 
-            lbTargetInstance.AutoSize = true;
-            lbTargetInstance.ForeColor = SystemColors.ButtonFace;
-            lbTargetInstance.Location = new Point(9, 162);
-            lbTargetInstance.Name = "lbTargetInstance";
-            lbTargetInstance.Size = new Size(51, 15);
-            lbTargetInstance.TabIndex = 7;
-            lbTargetInstance.Text = "Instance";
-            // 
             // lbDescription
             // 
             lbDescription.AutoSize = true;
             lbDescription.ForeColor = SystemColors.ButtonFace;
-            lbDescription.Location = new Point(9, 218);
+            lbDescription.Location = new Point(9, 162);
             lbDescription.Name = "lbDescription";
             lbDescription.Size = new Size(67, 15);
-            lbDescription.TabIndex = 8;
+            lbDescription.TabIndex = 7;
             lbDescription.Text = "Description";
             // 
             // tbDescription
@@ -155,11 +135,11 @@
             tbDescription.BackColor = Color.FromArgb(24, 24, 24);
             tbDescription.BorderStyle = BorderStyle.FixedSingle;
             tbDescription.ForeColor = SystemColors.ButtonFace;
-            tbDescription.Location = new Point(12, 239);
+            tbDescription.Location = new Point(12, 182);
             tbDescription.Multiline = true;
             tbDescription.Name = "tbDescription";
             tbDescription.PlaceholderText = "Insert description here...";
-            tbDescription.Size = new Size(600, 161);
+            tbDescription.Size = new Size(438, 96);
             tbDescription.TabIndex = 9;
             ttPrimary.SetToolTip(tbDescription, "A description of the project.");
             // 
@@ -188,36 +168,82 @@
             btCancel.UseVisualStyleBackColor = true;
             btCancel.Click += OnClickCancel;
             // 
-            // xbCreateEmpty
+            // pbIcon
             // 
-            xbCreateEmpty.AutoSize = true;
-            xbCreateEmpty.Location = new Point(12, 410);
-            xbCreateEmpty.Name = "xbCreateEmpty";
-            xbCreateEmpty.Size = new Size(100, 19);
-            xbCreateEmpty.TabIndex = 12;
-            xbCreateEmpty.Text = "Empty Project";
-            ttPrimary.SetToolTip(xbCreateEmpty, "Check this box if you are intending to import a sample project using the package manager.");
-            xbCreateEmpty.UseVisualStyleBackColor = true;
+            pbIcon.BackColor = Color.FromArgb(16, 16, 16);
+            pbIcon.Image = Properties.Resources._256xInstMoonlightSword;
+            pbIcon.Location = new Point(486, 182);
+            pbIcon.Name = "pbIcon";
+            pbIcon.Size = new Size(96, 96);
+            pbIcon.SizeMode = PictureBoxSizeMode.StretchImage;
+            pbIcon.TabIndex = 12;
+            pbIcon.TabStop = false;
             // 
-            // ProjectCreateDialog
+            // btIconRight
+            // 
+            btIconRight.FlatStyle = FlatStyle.Popup;
+            btIconRight.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            btIconRight.ForeColor = SystemColors.ButtonFace;
+            btIconRight.Location = new Point(588, 182);
+            btIconRight.Name = "btIconRight";
+            btIconRight.Size = new Size(24, 96);
+            btIconRight.TabIndex = 13;
+            btIconRight.Text = "▶";
+            btIconRight.UseVisualStyleBackColor = true;
+            btIconRight.Click += OnChangeIcon;
+            // 
+            // btIconLeft
+            // 
+            btIconLeft.FlatStyle = FlatStyle.Popup;
+            btIconLeft.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            btIconLeft.ForeColor = SystemColors.ButtonFace;
+            btIconLeft.Location = new Point(456, 182);
+            btIconLeft.Name = "btIconLeft";
+            btIconLeft.Size = new Size(24, 96);
+            btIconLeft.TabIndex = 14;
+            btIconLeft.Text = "◀";
+            btIconLeft.UseVisualStyleBackColor = true;
+            btIconLeft.Click += OnChangeIcon;
+            // 
+            // lbIcon
+            // 
+            lbIcon.AutoSize = true;
+            lbIcon.ForeColor = SystemColors.ButtonFace;
+            lbIcon.Location = new Point(456, 162);
+            lbIcon.Name = "lbIcon";
+            lbIcon.Size = new Size(30, 15);
+            lbIcon.TabIndex = 15;
+            lbIcon.Text = "Icon";
+            // 
+            // panel1
+            // 
+            panel1.BackColor = Color.FromArgb(16, 16, 16);
+            panel1.Location = new Point(456, 182);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(156, 96);
+            panel1.TabIndex = 16;
+            // 
+            // InstanceCreateDialog
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(32, 32, 32);
             ClientSize = new Size(624, 441);
-            Controls.Add(xbCreateEmpty);
+            Controls.Add(lbIcon);
+            Controls.Add(btIconLeft);
+            Controls.Add(btIconRight);
+            Controls.Add(pbIcon);
             Controls.Add(btCancel);
             Controls.Add(btCreate);
             Controls.Add(tbDescription);
             Controls.Add(lbDescription);
-            Controls.Add(lbTargetInstance);
-            Controls.Add(cbTargetInstance);
             Controls.Add(btTargetSelect);
             Controls.Add(tbTargetPath);
             Controls.Add(lbTargetPath);
-            Controls.Add(tbProjectName);
-            Controls.Add(lbProjectName);
+            Controls.Add(tbName);
+            Controls.Add(lbName);
             Controls.Add(lbCreateProject);
+            Controls.Add(panel1);
             FormBorderStyle = FormBorderStyle.FixedDialog;
             Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
@@ -225,12 +251,13 @@
             MdiChildrenMinimizedAnchorBottom = false;
             MinimizeBox = false;
             MinimumSize = new Size(640, 480);
-            Name = "ProjectCreateDialog";
+            Name = "InstanceCreateDialog";
             ShowInTaskbar = false;
             SizeGripStyle = SizeGripStyle.Hide;
             StartPosition = FormStartPosition.CenterParent;
-            Text = "Lawful Blade - Project Creator";
+            Text = "Lawful Blade - Instance Creator";
             TopMost = true;
+            ((System.ComponentModel.ISupportInitialize)pbIcon).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -238,18 +265,20 @@
         #endregion
 
         private Label lbCreateProject;
-        private Label lbProjectName;
-        private TextBox tbProjectName;
+        private Label lbName;
+        private TextBox tbName;
         private Label lbTargetPath;
         private TextBox tbTargetPath;
         private Button btTargetSelect;
-        private ComboBox cbTargetInstance;
-        private Label lbTargetInstance;
         private Label lbDescription;
         private TextBox tbDescription;
         private Button btCreate;
         private Button btCancel;
         private ToolTip ttPrimary;
-        private CheckBox xbCreateEmpty;
+        private PictureBox pbIcon;
+        private Button btIconRight;
+        private Button btIconLeft;
+        private Label lbIcon;
+        private Panel panel1;
     }
 }
