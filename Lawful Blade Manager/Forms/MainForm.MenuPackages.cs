@@ -107,7 +107,8 @@ namespace LawfulBladeManager.Forms
         /// <param name="e"></param>
         void OnPackagesMenuDeltaDirectoryTool(object sender, EventArgs e)
         {
-
+            using PackageDeltaDialog pdd = new PackageDeltaDialog();
+            pdd.ShowDialog();
         }
     }
 }

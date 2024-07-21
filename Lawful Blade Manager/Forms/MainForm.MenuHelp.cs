@@ -9,12 +9,12 @@ namespace LawfulBladeManager.Forms
     // We use these (slightly awkward with Winforms) partial classes to define callbacks for the Menu Bar of MainForm
     public partial class MainForm
     {
-        // Define the URL for bug reports, and file path for release notes
+        // Release Notes File
         readonly string releaseNotesFile = Path.Combine(ProgramContext.ProgramPath, $"release-notes-v{ProgramContext.Version.Remove(c:'.')}.txt");
 
-        // I scrub these URLs from the repository, you have to add your own if you want to build the project.
-        const string reportAProblemURL = "";
-        const string updatesURL        = "";
+        // Bug Report and Update Polling URLs
+        const string reportAProblemURL = @"https://github.com/FromSoft-Modding-Committee-FSMC/Lawful-Blade/issues";
+        const string updatesURL        = @"https://raw.githubusercontent.com/FromSoft-Modding-Committee-FSMC/Lawful-Blade/main/version";
 
         /// <summary>
         /// Called when a user clicks the 'Check For Updates' option

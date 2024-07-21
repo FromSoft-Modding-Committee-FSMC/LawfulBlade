@@ -108,7 +108,8 @@ namespace LawfulBladeManager.Packages
         /// </summary>
         void DefaultRepositories()
         {
-
+            // Make sure the default repository exists
+            AddRepository(new Uri(ProgramContext.ProgramPath).Combine("default"));
         }
 
         /// <summary>

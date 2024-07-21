@@ -399,3 +399,5 @@ FodyWeavers.xsd
 /ShippingRepositories
 /ShippingPackages
 /Testing
+/StagingPackages
+/ShippingBuild
