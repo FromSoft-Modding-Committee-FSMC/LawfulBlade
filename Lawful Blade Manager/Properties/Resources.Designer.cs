@@ -256,6 +256,26 @@ namespace LawfulBladeManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap anm_busy_left {
+            get {
+                object obj = ResourceManager.GetObject("anm_busy_left", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap anm_busy_right {
+            get {
+                object obj = ResourceManager.GetObject("anm_busy_right", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap browsefolder_lb {
             get {
                 object obj = ResourceManager.GetObject("browsefolder_lb", resourceCulture);

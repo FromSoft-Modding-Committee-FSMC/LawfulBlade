@@ -89,7 +89,16 @@ namespace LawfulBladeManager.Forms
         /// Called when the user chooses to open an instances
         /// </summary>
         /// <param name="instance">The target instance</param>
-        void OnInstanceOpen(Instance instance) =>
+        void OnInstanceOpen(Instance instance)
+        {
+            // If the instance doesn't have a core package, we can't open a project with it...
+            if (!instance.HasCorePackage())
+            {
+                MessageBox.Show($"The instance doesn't have a core package, you must install one with the package manager!", "Lawful Blade", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             instance.Open();
+        }            
     }
 }

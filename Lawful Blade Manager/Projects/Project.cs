@@ -32,15 +32,19 @@ namespace LawfulBladeManager.Projects
         // IPackageTarget Implementation
         //
         [JsonInclude]
-        public Dictionary<string, string> Library { get; set; } = new Dictionary<string, string>();
+        public Dictionary<string, PackageLibraryEntry> Library { get; set; } = new Dictionary<string, PackageLibraryEntry>();
 
+        [JsonIgnore]
         public string[] CompatiblePackages => new string[] { "Project", "Sample" };
+
+        public bool UninstallPackage(Package package) =>
+            false;
 
         public bool InstallPackage(Package package) =>
             false;
 
         public bool RentingPackage(Package package) =>
-            Library.ContainsKey(package.UUID);
+            Library.ContainsKey(package.Name);
 
         public int CheckForOutdatedPackages() =>
             0;

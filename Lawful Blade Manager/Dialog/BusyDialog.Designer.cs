@@ -31,14 +31,18 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BusyDialog));
             pbTheOnlyOne = new ProgressBar();
             tbMessage = new TextBox();
+            pictureBox1 = new PictureBox();
+            pictureBox2 = new PictureBox();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             SuspendLayout();
             // 
             // pbTheOnlyOne
             // 
-            pbTheOnlyOne.Location = new Point(12, 46);
+            pbTheOnlyOne.Location = new Point(88, 46);
             pbTheOnlyOne.MarqueeAnimationSpeed = 1;
             pbTheOnlyOne.Name = "pbTheOnlyOne";
-            pbTheOnlyOne.Size = new Size(280, 23);
+            pbTheOnlyOne.Size = new Size(128, 23);
             pbTheOnlyOne.Style = ProgressBarStyle.Marquee;
             pbTheOnlyOne.TabIndex = 0;
             pbTheOnlyOne.UseWaitCursor = true;
@@ -61,6 +65,26 @@
             tbMessage.TextAlign = HorizontalAlignment.Center;
             tbMessage.UseWaitCursor = true;
             // 
+            // pictureBox1
+            // 
+            pictureBox1.Image = Properties.Resources.anm_busy_left;
+            pictureBox1.Location = new Point(12, 35);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(70, 50);
+            pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
+            pictureBox1.TabIndex = 2;
+            pictureBox1.TabStop = false;
+            // 
+            // pictureBox2
+            // 
+            pictureBox2.Image = Properties.Resources.anm_busy_right;
+            pictureBox2.Location = new Point(222, 35);
+            pictureBox2.Name = "pictureBox2";
+            pictureBox2.Size = new Size(70, 50);
+            pictureBox2.SizeMode = PictureBoxSizeMode.StretchImage;
+            pictureBox2.TabIndex = 3;
+            pictureBox2.TabStop = false;
+            // 
             // BusyDialog
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -68,6 +92,8 @@
             BackColor = Color.FromArgb(32, 32, 32);
             ClientSize = new Size(304, 81);
             ControlBox = false;
+            Controls.Add(pictureBox2);
+            Controls.Add(pictureBox1);
             Controls.Add(tbMessage);
             Controls.Add(pbTheOnlyOne);
             DoubleBuffered = true;
@@ -85,6 +111,8 @@
             Text = "Doing a Thing...";
             TopMost = true;
             UseWaitCursor = true;
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -93,5 +121,7 @@
 
         private ProgressBar pbTheOnlyOne;
         private TextBox tbMessage;
+        private PictureBox pictureBox1;
+        private PictureBox pictureBox2;
     }
 }

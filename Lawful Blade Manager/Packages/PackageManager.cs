@@ -1,7 +1,6 @@
 ﻿using LawfulBladeManager.Type;
-using System.Diagnostics;
 using System.IO.Compression;
-using System.IO.Packaging;
+using System.Reflection.Metadata.Ecma335;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
@@ -293,6 +292,40 @@ namespace LawfulBladeManager.Packages
             SaveRepositories();
         }
 
+        public void DownloadBundle(Package package)
+        {
+            // Find the repository which contains this package...
+            PackageRepository? repo = null;
+
+            foreach(PackageRepository repository in Repositories)
+            {
+                foreach(Package repoPackage in repository.Packages)
+                {
+                    if (repoPackage.UUID != package.UUID)
+                        continue;
+
+                    repo = repository;
+                    goto FoundRepository;
+                }
+            }
+
+            // Breakout for nested loop...
+            FoundRepository:
+
+            // Make sure repo is not null...
+            if (repo == null)
+                return;
+
+            // Build the bundle URI
+            Uri bundleUri = new Uri(repo.Info.URI).Combine(package.BundleSourceUri);
+
+            // Begin the download...
+            string downloadedFile = Program.DownloadManager.DownloadFileSync(bundleUri);
+
+            // Copy the downloaded file to the PackagesCache...
+            File.Copy(downloadedFile, Path.Combine(Program.Preferences.PackageCacheDirectory, package.BundleSourceUri), true);
+        }
+
         /// <summary>
         /// Check if a repository already exists in the manager.
         /// </summary>
@@ -311,6 +344,24 @@ namespace LawfulBladeManager.Packages
             }
 
             repository = null;
+            return false;
+        }
+
+        public bool FindPackageByName(string name, out Package? package)
+        {
+            foreach (PackageRepository repo in Repositories)
+            {
+                foreach(Package repoPackage in repo.Packages)
+                {
+                    if (repoPackage.Name != name)
+                        continue;
+
+                    package = repoPackage;
+                    return true;
+                }
+            }
+
+            package = null;
             return false;
         }
     }

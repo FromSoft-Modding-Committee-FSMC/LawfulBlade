@@ -80,7 +80,7 @@ namespace LawfulBladeManager.Instances
         /// Save all instances to the instance declaration file.
         /// </summary>
         /// <returns>True on success, False otherwise.</returns>
-        bool SaveInstances()
+        public bool SaveInstances()
         {
             Logger.ShortInfo($"Saving {Instances.Count} instance(s)!");
 

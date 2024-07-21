@@ -29,7 +29,8 @@ namespace LawfulBladeManager
         /// <summary>
         /// Program Entry Point
         /// </summary>
-        [STAThread] static void Main()
+        [STAThread] 
+        static void Main()
         {
             ApplicationConfiguration.Initialize();
             Application.Run(Context);

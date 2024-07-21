@@ -87,6 +87,6 @@ namespace LawfulBladeManager.Dialog
             BeginInvoke(new Action(Hide));
 
             state = BusyState.Closed;
-        }     
+        }
     }
 }

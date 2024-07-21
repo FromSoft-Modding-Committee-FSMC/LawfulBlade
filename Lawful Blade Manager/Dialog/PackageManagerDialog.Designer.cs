@@ -96,6 +96,7 @@
             lvPackageFilter.TabIndex = 0;
             lvPackageFilter.ThreeDCheckBoxes = true;
             lvPackageFilter.ItemCheck += OnPackageFilterChecked;
+            lvPackageFilter.SelectedIndexChanged += OnPackageFilterChecked;
             // 
             // scPackageView
             // 

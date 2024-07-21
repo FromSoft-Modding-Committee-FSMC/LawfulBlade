@@ -2,6 +2,7 @@
 using PnnQuant;
 using System.Drawing.Imaging;
 using System.IO.Compression;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -67,7 +68,7 @@ namespace LawfulBladeManager.Packages
         /// </summary>
         /// <returns></returns>
         public bool PackageExistsInCache() =>
-            File.Exists(Path.Combine(Program.Preferences.PackageCacheDirectory, $"{UUID}_{Version}.paz"));
+            File.Exists(Path.Combine(Program.Preferences.PackageCacheDirectory, BundleSourceUri));
 
         /// <summary>
         /// Global helper to decode a PNG from a base64 stream
@@ -124,6 +125,28 @@ namespace LawfulBladeManager.Packages
         }
 
         /// <summary>
+        /// Gets the list of files from a package bundle
+        /// </summary>
+        /// <param name="bundle">The package bundle</param>
+        /// <returns>The list of files inside the bundle</returns>
+        public static PackageFile[] BundleGetList(ZipArchive bundle)
+        {
+            // Get the list entry from the bundle...
+            ZipArchiveEntry? listEntry = bundle.GetEntry(@"package.list.json") ?? throw new Exception($"Invalid package bundle!");
+
+            // Read the json list from the package...
+            string listJson = string.Empty;
+            using (StreamReader sr = new(listEntry.Open()))
+                listJson = sr.ReadToEnd();
+
+            // Deserialize the json into our file list
+            PackageFile[]? listTemp = JsonSerializer.Deserialize<PackageFile[]>(listJson, JsonSerializerOptions.Default);
+
+            // Make sure we got a valid list...
+            return listTemp ?? throw new Exception("Couldn't deserialize the file list from the bundle!");
+        }
+
+        /// <summary>
         /// Loads a package from disc...
         /// </summary>
         /// <param name="file">The package file</param>
@@ -167,14 +190,17 @@ namespace LawfulBladeManager.Packages
     }
 
     /// <summary>
-    /// Used in the package manager to store information about packages.
+    /// An entry in a package targets library...
     /// </summary>
-    public struct PackageData
+    public struct PackageLibraryEntry
     {
         [JsonInclude]
-        public List<PackageRepository> Repositories { get; private set; }
+        public string UUID;
 
         [JsonInclude]
-        public int AvaliablePackages { get; private set; }
+        public string Version;
+
+        [JsonInclude]
+        public PackageFile[] Files;
     }
 }

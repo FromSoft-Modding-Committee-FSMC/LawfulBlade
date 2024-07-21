@@ -8,6 +8,13 @@
         public string[] CompatiblePackages { get; }
 
         /// <summary>
+        /// Uninstalls a package from the package target.
+        /// </summary>
+        /// <param name="package">The package to uninstall</param>
+        /// <returns>True on success, False otherwise</returns>
+        public bool UninstallPackage(Package package);
+
+        /// <summary>
         /// Install a package to the package target.
         /// </summary>
         /// <param name="package">The package to install</param>

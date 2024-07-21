@@ -28,19 +28,23 @@ namespace LawfulBladeManager.Forms
             }
 
             // Download the version file...
-            string tempFile = Program.DownloadManager.DownloadFileSync(new Uri(updatesURL));
+            string tempFile     = Program.DownloadManager.DownloadFileSync(new Uri(updatesURL));
 
             // Inspect the version - are we up to date?
-            string netVLine = File.ReadAllText(tempFile);
+            //  Line 1 = Version Number
+            //  Line 2 = Program Download (Updated), or 'none'
+            //  Line 3 = Breaking Changes (if the update can break systems)
 
-            if (netVLine == ProgramContext.Version)
+            string[] netVersion = File.ReadAllLines(tempFile);
+
+            if (netVersion[0] == ProgramContext.Version)
             {
                 MessageBox.Show("Up to date!", "Lawful Blade", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Not up to date...
-            if (MessageBox.Show($"A new version of Lawful Blade is avaliable!\nYours: {ProgramContext.Version}, Avaliable: {netVLine}\nDo you want to update?", "Lawful Blade", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.No)
+            if (MessageBox.Show($"A new version of Lawful Blade is avaliable!\nYours: {ProgramContext.Version}, Avaliable: {netVersion[0]}\nDo you want to update?", "Lawful Blade", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.No)
                 return;
 
             // TO-DO:
@@ -75,8 +79,6 @@ namespace LawfulBladeManager.Forms
         /// <summary>
         /// Called when a user clicks on 'Release Notes'
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         void OnHelpMenuReleaseNotes(object sender, EventArgs e)
         {
             try
@@ -93,11 +95,13 @@ namespace LawfulBladeManager.Forms
             }
         }
 
+        /// <summary>
+        /// Called when a user clicks on 'about'
+        /// </summary>
         void OnHelpMenuAbout(object sender, EventArgs e)
         {
             using AboutDialog aboutDialog = new();
             aboutDialog.ShowDialog();
-        }
-            
+        }        
     }
 }

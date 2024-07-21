@@ -154,6 +154,13 @@ namespace LawfulBladeManager.Forms
                 MessageBox.Show($"Couldn't find instance with UUID '{project.InstanceUUID}'! Cannot open project!", "Lawful Blade", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
+            
+            // If the instance doesn't have a core package, we can't open a project with it...
+            if(!projectInstance.HasCorePackage())
+            {
+                MessageBox.Show($"The instance doesn't have a core package, you must install one with the package manager!", "Lawful Blade", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }            
 
             // Now we have an instance reference, set it in the registery
             projectInstance.OpenProject(project);

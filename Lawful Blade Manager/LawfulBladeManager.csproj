@@ -9,9 +9,13 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <ApplicationIcon>Resources\$this.Icon.ico</ApplicationIcon>
     <StartupObject>LawfulBladeManager.Program</StartupObject>
-    <AssemblyVersion>0.26a</AssemblyVersion>
-    <FileVersion>0.26a</FileVersion>
+    <AssemblyVersion>0.26</AssemblyVersion>
+    <FileVersion>0.26</FileVersion>
     <NeutralLanguage>en-GB</NeutralLanguage>
+    <Product>Lawful Blade</Product>
+    <Company>From Soft Modding Committee</Company>
+    <PackageId>Lawful Blade Manager</PackageId>
+    <AssemblyName>Lawful Blade</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
@@ -65,6 +69,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -72,6 +81,13 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
 
 </Project>

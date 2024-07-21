@@ -8,8 +8,8 @@ namespace LawfulBladeManager.Forms
     public partial class PackageManagerDialog : Form
     {
         // Private Fields
-        readonly List<PackageControl> packageControls = new();
-        PackageControl? currentPackage = null;
+        readonly Queue<PackageControl> packageControlCache = new Queue<PackageControl>();
+        PackageControl? currentPackage;
 
         /// <summary>
         /// Target for installation (Project, Instance etc)
@@ -39,74 +39,135 @@ namespace LawfulBladeManager.Forms
         /// </summary>
         void OnLoadDialog(object sender, EventArgs e)
         {
-            // Scan for packages to display in the manager...
-            Task packageSearchTask = new(() =>
-            {
-                // Busy...
-                BusyDialog.Instance.ShowBusy();
+            // Show Busy
+            BusyDialog.Instance.ShowBusy();
 
-                // We go through each package source and package currently in the mananger...
-                foreach (PackageRepository repo in Program.PackageManager.Repositories)
+            // Loads all avaliable tags...
+            EnumuratePackageTags();
+
+            // Loads all avaliable packages...
+            EnumuratePackageRepositories();
+
+            // Bind the action button of exinfo
+            exInfo.OnAction += OnPackageAction;
+
+            // Hide Busy
+            BusyDialog.Instance.HideBusy();
+        }
+
+        /// <summary>
+        /// Scans all repositories and their contained packages for tags...
+        /// </summary>
+        void EnumuratePackageTags()
+        {
+            // Clear the package filter of all items.
+            lvPackageFilter.Items.Clear();
+
+            // Each repo...
+            foreach (PackageRepository repo in Program.PackageManager.Repositories)
+            {
+                // Each package...
+                foreach (Package package in repo.Packages)
                 {
-                    // With each source...
-                    foreach (Package package in repo.Packages)
+                    // Don't bother if the super filter doesn't contain any of the tags...
+                    if (!SuperFilter.Contains(package.Tags))
+                        continue;
+
+                    // Load the tags
+                    foreach (string tag in package.Tags)
                     {
-                        // Is this package included by the super filter?
-                        if (!SuperFilter.Contains(package.Tags))
+                        if (lvPackageFilter.Items.Contains(tag))
                             continue;
 
-                        // Load the package into the manager... We must do this on the main thread.
-                        Invoke(() =>
-                        {
-                            // Tags
-                            foreach (string tag in package.Tags)
-                            {
-                                if (lvPackageFilter.Items.Contains(tag))
-                                    continue;
-
-                                lvPackageFilter.Items.Add(tag, true);
-                            }
-
-                            // Package Control Flags
-                            PackageStatusFlag packageFlags = PackageStatusFlag.None;
-
-                            if (package.PackageExistsInCache())
-                                packageFlags |= PackageStatusFlag.Cached;
-
-                            // Construct a new package control
-                            PackageControl packageControl = new(package, packageFlags)
-                            {
-                                // Style Configuration
-                                Dock = DockStyle.Top,
-                            };
-
-                            // Bind to selection event
-                            packageControl.OnSelect += OnPackageSelect;
-
-                            // Add control to lists...
-                            pcPackageList.Controls.Add(packageControl);
-                            packageControls.Add(packageControl);            // TO-DO: clean this up. (Enumerate Packages)
-                        });
+                        lvPackageFilter.Items.Add(tag, true); lvPackageFilter.SelectedIndex = 0;
                     }
                 }
-            });
+            }
+        }
 
-            // After the scan completes, we set some initial data in the info panel
-            packageSearchTask.ContinueWith(t =>
+        /// <summary>
+        /// Enumurates packages from all avaliable repositories
+        /// </summary>
+        void EnumuratePackageRepositories()
+        {
+            // Restore all package controls to the cache...
+            foreach (PackageControl packageControl in pcPackageList.Controls)
+                packageControlCache.Enqueue(packageControl);
+
+            // Clear the package list of controls...
+            pcPackageList.Controls.Clear();
+
+            // Start enumurating each repository...
+            foreach (PackageRepository repository in Program.PackageManager.Repositories)
+                EnumuratePackages(repository);
+
+            // Select the last package in the list (which is at the top)
+            if (pcPackageList.Controls.Count > 0)
+                OnPackageSelect((PackageControl)pcPackageList.Controls[^1]);
+        }
+
+        /// <summary>
+        /// Enumurates packages from a package repository
+        /// </summary>
+        /// <param name="repository"></param>
+        void EnumuratePackages(PackageRepository repository)
+        {
+            foreach (Package package in repository.Packages)
             {
-                // Load the first package into the info panel - on main thread.
-                if (packageControls.Count > 0)
-                    Invoke(() => OnPackageSelect(packageControls[^1]));
+                // If the super filter doesn't contain any of the packages tags, we skip it...
+                if (!SuperFilter.Contains(package.Tags))
+                    continue;
 
-                // Bind the install button...
-                exInfo.OnInstallPressed += OnPackageAction;
+                // Check if the package is being filtered by tags...
+                bool isIncluded = false;
 
-                // We're no longer busy
-                BusyDialog.Instance.HideBusy();
-            });
+                foreach (string tag in package.Tags)
+                {
+                    // Get index of tag
+                    int tagIndex = lvPackageFilter.Items.IndexOf(tag);
 
-            // Start the scanning task.
-            packageSearchTask.Start();
+                    // Skip non included tags...
+                    if (tagIndex < 0)
+                        continue;
+
+                    isIncluded |= lvPackageFilter.GetItemChecked(tagIndex);
+
+                    if (isIncluded)
+                        break;
+                }
+
+                // If the package isn't included, skip enumurating it...
+                if (!isIncluded)
+                    continue;
+
+                // Calculate the package status...
+                PackageStatusFlag flags = PackageStatusFlag.None;
+                if (package.PackageExistsInCache())
+                    flags |= PackageStatusFlag.Cached;
+                if (InstallationTarget.RentingPackage(package))
+                    flags |= PackageStatusFlag.Installed;
+
+                // Try to grab a package control from the cache...
+                PackageControl? packageControl = null;
+
+                if (!packageControlCache.TryDequeue(out packageControl) || packageControl == null)
+                {
+                    // When we could dequeue, we make a new package control
+                    packageControl = new(package, flags)
+                    {
+                        // Style Configuration
+                        Dock = DockStyle.Top,
+                    };
+
+                    // Bind Event
+                    packageControl.OnSelect += OnPackageSelect;
+                }
+                else
+                    packageControl.LoadPackage(package, flags);
+
+                // Add the control to the list...
+                pcPackageList.Controls.Add(packageControl);
+            }
         }
 
         /// <summary>
@@ -125,53 +186,61 @@ namespace LawfulBladeManager.Forms
         /// <summary>
         /// When a package filter is checked/unchecked we need to re-enumurate the package controls.
         /// </summary>
-        void OnPackageFilterChecked(object sender, ItemCheckEventArgs e)
+        void OnPackageFilterChecked(object sender, EventArgs e)
         {
-            // We must now rescan each package...
-            pcPackageList.Controls.Clear();
+            EnumuratePackageRepositories();
 
-            // Loop through each package control
-            foreach (PackageControl pkgControl in packageControls)
-            {
-                Package package = pkgControl.PackageReference;
-
-                // Store check state
-                bool packageFiltered = true;
-
-                // Loop through each tag in the package
-                foreach (string tag in package.Tags)
-                {
-                    // Get index of tag
-                    int tagIndex = lvPackageFilter.Items.IndexOf(tag);
-
-                    // Is this tag valid? This whole mess is here because WinForms fucking sucks.
-                    if (tagIndex >= 0 & tagIndex != e.Index)
-                    {
-                        // Is this tag checked?
-                        packageFiltered &= (!(lvPackageFilter.GetItemChecked(tagIndex)));
-                    }
-                    else
-                    if (tagIndex == e.Index)
-                    {
-                        packageFiltered &= (e.NewValue == CheckState.Unchecked);
-                    }
-
-                    if (!packageFiltered)
-                        break;
-                }
-
-                if (!packageFiltered)
-                    pcPackageList.Controls.Add(pkgControl);
-            }
+            // Remove the selected index
+            lvPackageFilter.SelectedIndex = -1;
         }
 
+
         /// <summary>
-        /// When the download/install/uninstall button is pressed, this event is ran.
+        /// When the download/install/uninstall/update button is pressed, this event is ran.
         /// </summary>
         void OnPackageAction()
         {
-            // If the package is not cached, we must download it...
+            if (currentPackage == null)
+                return;
 
+            if (currentPackage.GetFlag(PackageStatusFlag.Installed) && currentPackage.GetFlag(PackageStatusFlag.OutOfDate))
+                Logger.ShortInfo("Update Package!");
+            else
+            if (currentPackage.GetFlag(PackageStatusFlag.Installed))
+                OnActionUninstall(currentPackage.PackageReference);
+            else
+            if (currentPackage.GetFlag(PackageStatusFlag.Cached))
+                OnActionInstall(currentPackage.PackageReference);
+            else
+                OnActionDownload(currentPackage.PackageReference);
+
+            // Re-Enumurate...
+            EnumuratePackageRepositories();
+
+            // No more busy
+            BusyDialog.Instance.HideBusy();
+        }
+
+        void OnActionUninstall(Package package)
+        {
+            // Warn about dodgy uninstalls...
+            if (MessageBox.Show("Uninstalling a package is very likely to just destroy the project/instance at the moment!\n\nAre you sure you want to do it?", "Lawful Blade", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+                return;
+
+            BusyDialog.Instance.ShowBusy();
+            InstallationTarget.UninstallPackage(package);
+        }
+
+        void OnActionInstall(Package package)
+        {
+            BusyDialog.Instance.ShowBusy();
+            InstallationTarget.InstallPackage(package);
+        }
+
+        void OnActionDownload(Package package)
+        {
+            BusyDialog.Instance.ShowBusy();
+            Program.PackageManager.DownloadBundle(package);
         }
     }
 }

@@ -36,19 +36,19 @@ namespace LawfulBladeManager.Control
             pcStatus.Click += OnClick;
             lbStatus.Click += OnClick;
 
-            // Set initial flags
-            Flags = flags;
-
             // Load the package
-            LoadPackage(PackageReference = packageReference);
+            LoadPackage(PackageReference = packageReference, Flags = flags);
         }
 
         /// <summary>
         /// Loads information from the package.
         /// </summary>
         /// <param name="package"></param>
-        void LoadPackage(Package packageReference)
+        public void LoadPackage(Package packageReference, PackageStatusFlag flags)
         {
+            PackageReference = packageReference;
+            Flags = flags;
+
             // Load Icon
             pbIcon.Image = Package.DecodeIcon(packageReference.IconBase64);
 
@@ -56,7 +56,7 @@ namespace LawfulBladeManager.Control
             lbName.Text = packageReference.Name;
 
             // Initial Update of the status label
-            UpdateStatusLabel(Flags);
+            UpdateStatusLabel(flags);
         }
 
         /// <summary>

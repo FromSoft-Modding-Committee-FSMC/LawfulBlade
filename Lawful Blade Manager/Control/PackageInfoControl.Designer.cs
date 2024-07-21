@@ -36,7 +36,7 @@
             lbUUID = new Label();
             lbVersion = new Label();
             lbTags = new Label();
-            btInstall = new Button();
+            btAction = new Button();
             lbAuthorsVal = new Label();
             lbVersionVal = new Label();
             lbTagsVal = new Label();
@@ -137,19 +137,19 @@
             lbTags.TabIndex = 7;
             lbTags.Text = "Tag(s): ";
             // 
-            // btInstall
+            // btAction
             // 
-            btInstall.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            btInstall.BackColor = Color.FromArgb(120, 66, 135);
-            btInstall.FlatStyle = FlatStyle.Popup;
-            btInstall.ForeColor = SystemColors.ButtonFace;
-            btInstall.Location = new Point(240, 452);
-            btInstall.Name = "btInstall";
-            btInstall.Size = new Size(75, 23);
-            btInstall.TabIndex = 8;
-            btInstall.Text = "Install";
-            btInstall.UseVisualStyleBackColor = false;
-            btInstall.Click += Install_Click;
+            btAction.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            btAction.BackColor = Color.FromArgb(120, 66, 135);
+            btAction.FlatStyle = FlatStyle.Popup;
+            btAction.ForeColor = SystemColors.ButtonFace;
+            btAction.Location = new Point(240, 452);
+            btAction.Name = "btAction";
+            btAction.Size = new Size(75, 23);
+            btAction.TabIndex = 8;
+            btAction.Text = "Action";
+            btAction.UseVisualStyleBackColor = false;
+            btAction.Click += OnClickAction;
             // 
             // lbAuthorsVal
             // 
@@ -196,7 +196,7 @@
             Controls.Add(lbTagsVal);
             Controls.Add(lbVersionVal);
             Controls.Add(lbAuthorsVal);
-            Controls.Add(btInstall);
+            Controls.Add(btAction);
             Controls.Add(lbTags);
             Controls.Add(lbVersion);
             Controls.Add(lbUUID);
@@ -222,7 +222,7 @@
         private Label lbUUID;
         private Label lbVersion;
         private Label lbTags;
-        private Button btInstall;
+        private Button btAction;
         private Label lbAuthorsVal;
         private Label lbVersionVal;
         private Label lbTagsVal;
