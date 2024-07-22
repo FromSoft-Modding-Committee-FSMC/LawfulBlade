@@ -51,7 +51,19 @@ namespace LawfulBladeManager.Instances
             });
 
             if (instanceProcess == null)
+            {
                 MessageBox.Show("Failed to open project in instance!", "Lawful Blade", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            // Wait for the process to exit...
+            instanceProcess.WaitForExitAsync()
+                .ContinueWith((Task obj) => // When the process does exit, we want to kill SOM_MAIN
+                {
+                    Process[] processes = Process.GetProcessesByName("SOM_MAIN");
+                    if (processes.Length > 0)
+                        processes[^1].Kill();
+                });
         }
 
         /// <summary>
