@@ -7,7 +7,7 @@ namespace LawfulBladeUpdater
 
     internal class Program
     {
-        static string ProgramDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? "itsnotnulllol";
+        static string ProgramDir = AppDomain.CurrentDomain.BaseDirectory;
         static string UpdateDir  = Path.Combine(ProgramDir, "update");
 
         static void Main(string[] args)
@@ -18,22 +18,36 @@ namespace LawfulBladeUpdater
             Thread.Sleep(2000);
 
             // Check if the update directory exists, if it doesn't - we exit.
+            Console.WriteLine($"Source: {UpdateDir}");
+
             if (!Directory.Exists(UpdateDir))
                 return;
 
             // Read version file from the update dir
-            using StreamReader sr = new StreamReader(File.OpenRead(Path.Combine(Path.Combine(UpdateDir, "version"))));
+            string verNum, verFile, verShit;
 
-            string verNum  = sr.ReadLine() ?? "0.00X";
-            string verFile = Path.GetFileName(sr.ReadLine() ?? string.Empty);
-            string verShit = sr.ReadLine() ?? "false";
+            using (StreamReader sr = new StreamReader(File.OpenRead(Path.Combine(Path.Combine(UpdateDir, "version")))))
+            {
+                verNum = sr.ReadLine() ?? "0.00X";
+                verFile = Path.GetFileName(sr.ReadLine() ?? string.Empty);
+                verShit = sr.ReadLine() ?? "false";
+            }
 
             Console.WriteLine($"New: {verNum}, File: {verFile}, Breaking Changes?: {verShit}");
 
             // Installing the update is a simple matter of extracting the zip.
             Console.WriteLine($"Extracting...");
-            using ZipArchive updateZip = ZipFile.OpenRead(Path.Combine(UpdateDir, verFile));
-            updateZip.ExtractToDirectory(ProgramDir, true);
+            using (ZipArchive updateZip = ZipFile.OpenRead(Path.Combine(UpdateDir, verFile)))
+            {
+                foreach (var entry in updateZip.Entries)
+                {
+                    // Skip updater.exe... DON'T INCLUDE THIS MUPPET...
+                    if (entry.FullName == "updater.exe")
+                        continue;
+
+                    entry.ExtractToFile(Path.Combine(ProgramDir, entry.FullName), true);
+                }
+            }
 
             // We can now clean up by deleting the update dir
             Console.WriteLine($"Cleaning...");
