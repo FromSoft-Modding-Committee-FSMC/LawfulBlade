@@ -1,4 +1,5 @@
-﻿using LawfulBladeManager.Packages;
+﻿using LawfulBladeManager.Core;
+using LawfulBladeManager.Packages;
 using LawfulBladeManager.Type;
 using System.Drawing.Imaging;
 
@@ -191,6 +192,16 @@ namespace LawfulBladeManager.Dialog
                 // tell the user something fucked up.
                 MessageBox.Show(ex.Message, "Lawful Blade", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
+        }
+
+        void OnNextPage(object sender, EventArgs e)
+        {
+            pcSlidingView.Slide(new Point(-640, 0), 0.25f);
+        }
+
+        void OnPrevPage(object sender, EventArgs e)
+        {
+            pcSlidingView.Slide(new Point(0, 0), 0.25f);
         }
     }
 }

@@ -63,6 +63,7 @@
             pcInstanceButtons = new Panel();
             btInstLegacy = new Button();
             btInstNew = new Button();
+            tpWelcome = new TabPage();
             msMain.SuspendLayout();
             tcMain.SuspendLayout();
             tpProjects.SuspendLayout();
@@ -90,19 +91,19 @@
             // preferencesToolStripMenuItem
             // 
             preferencesToolStripMenuItem.Name = "preferencesToolStripMenuItem";
-            preferencesToolStripMenuItem.Size = new Size(135, 22);
+            preferencesToolStripMenuItem.Size = new Size(180, 22);
             preferencesToolStripMenuItem.Text = "Preferences";
             preferencesToolStripMenuItem.Click += OnFileMenuPreferences;
             // 
             // toolStripSeparator3
             // 
             toolStripSeparator3.Name = "toolStripSeparator3";
-            toolStripSeparator3.Size = new Size(132, 6);
+            toolStripSeparator3.Size = new Size(177, 6);
             // 
             // msMainExit
             // 
             msMainExit.Name = "msMainExit";
-            msMainExit.Size = new Size(135, 22);
+            msMainExit.Size = new Size(180, 22);
             msMainExit.Text = "Exit";
             msMainExit.Click += OnFileMenuExit;
             // 
@@ -156,27 +157,27 @@
             // msPackagesCreatePackageNew
             // 
             msPackagesCreatePackageNew.Name = "msPackagesCreatePackageNew";
-            msPackagesCreatePackageNew.Size = new Size(146, 22);
+            msPackagesCreatePackageNew.Size = new Size(180, 22);
             msPackagesCreatePackageNew.Text = "New";
             msPackagesCreatePackageNew.Click += OnPackagesMenuCreatePackage;
             // 
             // msPackagesCreatePackageFromExisting
             // 
             msPackagesCreatePackageFromExisting.Name = "msPackagesCreatePackageFromExisting";
-            msPackagesCreatePackageFromExisting.Size = new Size(146, 22);
+            msPackagesCreatePackageFromExisting.Size = new Size(180, 22);
             msPackagesCreatePackageFromExisting.Text = "From Existing";
             msPackagesCreatePackageFromExisting.Click += OnPackagesMenuCreatePackage;
             // 
             // toolStripSeparator2
             // 
             toolStripSeparator2.Name = "toolStripSeparator2";
-            toolStripSeparator2.Size = new Size(143, 6);
+            toolStripSeparator2.Size = new Size(177, 6);
             // 
             // toolsToolStripMenuItem
             // 
             toolsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { generateDeltaDirectoryToolStripMenuItem });
             toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
-            toolsToolStripMenuItem.Size = new Size(146, 22);
+            toolsToolStripMenuItem.Size = new Size(180, 22);
             toolsToolStripMenuItem.Text = "Tools...";
             // 
             // generateDeltaDirectoryToolStripMenuItem
@@ -196,52 +197,55 @@
             // checkForUpdatesToolStripMenuItem
             // 
             checkForUpdatesToolStripMenuItem.Name = "checkForUpdatesToolStripMenuItem";
-            checkForUpdatesToolStripMenuItem.Size = new Size(171, 22);
+            checkForUpdatesToolStripMenuItem.Size = new Size(180, 22);
             checkForUpdatesToolStripMenuItem.Text = "Check for Updates";
             checkForUpdatesToolStripMenuItem.Click += OnHelpMenuCheckForUpdates;
             // 
             // toolStripSeparator4
             // 
             toolStripSeparator4.Name = "toolStripSeparator4";
-            toolStripSeparator4.Size = new Size(168, 6);
+            toolStripSeparator4.Size = new Size(177, 6);
             // 
             // reportAProblemToolStripMenuItem
             // 
             reportAProblemToolStripMenuItem.Name = "reportAProblemToolStripMenuItem";
-            reportAProblemToolStripMenuItem.Size = new Size(171, 22);
+            reportAProblemToolStripMenuItem.Size = new Size(180, 22);
             reportAProblemToolStripMenuItem.Text = "Report a Problem ";
             reportAProblemToolStripMenuItem.Click += OnHelpMenuReportAProblem;
             // 
             // releaseNotesToolStripMenuItem
             // 
             releaseNotesToolStripMenuItem.Name = "releaseNotesToolStripMenuItem";
-            releaseNotesToolStripMenuItem.Size = new Size(171, 22);
+            releaseNotesToolStripMenuItem.Size = new Size(180, 22);
             releaseNotesToolStripMenuItem.Text = "Release Notes";
             releaseNotesToolStripMenuItem.Click += OnHelpMenuReleaseNotes;
             // 
             // aboutToolStripMenuItem
             // 
             aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            aboutToolStripMenuItem.Size = new Size(171, 22);
+            aboutToolStripMenuItem.Size = new Size(180, 22);
             aboutToolStripMenuItem.Text = "About";
             aboutToolStripMenuItem.Click += OnHelpMenuAbout;
             // 
             // tcMain
             // 
-            tcMain.Controls.Add(tpProjects);
+            tcMain.Controls.Add(tpWelcome);
             tcMain.Controls.Add(tpInstances);
+            tcMain.Controls.Add(tpProjects);
             tcMain.Dock = DockStyle.Fill;
             tcMain.Location = new Point(0, 24);
             tcMain.Name = "tcMain";
             tcMain.SelectedIndex = 0;
             tcMain.Size = new Size(944, 477);
             tcMain.TabIndex = 1;
+            tcMain.TabIndexChanged += OnTabChange;
             // 
             // tpProjects
             // 
             tpProjects.BackColor = Color.FromArgb(16, 16, 16);
             tpProjects.Controls.Add(pcProjectList);
             tpProjects.Controls.Add(pcProjectButtons);
+            tpProjects.ForeColor = SystemColors.ButtonFace;
             tpProjects.Location = new Point(4, 24);
             tpProjects.Name = "tpProjects";
             tpProjects.Padding = new Padding(3);
@@ -318,6 +322,7 @@
             tpInstances.BackColor = Color.FromArgb(16, 16, 16);
             tpInstances.Controls.Add(pcInstanceList);
             tpInstances.Controls.Add(pcInstanceButtons);
+            tpInstances.ForeColor = SystemColors.ButtonFace;
             tpInstances.Location = new Point(4, 24);
             tpInstances.Name = "tpInstances";
             tpInstances.Padding = new Padding(3);
@@ -363,10 +368,10 @@
             btInstLegacy.Padding = new Padding(10, 0, 0, 0);
             btInstLegacy.Size = new Size(224, 46);
             btInstLegacy.TabIndex = 2;
-            btInstLegacy.Text = "    Import &Legacy Instance";
+            btInstLegacy.Text = "    &Import Instance";
             btInstLegacy.TextImageRelation = TextImageRelation.ImageBeforeText;
             btInstLegacy.UseVisualStyleBackColor = false;
-            btInstLegacy.Click += this.OnInstanceImport;
+            btInstLegacy.Click += OnInstanceImport;
             // 
             // btInstNew
             // 
@@ -388,6 +393,16 @@
             btInstNew.TextImageRelation = TextImageRelation.ImageBeforeText;
             btInstNew.UseVisualStyleBackColor = false;
             btInstNew.Click += OnInstanceNew;
+            // 
+            // tpWelcome
+            // 
+            tpWelcome.BackColor = Color.FromArgb(16, 16, 16);
+            tpWelcome.ForeColor = SystemColors.ButtonFace;
+            tpWelcome.Location = new Point(4, 24);
+            tpWelcome.Name = "tpWelcome";
+            tpWelcome.Size = new Size(936, 449);
+            tpWelcome.TabIndex = 2;
+            tpWelcome.Text = "Welcome";
             // 
             // MainForm
             // 
@@ -450,5 +465,6 @@
         private ToolStripMenuItem reportAProblemToolStripMenuItem;
         private ToolStripMenuItem releaseNotesToolStripMenuItem;
         private ToolStripMenuItem aboutToolStripMenuItem;
+        private TabPage tpWelcome;
     }
 }

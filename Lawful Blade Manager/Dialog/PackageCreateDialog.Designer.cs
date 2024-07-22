@@ -42,6 +42,7 @@
             tbDescription = new TextBox();
             pbIcon = new PictureBox();
             xbExpectOverwrites = new CheckBox();
+            textBox1 = new TextBox();
             lbVersion = new Label();
             lbTags = new Label();
             lbSource = new Label();
@@ -50,7 +51,13 @@
             btCancel = new Button();
             btCreate = new Button();
             lbIcon = new Label();
+            pcSlidingView = new Panel();
+            lbCreatePackage2 = new Label();
+            lbDependencies = new Label();
+            btNext = new Button();
+            btBack = new Button();
             ((System.ComponentModel.ISupportInitialize)pbIcon).BeginInit();
+            pcSlidingView.SuspendLayout();
             SuspendLayout();
             // 
             // lbCreatePackage
@@ -66,7 +73,7 @@
             // 
             // tbName
             // 
-            tbName.BackColor = Color.FromArgb(32, 32, 32);
+            tbName.BackColor = Color.FromArgb(24, 24, 24);
             tbName.BorderStyle = BorderStyle.FixedSingle;
             tbName.ForeColor = SystemColors.ButtonFace;
             tbName.Location = new Point(12, 75);
@@ -82,7 +89,7 @@
             // 
             lbProjectName.AutoSize = true;
             lbProjectName.ForeColor = SystemColors.ButtonFace;
-            lbProjectName.Location = new Point(9, 55);
+            lbProjectName.Location = new Point(10, 57);
             lbProjectName.Name = "lbProjectName";
             lbProjectName.Size = new Size(39, 15);
             lbProjectName.TabIndex = 3;
@@ -90,7 +97,7 @@
             // 
             // tbAuthors
             // 
-            tbAuthors.BackColor = Color.FromArgb(32, 32, 32);
+            tbAuthors.BackColor = Color.FromArgb(24, 24, 24);
             tbAuthors.BorderStyle = BorderStyle.FixedSingle;
             tbAuthors.ForeColor = SystemColors.ButtonFace;
             tbAuthors.Location = new Point(12, 123);
@@ -106,7 +113,7 @@
             // 
             lbAuthor.AutoSize = true;
             lbAuthor.ForeColor = SystemColors.ButtonFace;
-            lbAuthor.Location = new Point(9, 103);
+            lbAuthor.Location = new Point(10, 105);
             lbAuthor.Name = "lbAuthor";
             lbAuthor.Size = new Size(57, 15);
             lbAuthor.TabIndex = 5;
@@ -114,10 +121,10 @@
             // 
             // tbVersion
             // 
-            tbVersion.BackColor = Color.FromArgb(32, 32, 32);
+            tbVersion.BackColor = Color.FromArgb(24, 24, 24);
             tbVersion.BorderStyle = BorderStyle.FixedSingle;
             tbVersion.ForeColor = SystemColors.ButtonFace;
-            tbVersion.Location = new Point(12, 219);
+            tbVersion.Location = new Point(12, 267);
             tbVersion.MaxLength = 64;
             tbVersion.Name = "tbVersion";
             tbVersion.PlaceholderText = "1.00R";
@@ -128,7 +135,7 @@
             // 
             // tbTags
             // 
-            tbTags.BackColor = Color.FromArgb(32, 32, 32);
+            tbTags.BackColor = Color.FromArgb(24, 24, 24);
             tbTags.BorderStyle = BorderStyle.FixedSingle;
             tbTags.ForeColor = SystemColors.ButtonFace;
             tbTags.Location = new Point(12, 171);
@@ -142,10 +149,10 @@
             // 
             // tbSource
             // 
-            tbSource.BackColor = Color.FromArgb(32, 32, 32);
+            tbSource.BackColor = Color.FromArgb(24, 24, 24);
             tbSource.BorderStyle = BorderStyle.FixedSingle;
             tbSource.ForeColor = SystemColors.ButtonFace;
-            tbSource.Location = new Point(12, 267);
+            tbSource.Location = new Point(12, 315);
             tbSource.Name = "tbSource";
             tbSource.PlaceholderText = "C:\\...";
             tbSource.Size = new Size(519, 23);
@@ -158,12 +165,12 @@
             tbDescription.BackColor = Color.FromArgb(24, 24, 24);
             tbDescription.BorderStyle = BorderStyle.FixedSingle;
             tbDescription.ForeColor = SystemColors.ButtonFace;
-            tbDescription.Location = new Point(12, 315);
+            tbDescription.Location = new Point(652, 75);
             tbDescription.Multiline = true;
             tbDescription.Name = "tbDescription";
             tbDescription.PlaceholderText = "Write something in me";
             tbDescription.ScrollBars = ScrollBars.Vertical;
-            tbDescription.Size = new Size(600, 75);
+            tbDescription.Size = new Size(600, 325);
             tbDescription.TabIndex = 15;
             ttMain.SetToolTip(tbDescription, "The description of the package");
             // 
@@ -185,7 +192,7 @@
             // 
             xbExpectOverwrites.AutoSize = true;
             xbExpectOverwrites.ForeColor = SystemColors.ButtonFace;
-            xbExpectOverwrites.Location = new Point(12, 406);
+            xbExpectOverwrites.Location = new Point(12, 409);
             xbExpectOverwrites.Name = "xbExpectOverwrites";
             xbExpectOverwrites.Size = new Size(125, 19);
             xbExpectOverwrites.TabIndex = 20;
@@ -193,11 +200,25 @@
             ttMain.SetToolTip(xbExpectOverwrites, "Check this if you expect the package to overwrite files, such as a translation patch etc");
             xbExpectOverwrites.UseVisualStyleBackColor = true;
             // 
+            // textBox1
+            // 
+            textBox1.BackColor = Color.FromArgb(24, 24, 24);
+            textBox1.BorderStyle = BorderStyle.FixedSingle;
+            textBox1.ForeColor = SystemColors.ButtonFace;
+            textBox1.Location = new Point(12, 219);
+            textBox1.MaxLength = 64;
+            textBox1.Name = "textBox1";
+            textBox1.PlaceholderText = "Editor; Sample; Runtime";
+            textBox1.Size = new Size(519, 23);
+            textBox1.TabIndex = 25;
+            ttMain.SetToolTip(textBox1, "Tags the package conforms to (seperate with semi-colon)");
+            textBox1.WordWrap = false;
+            // 
             // lbVersion
             // 
             lbVersion.AutoSize = true;
             lbVersion.ForeColor = SystemColors.ButtonFace;
-            lbVersion.Location = new Point(9, 199);
+            lbVersion.Location = new Point(10, 249);
             lbVersion.Name = "lbVersion";
             lbVersion.Size = new Size(45, 15);
             lbVersion.TabIndex = 7;
@@ -207,7 +228,7 @@
             // 
             lbTags.AutoSize = true;
             lbTags.ForeColor = SystemColors.ButtonFace;
-            lbTags.Location = new Point(9, 151);
+            lbTags.Location = new Point(10, 153);
             lbTags.Name = "lbTags";
             lbTags.Size = new Size(38, 15);
             lbTags.TabIndex = 10;
@@ -217,7 +238,7 @@
             // 
             lbSource.AutoSize = true;
             lbSource.ForeColor = SystemColors.ButtonFace;
-            lbSource.Location = new Point(9, 247);
+            lbSource.Location = new Point(10, 297);
             lbSource.Name = "lbSource";
             lbSource.Size = new Size(43, 15);
             lbSource.TabIndex = 12;
@@ -227,7 +248,7 @@
             // 
             btSourceSelect.FlatStyle = FlatStyle.Popup;
             btSourceSelect.ForeColor = SystemColors.ButtonFace;
-            btSourceSelect.Location = new Point(537, 267);
+            btSourceSelect.Location = new Point(537, 315);
             btSourceSelect.Name = "btSourceSelect";
             btSourceSelect.Size = new Size(75, 23);
             btSourceSelect.TabIndex = 13;
@@ -239,7 +260,7 @@
             // 
             lbDescription.AutoSize = true;
             lbDescription.ForeColor = SystemColors.ButtonFace;
-            lbDescription.Location = new Point(9, 295);
+            lbDescription.Location = new Point(650, 57);
             lbDescription.Name = "lbDescription";
             lbDescription.Size = new Size(67, 15);
             lbDescription.TabIndex = 14;
@@ -262,7 +283,7 @@
             btCreate.BackColor = Color.FromArgb(120, 66, 135);
             btCreate.FlatStyle = FlatStyle.Popup;
             btCreate.ForeColor = SystemColors.ButtonFace;
-            btCreate.Location = new Point(537, 406);
+            btCreate.Location = new Point(1177, 406);
             btCreate.Name = "btCreate";
             btCreate.Size = new Size(75, 23);
             btCreate.TabIndex = 17;
@@ -274,11 +295,92 @@
             // 
             lbIcon.AutoSize = true;
             lbIcon.ForeColor = SystemColors.ButtonFace;
-            lbIcon.Location = new Point(535, 55);
+            lbIcon.Location = new Point(535, 57);
             lbIcon.Name = "lbIcon";
             lbIcon.Size = new Size(30, 15);
             lbIcon.TabIndex = 19;
             lbIcon.Text = "Icon";
+            // 
+            // pcSlidingView
+            // 
+            pcSlidingView.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            pcSlidingView.BackColor = Color.FromArgb(32, 32, 32);
+            pcSlidingView.Controls.Add(lbCreatePackage2);
+            pcSlidingView.Controls.Add(lbCreatePackage);
+            pcSlidingView.Controls.Add(textBox1);
+            pcSlidingView.Controls.Add(lbDependencies);
+            pcSlidingView.Controls.Add(btNext);
+            pcSlidingView.Controls.Add(xbExpectOverwrites);
+            pcSlidingView.Controls.Add(btBack);
+            pcSlidingView.Controls.Add(tbDescription);
+            pcSlidingView.Controls.Add(lbIcon);
+            pcSlidingView.Controls.Add(tbSource);
+            pcSlidingView.Controls.Add(lbDescription);
+            pcSlidingView.Controls.Add(tbVersion);
+            pcSlidingView.Controls.Add(tbTags);
+            pcSlidingView.Controls.Add(pbIcon);
+            pcSlidingView.Controls.Add(lbSource);
+            pcSlidingView.Controls.Add(tbAuthors);
+            pcSlidingView.Controls.Add(btCancel);
+            pcSlidingView.Controls.Add(tbName);
+            pcSlidingView.Controls.Add(btCreate);
+            pcSlidingView.Controls.Add(lbTags);
+            pcSlidingView.Controls.Add(btSourceSelect);
+            pcSlidingView.Controls.Add(lbVersion);
+            pcSlidingView.Controls.Add(lbProjectName);
+            pcSlidingView.Controls.Add(lbAuthor);
+            pcSlidingView.Location = new Point(0, 0);
+            pcSlidingView.Margin = new Padding(0);
+            pcSlidingView.MaximumSize = new Size(1264, 441);
+            pcSlidingView.MinimumSize = new Size(1264, 441);
+            pcSlidingView.Name = "pcSlidingView";
+            pcSlidingView.Size = new Size(1264, 441);
+            pcSlidingView.TabIndex = 21;
+            // 
+            // lbCreatePackage2
+            // 
+            lbCreatePackage2.AutoSize = true;
+            lbCreatePackage2.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point);
+            lbCreatePackage2.ForeColor = SystemColors.ButtonFace;
+            lbCreatePackage2.Location = new Point(652, 9);
+            lbCreatePackage2.Name = "lbCreatePackage2";
+            lbCreatePackage2.Size = new Size(218, 30);
+            lbCreatePackage2.TabIndex = 26;
+            lbCreatePackage2.Text = "Create New Package...";
+            // 
+            // lbDependencies
+            // 
+            lbDependencies.AutoSize = true;
+            lbDependencies.ForeColor = SystemColors.ButtonFace;
+            lbDependencies.Location = new Point(10, 201);
+            lbDependencies.Name = "lbDependencies";
+            lbDependencies.Size = new Size(94, 15);
+            lbDependencies.TabIndex = 24;
+            lbDependencies.Text = "Dependencies(s)";
+            // 
+            // btNext
+            // 
+            btNext.FlatStyle = FlatStyle.Popup;
+            btNext.ForeColor = SystemColors.ButtonFace;
+            btNext.Location = new Point(537, 406);
+            btNext.Name = "btNext";
+            btNext.Size = new Size(75, 23);
+            btNext.TabIndex = 23;
+            btNext.Text = "&Next";
+            btNext.UseVisualStyleBackColor = true;
+            btNext.Click += OnNextPage;
+            // 
+            // btBack
+            // 
+            btBack.FlatStyle = FlatStyle.Popup;
+            btBack.ForeColor = SystemColors.ButtonFace;
+            btBack.Location = new Point(1096, 406);
+            btBack.Name = "btBack";
+            btBack.Size = new Size(75, 23);
+            btBack.TabIndex = 22;
+            btBack.Text = "&Back";
+            btBack.UseVisualStyleBackColor = true;
+            btBack.Click += OnPrevPage;
             // 
             // PackageCreateDialog
             // 
@@ -286,25 +388,7 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(32, 32, 32);
             ClientSize = new Size(624, 441);
-            Controls.Add(xbExpectOverwrites);
-            Controls.Add(lbIcon);
-            Controls.Add(btCancel);
-            Controls.Add(btCreate);
-            Controls.Add(pbIcon);
-            Controls.Add(tbDescription);
-            Controls.Add(lbDescription);
-            Controls.Add(btSourceSelect);
-            Controls.Add(lbSource);
-            Controls.Add(tbSource);
-            Controls.Add(lbTags);
-            Controls.Add(tbTags);
-            Controls.Add(tbVersion);
-            Controls.Add(lbVersion);
-            Controls.Add(tbAuthors);
-            Controls.Add(lbAuthor);
-            Controls.Add(tbName);
-            Controls.Add(lbProjectName);
-            Controls.Add(lbCreatePackage);
+            Controls.Add(pcSlidingView);
             FormBorderStyle = FormBorderStyle.FixedDialog;
             Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
@@ -319,8 +403,9 @@
             Text = "Lawful Blade - Package Creator";
             TopMost = true;
             ((System.ComponentModel.ISupportInitialize)pbIcon).EndInit();
+            pcSlidingView.ResumeLayout(false);
+            pcSlidingView.PerformLayout();
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
@@ -345,5 +430,11 @@
         private Button btCreate;
         private Label lbIcon;
         private CheckBox xbExpectOverwrites;
+        private Panel pcSlidingView;
+        private Button btBack;
+        private Button btNext;
+        private TextBox textBox1;
+        private Label lbDependencies;
+        private Label lbCreatePackage2;
     }
 }

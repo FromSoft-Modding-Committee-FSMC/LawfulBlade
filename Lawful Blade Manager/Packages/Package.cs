@@ -55,6 +55,9 @@ namespace LawfulBladeManager.Packages
         public string[] Tags          { get; set; } = Array.Empty<string>();
 
         [JsonInclude]
+        public string[] Dependencies  { get; set; } = Array.Empty<string>();
+
+        [JsonInclude]
         public string UUID            { get; set; } = string.Empty;
 
         [JsonInclude]

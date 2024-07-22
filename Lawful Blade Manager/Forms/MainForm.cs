@@ -8,14 +8,8 @@ namespace LawfulBladeManager.Forms
 {
     public partial class MainForm : Form
     {
-        public MainForm()
-        {
+        public MainForm() =>
             InitializeComponent();
-
-            // These could be moved to a tab select delegate...
-            EnumurateProjects();
-            EnumurateInstances();
-        }
 
         /// <summary>
         /// Enumurate any projects managed by lawful blade
@@ -122,6 +116,19 @@ namespace LawfulBladeManager.Forms
 
             // Clear the project controls list...
             pcInstanceList.Controls.Clear();
+        }
+
+        /// <summary>
+        /// Called when we change the tab view tab...
+        /// </summary>
+        void OnTabChange(object sender, EventArgs e)
+        {
+            // Which tab did we select?
+            if (tcMain.SelectedTab == tpInstances)
+                EnumurateInstances();
+            else
+            if (tcMain.SelectedTab == tpProjects)
+                EnumurateProjects();          
         }
     }
 }
