@@ -40,7 +40,16 @@ namespace LawfulBladeManager.Instances
             // Create the special start argument for SOM_EDIT.exe ('instance'/'project')
             string startArg = $"{StoragePath}/{project.StoragePath}";
 
-            Process? instanceProcess = Process.Start(Path.Combine(StoragePath, "tool", "SOM_EDIT.exe"), startArg);
+            // We must use a ProcessStartInfo object so we can use spaces in the filepath.
+            Process? instanceProcess = Process.Start(new ProcessStartInfo
+            {
+                FileName = Path.Combine(StoragePath, "tool", "SOM_EDIT.exe"),
+                Arguments = $"\"{startArg}\"",
+
+                // I want to capture STDOUT... This doesn't appear to be the complete way to do it though...
+                RedirectStandardOutput = true
+            });
+
             if (instanceProcess == null)
                 MessageBox.Show("Failed to open project in instance!", "Lawful Blade", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
