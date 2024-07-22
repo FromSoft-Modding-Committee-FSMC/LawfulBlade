@@ -47,8 +47,26 @@ namespace LawfulBladeManager.Forms
             if (MessageBox.Show($"A new version of Lawful Blade is avaliable!\nYours: {ProgramContext.Version}, Avaliable: {netVersion[0]}\nDo you want to update?", "Lawful Blade", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.No)
                 return;
 
-            // TO-DO:
-            //  Update logic and updater tool...
+            BusyDialog.Instance.ShowBusy();
+
+            // Create the update folder (if it doesn't exist)
+            string updateDir = Path.Combine(ProgramContext.ProgramPath, "update");
+
+            if (!Directory.Exists(updateDir))
+                Directory.CreateDirectory(updateDir);
+
+            // Copy version file to update dir
+            File.Copy(tempFile, Path.Combine(updateDir, "version"), true);
+
+            // Download the update, copy it to update dir
+            string updateZip = Program.DownloadManager.DownloadFileSync(new Uri(netVersion[1]));
+            File.Copy(updateZip, Path.Combine(updateDir, Path.GetFileName(netVersion[1])), true);
+
+            BusyDialog.Instance.HideBusy();
+
+            // Launch Update Process...
+            Process.Start(new ProcessStartInfo(Path.Combine(ProgramContext.ProgramPath, "updater.exe")));
+            Program.Shutdown();
         }
 
         /// <summary>
