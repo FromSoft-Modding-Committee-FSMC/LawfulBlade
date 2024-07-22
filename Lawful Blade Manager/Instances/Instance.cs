@@ -136,7 +136,7 @@ namespace LawfulBladeManager.Instances
                     File.Delete(targetFile);
 
                 // If the directory is now empty, we can delete that too...
-                if (Directory.Exists(targetDirectory) && Directory.GetFiles(targetDirectory).Length == 0)
+                if (Directory.Exists(targetDirectory) && Directory.GetFileSystemEntries(targetDirectory).Length == 0)
                     Directory.Delete(targetDirectory);
             }
 
