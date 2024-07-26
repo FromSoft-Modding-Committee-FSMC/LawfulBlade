@@ -33,6 +33,7 @@ namespace LawfulBladeManager.Dialog
             tbTags.Text = MergeStringSpecial(package.Tags);
             tbSource.Text = string.Empty;  // Source will not be copied - it is assumed a new source will be provided.
             pbIcon.Image = Package.DecodeIcon(package.IconBase64);
+            tbDependencies.Text = MergeStringSpecial(package.Dependencies);
         }
 
         /// <summary>
@@ -127,6 +128,7 @@ namespace LawfulBladeManager.Dialog
                 Authors = SplitStringSpecial(tbAuthors.Text),
                 Tags = SplitStringSpecial(tbTags.Text),
                 IconSource = (Bitmap)pbIcon.Image,
+                Dependencies = SplitStringSpecial(tbDependencies.Text),
                 ExpectOverwrites = xbExpectOverwrites.CheckState == CheckState.Checked
             };
 

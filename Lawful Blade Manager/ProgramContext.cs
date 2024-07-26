@@ -20,19 +20,27 @@ namespace LawfulBladeManager
          * The normal version string you can set in the program properties is crap.
          *   D = Development Build, S = Stable Build
          **/
-        public static string Version => "0.28S";
+        public static string Version => "0.29D";
 
         // Constructors
         public ProgramContext()
         {
-            // Event Binding
-            //Application.ApplicationExit += OnApplicationExit;
-
             // Basic Initialization
             InitializeFirstTime();
 
+            // Hides the console (if we want that)
+            if (Program.Preferences.ShowConsoleOnStartup)
+                ProgramConsole.InitConsole();
+
+            // Initialize our managers inside the Program class
+            Program.DownloadManager = new();
+            Program.PackageManager  = new();
+            Program.InstanceManager = new();
+            Program.ProjectManager  = new();
+
+            // Create the main window
             mainWindow = new MainForm();
-            mainWindow.FormClosing += OnApplicationExit;    // Yeah... The other one isn't firing?
+            mainWindow.FormClosing += OnApplicationExit;
             mainWindow.Show();
 
             // Lets check if we must wait now for packages to be finished...

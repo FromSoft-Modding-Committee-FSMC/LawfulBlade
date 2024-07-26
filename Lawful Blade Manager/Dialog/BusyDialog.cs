@@ -8,18 +8,23 @@ namespace LawfulBladeManager.Dialog
         {
             /* Thanks, me! */
             "Don't fall asleep just yet!",
-            "Constructing Additional Pylons!",
+            "You must construct additional pylons!",
             "I'm just too impatient to be patient!",
             "Better late than never!",
             "Did you know that (No. 65134): progress bars are annoying.",
             "99 BOTTLES OF BEER ON THE WALL, 99 BOTTLES OF BEER...",
             "Eeny meeny miny moe, why's this progress bar so slow?",
-            "I'll be back in two shakes of a lambs tale.",
-            "Your call is very important to us, so please continue to hold the line.",
+            "We'll be back in two shakes of a lambs tail.",
+            "Your call is very important to us, so please continue to hold the line...",
             "November 5th, 1955!",
-            "Waiting for Blinge to stop arguing with random ding dongs.",
+            "Waiting for Blinge to stop arguing with random internet ding dongs.",
             "Tea, two sugars and a dash of milk please.",
-            
+            "A solar flare caused a bit flip, and we're trying to recover...",
+            "Grinding Lvl 3 weapons at the fire-arrow faces",
+            "Waiting for the King's Field V announcement",
+            "Comparing equipment stats in Shadow Tower",
+            "Waiting for Prince Devian Rosberg to turn around\r\n(He'll get there, someday...)",
+
             /* Thanks, Kurobake! */
             "Appears to be dead (just loading, though)",
             "Placing skeletons in boxes...",
@@ -37,11 +42,12 @@ namespace LawfulBladeManager.Dialog
         };
 
         // Singleton Implementation
-        static readonly BusyDialog busyDialog = new();
+        public static BusyDialog Instance { get; private set; } = new();
+
+        // Cache an instance of random here to avoid fucking the GC'er
         static readonly Random random = new();
 
-        public static BusyDialog Instance => busyDialog;
-
+        // Busy state is used because async is annoying to think about.
         enum BusyState
         {
             Closed,
@@ -49,6 +55,7 @@ namespace LawfulBladeManager.Dialog
             Open
         }
 
+        // The busy state holder...
         BusyState state = BusyState.Closed;
 
         BusyDialog()
@@ -67,7 +74,20 @@ namespace LawfulBladeManager.Dialog
             state = BusyState.WaitForOpen;
 
             // Set a random message to tell the user they're waiting an amount of time...
+            Text = "Doing a thing...";
             tbMessage.Text = waitMessages[random.Next(waitMessages.Length)];
+        }
+
+        public void ShowBusy(string customTitle, string customMessage)
+        {
+            // Set initial result to wait for open...
+            Task.Run(ShowDialog);
+
+            state = BusyState.WaitForOpen;
+
+            // Set the custom title
+            Text = customTitle;
+            tbMessage.Text  = customMessage;
         }
 
         void BusyDialog_Shown(object? sender, EventArgs e) =>

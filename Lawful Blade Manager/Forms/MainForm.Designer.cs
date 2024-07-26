@@ -53,23 +53,25 @@
             releaseNotesToolStripMenuItem = new ToolStripMenuItem();
             aboutToolStripMenuItem = new ToolStripMenuItem();
             tcMain = new TabControl();
-            tpProjects = new TabPage();
-            pcProjectList = new Panel();
-            pcProjectButtons = new Panel();
-            btLocalProject = new Button();
-            btNewProject = new Button();
+            tpWelcome = new TabPage();
+            lbPlaceholder = new Label();
             tpInstances = new TabPage();
             pcInstanceList = new Panel();
             pcInstanceButtons = new Panel();
             btInstLegacy = new Button();
             btInstNew = new Button();
-            tpWelcome = new TabPage();
+            tpProjects = new TabPage();
+            pcProjectList = new Panel();
+            pcProjectButtons = new Panel();
+            btLocalProject = new Button();
+            btNewProject = new Button();
             msMain.SuspendLayout();
             tcMain.SuspendLayout();
-            tpProjects.SuspendLayout();
-            pcProjectButtons.SuspendLayout();
+            tpWelcome.SuspendLayout();
             tpInstances.SuspendLayout();
             pcInstanceButtons.SuspendLayout();
+            tpProjects.SuspendLayout();
+            pcProjectButtons.SuspendLayout();
             SuspendLayout();
             // 
             // msMain
@@ -91,19 +93,19 @@
             // preferencesToolStripMenuItem
             // 
             preferencesToolStripMenuItem.Name = "preferencesToolStripMenuItem";
-            preferencesToolStripMenuItem.Size = new Size(180, 22);
+            preferencesToolStripMenuItem.Size = new Size(135, 22);
             preferencesToolStripMenuItem.Text = "Preferences";
             preferencesToolStripMenuItem.Click += OnFileMenuPreferences;
             // 
             // toolStripSeparator3
             // 
             toolStripSeparator3.Name = "toolStripSeparator3";
-            toolStripSeparator3.Size = new Size(177, 6);
+            toolStripSeparator3.Size = new Size(132, 6);
             // 
             // msMainExit
             // 
             msMainExit.Name = "msMainExit";
-            msMainExit.Size = new Size(180, 22);
+            msMainExit.Size = new Size(135, 22);
             msMainExit.Text = "Exit";
             msMainExit.Click += OnFileMenuExit;
             // 
@@ -157,27 +159,27 @@
             // msPackagesCreatePackageNew
             // 
             msPackagesCreatePackageNew.Name = "msPackagesCreatePackageNew";
-            msPackagesCreatePackageNew.Size = new Size(180, 22);
+            msPackagesCreatePackageNew.Size = new Size(146, 22);
             msPackagesCreatePackageNew.Text = "New";
             msPackagesCreatePackageNew.Click += OnPackagesMenuCreatePackage;
             // 
             // msPackagesCreatePackageFromExisting
             // 
             msPackagesCreatePackageFromExisting.Name = "msPackagesCreatePackageFromExisting";
-            msPackagesCreatePackageFromExisting.Size = new Size(180, 22);
+            msPackagesCreatePackageFromExisting.Size = new Size(146, 22);
             msPackagesCreatePackageFromExisting.Text = "From Existing";
             msPackagesCreatePackageFromExisting.Click += OnPackagesMenuCreatePackage;
             // 
             // toolStripSeparator2
             // 
             toolStripSeparator2.Name = "toolStripSeparator2";
-            toolStripSeparator2.Size = new Size(177, 6);
+            toolStripSeparator2.Size = new Size(143, 6);
             // 
             // toolsToolStripMenuItem
             // 
             toolsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { generateDeltaDirectoryToolStripMenuItem });
             toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
-            toolsToolStripMenuItem.Size = new Size(180, 22);
+            toolsToolStripMenuItem.Size = new Size(146, 22);
             toolsToolStripMenuItem.Text = "Tools...";
             // 
             // generateDeltaDirectoryToolStripMenuItem
@@ -197,33 +199,33 @@
             // checkForUpdatesToolStripMenuItem
             // 
             checkForUpdatesToolStripMenuItem.Name = "checkForUpdatesToolStripMenuItem";
-            checkForUpdatesToolStripMenuItem.Size = new Size(180, 22);
+            checkForUpdatesToolStripMenuItem.Size = new Size(171, 22);
             checkForUpdatesToolStripMenuItem.Text = "Check for Updates";
             checkForUpdatesToolStripMenuItem.Click += OnHelpMenuCheckForUpdates;
             // 
             // toolStripSeparator4
             // 
             toolStripSeparator4.Name = "toolStripSeparator4";
-            toolStripSeparator4.Size = new Size(177, 6);
+            toolStripSeparator4.Size = new Size(168, 6);
             // 
             // reportAProblemToolStripMenuItem
             // 
             reportAProblemToolStripMenuItem.Name = "reportAProblemToolStripMenuItem";
-            reportAProblemToolStripMenuItem.Size = new Size(180, 22);
+            reportAProblemToolStripMenuItem.Size = new Size(171, 22);
             reportAProblemToolStripMenuItem.Text = "Report a Problem ";
             reportAProblemToolStripMenuItem.Click += OnHelpMenuReportAProblem;
             // 
             // releaseNotesToolStripMenuItem
             // 
             releaseNotesToolStripMenuItem.Name = "releaseNotesToolStripMenuItem";
-            releaseNotesToolStripMenuItem.Size = new Size(180, 22);
+            releaseNotesToolStripMenuItem.Size = new Size(171, 22);
             releaseNotesToolStripMenuItem.Text = "Release Notes";
             releaseNotesToolStripMenuItem.Click += OnHelpMenuReleaseNotes;
             // 
             // aboutToolStripMenuItem
             // 
             aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            aboutToolStripMenuItem.Size = new Size(180, 22);
+            aboutToolStripMenuItem.Size = new Size(171, 22);
             aboutToolStripMenuItem.Text = "About";
             aboutToolStripMenuItem.Click += OnHelpMenuAbout;
             // 
@@ -238,84 +240,28 @@
             tcMain.SelectedIndex = 0;
             tcMain.Size = new Size(944, 477);
             tcMain.TabIndex = 1;
-            tcMain.TabIndexChanged += OnTabChange;
+            tcMain.SelectedIndexChanged += OnTabChange;
             // 
-            // tpProjects
+            // tpWelcome
             // 
-            tpProjects.BackColor = Color.FromArgb(16, 16, 16);
-            tpProjects.Controls.Add(pcProjectList);
-            tpProjects.Controls.Add(pcProjectButtons);
-            tpProjects.ForeColor = SystemColors.ButtonFace;
-            tpProjects.Location = new Point(4, 24);
-            tpProjects.Name = "tpProjects";
-            tpProjects.Padding = new Padding(3);
-            tpProjects.Size = new Size(936, 449);
-            tpProjects.TabIndex = 0;
-            tpProjects.Text = "Projects";
+            tpWelcome.BackColor = Color.FromArgb(16, 16, 16);
+            tpWelcome.Controls.Add(lbPlaceholder);
+            tpWelcome.ForeColor = SystemColors.ButtonFace;
+            tpWelcome.Location = new Point(4, 24);
+            tpWelcome.Name = "tpWelcome";
+            tpWelcome.Size = new Size(936, 449);
+            tpWelcome.TabIndex = 2;
+            tpWelcome.Text = "Welcome";
             // 
-            // pcProjectList
+            // lbPlaceholder
             // 
-            pcProjectList.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            pcProjectList.BackColor = Color.FromArgb(8, 8, 8);
-            pcProjectList.Location = new Point(236, 3);
-            pcProjectList.Name = "pcProjectList";
-            pcProjectList.Size = new Size(697, 443);
-            pcProjectList.TabIndex = 1;
-            // 
-            // pcProjectButtons
-            // 
-            pcProjectButtons.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
-            pcProjectButtons.BackColor = Color.FromArgb(8, 8, 8);
-            pcProjectButtons.BorderStyle = BorderStyle.FixedSingle;
-            pcProjectButtons.Controls.Add(btLocalProject);
-            pcProjectButtons.Controls.Add(btNewProject);
-            pcProjectButtons.Location = new Point(3, 3);
-            pcProjectButtons.Name = "pcProjectButtons";
-            pcProjectButtons.Padding = new Padding(2);
-            pcProjectButtons.Size = new Size(230, 443);
-            pcProjectButtons.TabIndex = 0;
-            // 
-            // btLocalProject
-            // 
-            btLocalProject.BackColor = Color.FromArgb(48, 48, 48);
-            btLocalProject.Dock = DockStyle.Top;
-            btLocalProject.FlatAppearance.BorderColor = Color.Black;
-            btLocalProject.FlatStyle = FlatStyle.Flat;
-            btLocalProject.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            btLocalProject.ForeColor = SystemColors.ButtonFace;
-            btLocalProject.Image = Properties.Resources.browsefolder_lb;
-            btLocalProject.ImageAlign = ContentAlignment.MiddleLeft;
-            btLocalProject.Location = new Point(2, 48);
-            btLocalProject.Margin = new Padding(3, 3, 3, 10);
-            btLocalProject.Name = "btLocalProject";
-            btLocalProject.Padding = new Padding(10, 0, 0, 0);
-            btLocalProject.Size = new Size(224, 46);
-            btLocalProject.TabIndex = 1;
-            btLocalProject.Text = "    &Import Project";
-            btLocalProject.TextImageRelation = TextImageRelation.ImageBeforeText;
-            btLocalProject.UseVisualStyleBackColor = false;
-            btLocalProject.Click += OnProjectImport;
-            // 
-            // btNewProject
-            // 
-            btNewProject.BackColor = Color.FromArgb(48, 48, 48);
-            btNewProject.Dock = DockStyle.Top;
-            btNewProject.FlatAppearance.BorderColor = Color.Black;
-            btNewProject.FlatStyle = FlatStyle.Flat;
-            btNewProject.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            btNewProject.ForeColor = SystemColors.ButtonFace;
-            btNewProject.Image = Properties.Resources.newfile_lb;
-            btNewProject.ImageAlign = ContentAlignment.MiddleLeft;
-            btNewProject.Location = new Point(2, 2);
-            btNewProject.Margin = new Padding(3, 3, 3, 10);
-            btNewProject.Name = "btNewProject";
-            btNewProject.Padding = new Padding(10, 0, 0, 0);
-            btNewProject.Size = new Size(224, 46);
-            btNewProject.TabIndex = 0;
-            btNewProject.Text = "    &Create New Project";
-            btNewProject.TextImageRelation = TextImageRelation.ImageBeforeText;
-            btNewProject.UseVisualStyleBackColor = false;
-            btNewProject.Click += OnProjectNew;
+            lbPlaceholder.AutoSize = true;
+            lbPlaceholder.Font = new Font("Segoe UI", 12F, FontStyle.Italic, GraphicsUnit.Point);
+            lbPlaceholder.Location = new Point(3, 402);
+            lbPlaceholder.Name = "lbPlaceholder";
+            lbPlaceholder.Size = new Size(319, 42);
+            lbPlaceholder.TabIndex = 0;
+            lbPlaceholder.Text = "No secret doors here!\r\n(Placeholder, check back in a future update!)\r\n";
             // 
             // tpInstances
             // 
@@ -394,15 +340,82 @@
             btInstNew.UseVisualStyleBackColor = false;
             btInstNew.Click += OnInstanceNew;
             // 
-            // tpWelcome
+            // tpProjects
             // 
-            tpWelcome.BackColor = Color.FromArgb(16, 16, 16);
-            tpWelcome.ForeColor = SystemColors.ButtonFace;
-            tpWelcome.Location = new Point(4, 24);
-            tpWelcome.Name = "tpWelcome";
-            tpWelcome.Size = new Size(936, 449);
-            tpWelcome.TabIndex = 2;
-            tpWelcome.Text = "Welcome";
+            tpProjects.BackColor = Color.FromArgb(16, 16, 16);
+            tpProjects.Controls.Add(pcProjectList);
+            tpProjects.Controls.Add(pcProjectButtons);
+            tpProjects.ForeColor = SystemColors.ButtonFace;
+            tpProjects.Location = new Point(4, 24);
+            tpProjects.Name = "tpProjects";
+            tpProjects.Padding = new Padding(3);
+            tpProjects.Size = new Size(936, 449);
+            tpProjects.TabIndex = 0;
+            tpProjects.Text = "Projects";
+            // 
+            // pcProjectList
+            // 
+            pcProjectList.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            pcProjectList.BackColor = Color.FromArgb(8, 8, 8);
+            pcProjectList.Location = new Point(236, 3);
+            pcProjectList.Name = "pcProjectList";
+            pcProjectList.Size = new Size(697, 443);
+            pcProjectList.TabIndex = 1;
+            // 
+            // pcProjectButtons
+            // 
+            pcProjectButtons.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
+            pcProjectButtons.BackColor = Color.FromArgb(8, 8, 8);
+            pcProjectButtons.BorderStyle = BorderStyle.FixedSingle;
+            pcProjectButtons.Controls.Add(btLocalProject);
+            pcProjectButtons.Controls.Add(btNewProject);
+            pcProjectButtons.Location = new Point(3, 3);
+            pcProjectButtons.Name = "pcProjectButtons";
+            pcProjectButtons.Padding = new Padding(2);
+            pcProjectButtons.Size = new Size(230, 443);
+            pcProjectButtons.TabIndex = 0;
+            // 
+            // btLocalProject
+            // 
+            btLocalProject.BackColor = Color.FromArgb(48, 48, 48);
+            btLocalProject.Dock = DockStyle.Top;
+            btLocalProject.FlatAppearance.BorderColor = Color.Black;
+            btLocalProject.FlatStyle = FlatStyle.Flat;
+            btLocalProject.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            btLocalProject.ForeColor = SystemColors.ButtonFace;
+            btLocalProject.Image = Properties.Resources.browsefolder_lb;
+            btLocalProject.ImageAlign = ContentAlignment.MiddleLeft;
+            btLocalProject.Location = new Point(2, 48);
+            btLocalProject.Margin = new Padding(3, 3, 3, 10);
+            btLocalProject.Name = "btLocalProject";
+            btLocalProject.Padding = new Padding(10, 0, 0, 0);
+            btLocalProject.Size = new Size(224, 46);
+            btLocalProject.TabIndex = 1;
+            btLocalProject.Text = "    &Import Project";
+            btLocalProject.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btLocalProject.UseVisualStyleBackColor = false;
+            btLocalProject.Click += OnProjectImport;
+            // 
+            // btNewProject
+            // 
+            btNewProject.BackColor = Color.FromArgb(48, 48, 48);
+            btNewProject.Dock = DockStyle.Top;
+            btNewProject.FlatAppearance.BorderColor = Color.Black;
+            btNewProject.FlatStyle = FlatStyle.Flat;
+            btNewProject.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            btNewProject.ForeColor = SystemColors.ButtonFace;
+            btNewProject.Image = Properties.Resources.newfile_lb;
+            btNewProject.ImageAlign = ContentAlignment.MiddleLeft;
+            btNewProject.Location = new Point(2, 2);
+            btNewProject.Margin = new Padding(3, 3, 3, 10);
+            btNewProject.Name = "btNewProject";
+            btNewProject.Padding = new Padding(10, 0, 0, 0);
+            btNewProject.Size = new Size(224, 46);
+            btNewProject.TabIndex = 0;
+            btNewProject.Text = "    &Create New Project";
+            btNewProject.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btNewProject.UseVisualStyleBackColor = false;
+            btNewProject.Click += OnProjectNew;
             // 
             // MainForm
             // 
@@ -417,13 +430,16 @@
             MinimumSize = new Size(960, 540);
             Name = "MainForm";
             Text = "Lawful Blade";
+            Load += OnFormLoad;
             msMain.ResumeLayout(false);
             msMain.PerformLayout();
             tcMain.ResumeLayout(false);
-            tpProjects.ResumeLayout(false);
-            pcProjectButtons.ResumeLayout(false);
+            tpWelcome.ResumeLayout(false);
+            tpWelcome.PerformLayout();
             tpInstances.ResumeLayout(false);
             pcInstanceButtons.ResumeLayout(false);
+            tpProjects.ResumeLayout(false);
+            pcProjectButtons.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -466,5 +482,6 @@
         private ToolStripMenuItem releaseNotesToolStripMenuItem;
         private ToolStripMenuItem aboutToolStripMenuItem;
         private TabPage tpWelcome;
+        private Label lbPlaceholder;
     }
 }

@@ -15,7 +15,16 @@ namespace LawfulBladeManager.Dialog
         /// <param name="preferences">The current preferences</param>
         public void StorePreferences(Preferences preferences)
         {
+            // Packages...
             preferences.PackageCacheDirectory = tbPackageCacheLocation.Text;
+
+            // Sandboxing...
+            preferences.EnableSandboxing = xbEnableSandboxing.Checked;
+            preferences.SandboxedPath = tbSandboxLocation.Text;
+
+            // Program...
+            preferences.ShowConsoleOnStartup = xbShowConsole.Checked;
+            preferences.AutomaticallyCheckUpdates = xbCheckUpdates.Checked;
         }
 
         /// <summary>
@@ -24,7 +33,16 @@ namespace LawfulBladeManager.Dialog
         /// <param name="preferences">The current preferences</param>
         public void CopyPreferences(Preferences preferences)
         {
+            // Packages...
             tbPackageCacheLocation.Text = preferences.PackageCacheDirectory;
+
+            // Sandboxing...
+            tbSandboxLocation.Text = preferences.SandboxedPath;
+            xbEnableSandboxing.Checked = preferences.EnableSandboxing;
+
+            // Program...
+            xbShowConsole.Checked = preferences.ShowConsoleOnStartup;
+            xbCheckUpdates.Checked = preferences.AutomaticallyCheckUpdates;
         }
 
         /// <summary>
@@ -37,6 +55,9 @@ namespace LawfulBladeManager.Dialog
             {
                 if (tbPackageCacheLocation.Text == string.Empty || !Directory.Exists(tbPackageCacheLocation.Text))
                     throw new Exception("Please select a valid location for the Package Cache!\nThe selected location is either empty or doesn't exist!");
+
+                if (tbSandboxLocation.Text == string.Empty || !Directory.Exists(tbSandboxLocation.Text))
+                    throw new Exception("Please select a valid location for the Sandbox!\nThe selected location is either empty or doesn't exist!");
             }
             catch (Exception ex)
             {
@@ -71,6 +92,28 @@ namespace LawfulBladeManager.Dialog
             // Depending on the sender we want to do different actions
             if (sender == btPackageCacheSelect)
                 OnSelectPackageCache(fbd);
+            else
+            if (sender == btSandboxSelect)
+                OnSelectSandbox(fbd);
+        }
+
+        void OnSelectSandbox(FolderBrowserDialog fbd)
+        {
+            // Set the current path
+            fbd.SelectedPath = tbSandboxLocation.Text;
+
+            if (fbd.ShowDialog() != DialogResult.OK)
+                return;
+
+            if (Directory.GetFileSystemEntries(fbd.SelectedPath).Length > 0)
+                throw new Exception("In order to prevent accidental deletions, the Sandbox location must be empty! Please select an empty path!");
+
+            // Warn the user about side effects, make sure they're okay with them
+            if (MessageBox.Show("Are you sure you want to change the sandbox location?\nYou will not be able to modify any existing projects or instances!", "Lawful Blade", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+            {
+                // Set the package cache location option
+                tbSandboxLocation.Text = fbd.SelectedPath;
+            }
         }
 
         void OnSelectPackageCache(FolderBrowserDialog fbd)

@@ -19,13 +19,14 @@ namespace LawfulBladeManager.Control
             Package package = packageControl.PackageReference;
 
             // Copy basic info...
-            lbName.Text = package.Name;
-            lbUUID.Text = package.UUID;
-            tbDescription.Text = package.Description;
-            lbAuthorsVal.Text = string.Join(", ", package.Authors);
-            lbVersionVal.Text = package.Version;
-            lbTagsVal.Text = string.Join(", ", package.Tags);
-            pbIcon.Image = packageControl.Icon;
+            lbName.Text             = package.Name;
+            lbUUID.Text             = package.UUID;
+            tbDescription.Text      = package.Description;
+            lbAuthorsVal.Text       = string.Join(", ", package.Authors);
+            lbVersionVal.Text       = package.Version;
+            lbTagsVal.Text          = string.Join(", ", package.Tags);
+            lbDependenciesVal.Text  = string.Join(", ", package.Dependencies);
+            pbIcon.Image            = packageControl.Icon;
 
             // Flags have a specific priority.
             if (packageControl.GetFlag(PackageStatusFlag.Installed) && packageControl.GetFlag(PackageStatusFlag.OutOfDate))

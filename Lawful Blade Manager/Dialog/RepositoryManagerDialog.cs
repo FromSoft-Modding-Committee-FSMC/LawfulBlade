@@ -1,4 +1,5 @@
 ﻿using LawfulBladeManager.Packages;
+using LawfulBladeManager.Type;
 using System.Numerics;
 using System.Security.Cryptography;
 
@@ -66,7 +67,7 @@ namespace LawfulBladeManager.Dialog
                 return;
 
             // Is the URI either a valid web address or valid file?
-            if (!sourceUri.IsFile && !Program.DownloadManager.DownloadFileExists(sourceUri))
+            if (!sourceUri.IsFile && !Program.DownloadManager.DownloadFileExists(sourceUri.Append(".inf")))
             {
                 MessageBox.Show($"Invalid repository URI: '{tbSourceField.Text}'", "Lawful Blade", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;

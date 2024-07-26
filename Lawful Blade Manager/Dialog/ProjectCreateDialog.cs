@@ -43,6 +43,9 @@ namespace LawfulBladeManager.Dialog
 
                 if (cbTargetInstance.SelectedValue == null)
                     throw new Exception("You must select an instance!");
+
+                if (Program.Preferences.EnableSandboxing == true && !tbTargetPath.Text.Contains(Program.Preferences.SandboxedPath))
+                    throw new Exception("You can only create a project in the sandboxed path!\nIf you dislike this behaviour, you can disable it within the preferences.");
             }
             catch (Exception ex)
             {
@@ -77,6 +80,10 @@ namespace LawfulBladeManager.Dialog
         {
             // Create and show the dialog...
             using FolderBrowserDialog fbd = new();
+
+            // When sandboxing is enabled, set the initial path...
+            if (Program.Preferences.EnableSandboxing == true)
+                fbd.SelectedPath = Program.Preferences.SandboxedPath;
 
             if (fbd.ShowDialog() != DialogResult.OK)
                 return;

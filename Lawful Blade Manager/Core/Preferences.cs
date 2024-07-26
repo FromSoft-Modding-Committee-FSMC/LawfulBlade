@@ -10,13 +10,31 @@ namespace LawfulBladeManager.Core
         /// Location of the package cache
         /// </summary>
         [JsonInclude]
-        public string PackageCacheDirectory = Path.Combine(ProgramContext.AppDataPath, @"PackageCache");
+        public string PackageCacheDirectory   = Path.Combine(ProgramContext.AppDataPath, @"PackageCache");
+
+        [JsonInclude]
+        public bool AutomaticallyCheckUpdates = false;
+
+        [JsonInclude]
+        public bool EnableSandboxing = true;
+
+        [JsonInclude]
+        public string SandboxedPath = Path.Combine(ProgramContext.AppDataPath, @"Sandbox");
+
+        [JsonInclude]
+        public bool ShowConsoleOnStartup = false;
 
         /// <summary>
         /// The file which stores preferences.
         /// </summary>
         public static readonly string PreferencesFile = Path.Combine(ProgramContext.AppDataPath, "preferences.json");
 
+        public Preferences()
+        {
+            // Make sure the initial sandbox path exists...
+            if (!Directory.Exists(SandboxedPath))
+                Directory.CreateDirectory(SandboxedPath);
+        }
 
         /// <summary>
         /// Loads preferences from disk

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <TargetFramework>net7.0-windows</TargetFramework>
     <RootNamespace>LawfulBladeManager</RootNamespace>
     <Nullable>enable</Nullable>
@@ -16,6 +16,7 @@
     <Company>From Soft Modding Committee</Company>
     <PackageId>Lawful Blade Manager</PackageId>
     <AssemblyName>Lawful Blade</AssemblyName>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
@@ -41,6 +42,9 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="Dialog\InstanceCreateDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Dialog\PackageDependentsWarning.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="Dialog\RepositoryCreateDialog.cs">

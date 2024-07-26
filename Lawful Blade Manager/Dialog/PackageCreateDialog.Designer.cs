@@ -42,7 +42,7 @@
             tbDescription = new TextBox();
             pbIcon = new PictureBox();
             xbExpectOverwrites = new CheckBox();
-            textBox1 = new TextBox();
+            tbDependencies = new TextBox();
             lbVersion = new Label();
             lbTags = new Label();
             lbSource = new Label();
@@ -200,19 +200,19 @@
             ttMain.SetToolTip(xbExpectOverwrites, "Check this if you expect the package to overwrite files, such as a translation patch etc");
             xbExpectOverwrites.UseVisualStyleBackColor = true;
             // 
-            // textBox1
+            // tbDependencies
             // 
-            textBox1.BackColor = Color.FromArgb(24, 24, 24);
-            textBox1.BorderStyle = BorderStyle.FixedSingle;
-            textBox1.ForeColor = SystemColors.ButtonFace;
-            textBox1.Location = new Point(12, 219);
-            textBox1.MaxLength = 64;
-            textBox1.Name = "textBox1";
-            textBox1.PlaceholderText = "Editor; Sample; Runtime";
-            textBox1.Size = new Size(519, 23);
-            textBox1.TabIndex = 25;
-            ttMain.SetToolTip(textBox1, "Tags the package conforms to (seperate with semi-colon)");
-            textBox1.WordWrap = false;
+            tbDependencies.BackColor = Color.FromArgb(24, 24, 24);
+            tbDependencies.BorderStyle = BorderStyle.FixedSingle;
+            tbDependencies.ForeColor = SystemColors.ButtonFace;
+            tbDependencies.Location = new Point(12, 219);
+            tbDependencies.MaxLength = 64;
+            tbDependencies.Name = "tbDependencies";
+            tbDependencies.PlaceholderText = "Sword of Moonlight Editor; More Tools";
+            tbDependencies.Size = new Size(519, 23);
+            tbDependencies.TabIndex = 25;
+            ttMain.SetToolTip(tbDependencies, "Dependencies are any other packages that are required for this package to function.");
+            tbDependencies.WordWrap = false;
             // 
             // lbVersion
             // 
@@ -307,7 +307,7 @@
             pcSlidingView.BackColor = Color.FromArgb(32, 32, 32);
             pcSlidingView.Controls.Add(lbCreatePackage2);
             pcSlidingView.Controls.Add(lbCreatePackage);
-            pcSlidingView.Controls.Add(textBox1);
+            pcSlidingView.Controls.Add(tbDependencies);
             pcSlidingView.Controls.Add(lbDependencies);
             pcSlidingView.Controls.Add(btNext);
             pcSlidingView.Controls.Add(xbExpectOverwrites);
@@ -354,9 +354,9 @@
             lbDependencies.ForeColor = SystemColors.ButtonFace;
             lbDependencies.Location = new Point(10, 201);
             lbDependencies.Name = "lbDependencies";
-            lbDependencies.Size = new Size(94, 15);
+            lbDependencies.Size = new Size(81, 15);
             lbDependencies.TabIndex = 24;
-            lbDependencies.Text = "Dependencies(s)";
+            lbDependencies.Text = "Dependencies";
             // 
             // btNext
             // 
@@ -433,7 +433,7 @@
         private Panel pcSlidingView;
         private Button btBack;
         private Button btNext;
-        private TextBox textBox1;
+        private TextBox tbDependencies;
         private Label lbDependencies;
         private Label lbCreatePackage2;
     }

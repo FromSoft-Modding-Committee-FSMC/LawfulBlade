@@ -37,6 +37,9 @@ namespace LawfulBladeManager.Dialog
 
                 if (tbTargetPath.Text == string.Empty)
                     throw new Exception("You must enter a target path!");
+
+                if (Program.Preferences.EnableSandboxing == true && !tbTargetPath.Text.Contains(Program.Preferences.SandboxedPath))
+                    throw new Exception("You can only create an instance in the sandboxed path!\nIf you dislike this behaviour, you can disable it within the preferences.");
             }
             catch (Exception ex)
             {
@@ -70,6 +73,9 @@ namespace LawfulBladeManager.Dialog
         {
             // Create and show the dialog...
             using FolderBrowserDialog fbd = new();
+
+            if (Program.Preferences.EnableSandboxing == true)
+                fbd.SelectedPath = Program.Preferences.SandboxedPath;
 
             if (fbd.ShowDialog() != DialogResult.OK)
                 return;

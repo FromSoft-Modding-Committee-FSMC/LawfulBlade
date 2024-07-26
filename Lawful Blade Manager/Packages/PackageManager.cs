@@ -1,9 +1,11 @@
 ﻿using LawfulBladeManager.Type;
+using System.Diagnostics;
 using System.IO.Compression;
 using System.Reflection.Metadata.Ecma335;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using System.Xml.Linq;
 
 namespace LawfulBladeManager.Packages
 {
@@ -171,11 +173,12 @@ namespace LawfulBladeManager.Packages
             Package packageMeta = new()
             {
                 // Create the basic package by copying info from the args
-                Name        = args.Name,
-                Description = args.Description,
-                Version     = args.Version,
-                Authors     = args.Authors,
-                Tags        = args.Tags,
+                Name         = args.Name,
+                Description  = args.Description,
+                Version      = args.Version,
+                Authors      = args.Authors,
+                Tags         = args.Tags,
+                Dependencies = args.Dependencies,
 
                 // Generate the package UUID using a MD5 hash of the name
                 UUID = new Guid(MD5.HashData(Encoding.UTF8.GetBytes(args.Name))).ToString(),
@@ -292,6 +295,10 @@ namespace LawfulBladeManager.Packages
             SaveRepositories();
         }
 
+        /// <summary>
+        /// Downloads a packages bundle
+        /// </summary>
+        /// <param name="package">The package to download the bundle for</param>
         public void DownloadBundle(Package package)
         {
             // Find the repository which contains this package...
@@ -347,6 +354,12 @@ namespace LawfulBladeManager.Packages
             return false;
         }
 
+        /// <summary>
+        /// Finds a package in a repository using its name
+        /// </summary>
+        /// <param name="name">The name of the package</param>
+        /// <param name="package">[OUT] reference to the package</param>
+        /// <returns>True if it is found, false otherwise</returns>
         public bool FindPackageByName(string name, out Package? package)
         {
             foreach (PackageRepository repo in Repositories)
@@ -363,6 +376,36 @@ namespace LawfulBladeManager.Packages
 
             package = null;
             return false;
+        }
+
+        /// <summary>
+        /// Finds any packages which are dependant on a package.
+        /// </summary>
+        /// <returns></returns>
+        public int FindDependantPackages(Package package, out Package[] packages)
+        {
+            List<Package> dependantPackages = new List<Package>();
+
+            // Scan each repository...
+            foreach (PackageRepository repo in Repositories)
+            {
+                // Scan each package...
+                foreach (Package repoPackage in repo.Packages)
+                {
+                    // If the package we found does not contain a dependancy for the package we're checking, we can continue.
+                    if (!repoPackage.Dependencies.Contains(package.Name))
+                        continue;
+
+                    // When it does, add it to the list...
+                    dependantPackages.Add(repoPackage);
+                }
+            }
+
+            // Turn our list into an array, pass it backwards in the stack.
+            packages = dependantPackages.ToArray();
+
+            // return the number of packages that are dependant on this one.
+            return dependantPackages.Count;
         }
     }
 }

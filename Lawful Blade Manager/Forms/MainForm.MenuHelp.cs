@@ -19,55 +19,71 @@ namespace LawfulBladeManager.Forms
         /// <summary>
         /// Called when a user clicks the 'Check For Updates' option
         /// </summary>
-        void OnHelpMenuCheckForUpdates(object sender, EventArgs e)
+        void OnHelpMenuCheckForUpdates(object sender, EventArgs e) =>
+            CheckForUpdates();
+
+        
+        void CheckForUpdates()
         {
-            if(updatesURL == string.Empty)
+            if (updatesURL == string.Empty)
             {
                 MessageBox.Show("'websitesURL' field was not set in 'MainForm.MenuHelp.cs'!", "Lawful Blade", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            // Download the version file...
-            string tempFile     = Program.DownloadManager.DownloadFileSync(new Uri(updatesURL));
+            // Start a custom busy dialog
+            BusyDialog.Instance.ShowBusy("Checking for Updates...", "So long, fare thee well. Pip pip cheerio - \r\nWe'll be back soon!");
 
-            // Inspect the version - are we up to date?
-            //  Line 1 = Version Number
-            //  Line 2 = Program Download (Updated), or 'none'
-            //  Line 3 = Breaking Changes (if the update can break systems)
+            // Create a temporary directory to perform the update from...
+            string tempDir = Path.Combine(Path.GetTempPath(), "LawfulUpdate");
 
-            string[] netVersion = File.ReadAllLines(tempFile);
+            // Does the temporary directroy exist? if so, delete it...
+            if (Directory.Exists(tempDir))
+                Directory.Delete(tempDir, true);
+            Directory.CreateDirectory(tempDir);
 
-            if (netVersion[0] == ProgramContext.Version)
+            // Download the info file and move it to the LawfulUpdate path...
+            string tempFile = Program.DownloadManager.DownloadFileSync(new Uri(updatesURL));
+            File.Move(tempFile, Path.Combine(tempDir, "version"));
+
+            // Now, check if we actually need any updates.
+            string[] versionLines = File.ReadAllLines(Path.Combine(tempDir, "version"));
+
+            if (versionLines[0] == ProgramContext.Version)  // TO-DO: This needs some > logic.
             {
+                BusyDialog.Instance.HideBusy();
                 MessageBox.Show("Up to date!", "Lawful Blade", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            // Not up to date...
-            if (MessageBox.Show($"A new version of Lawful Blade is avaliable!\nYours: {ProgramContext.Version}, Avaliable: {netVersion[0]}\nDo you want to update?", "Lawful Blade", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.No)
+            // Does the user want to update right now?
+            if (MessageBox.Show($"A new version of Lawful Blade is avaliable!\nYours: {ProgramContext.Version}, Avaliable: {versionLines[0]}\nDo you want to update?", "Lawful Blade", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.No)
+            {
+                BusyDialog.Instance.HideBusy();
                 return;
+            }
 
-            BusyDialog.Instance.ShowBusy();
+            // The user wants to update. Download the update zip and move it to the update directory...
+            string updateZip = Program.DownloadManager.DownloadFileSync(new Uri(versionLines[1]));
+            File.Move(updateZip, Path.Combine(tempDir, Path.GetFileName(versionLines[1])), true);
 
-            // Create the update folder (if it doesn't exist)
-            string updateDir = Path.Combine(ProgramContext.ProgramPath, "update");
+            // Copy the updater to the update directory...
+            File.Copy(Path.Combine(ProgramContext.ProgramPath, "updaterer.exe"), updateZip, true);
 
-            if (!Directory.Exists(updateDir))
-                Directory.CreateDirectory(updateDir);
+            // Hide Busy...
+            BusyDialog.Instance.Hide();
 
-            // Copy version file to update dir
-            File.Copy(tempFile, Path.Combine(updateDir, "version"), true);
+            // Start to perform the update...
+            Process.Start(new ProcessStartInfo
+            {
+                FileName  = Path.Combine(ProgramContext.ProgramPath, "updaterer.exe"),
+                Arguments = $"{Process.GetCurrentProcess().Id} {Process.GetCurrentProcess().ProcessName} \"{ProgramContext.ProgramPath}\""
+            });
 
-            // Download the update, copy it to update dir
-            string updateZip = Program.DownloadManager.DownloadFileSync(new Uri(netVersion[1]));
-            File.Copy(updateZip, Path.Combine(updateDir, Path.GetFileName(netVersion[1])), true);
-
-            BusyDialog.Instance.HideBusy();
-
-            // Launch Update Process...
-            Process.Start(new ProcessStartInfo(Path.Combine(ProgramContext.ProgramPath, "updater.exe")));
+            // Shutdown Lawful Blade
             Program.Shutdown();
         }
+
 
         /// <summary>
         /// Called when a user clicks the 'Report a Problem' option

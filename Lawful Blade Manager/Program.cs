@@ -18,10 +18,12 @@ namespace LawfulBladeManager
         public static event OnBoolEvent OnShutdown = () => { Preferences.Save(); Environment.Exit(0); return true; };
 
         // Managers
-        public readonly static DownloadManager DownloadManager = new();
-        public readonly static PackageManager  PackageManager  = new();
-        public readonly static InstanceManager InstanceManager = new();
-        public readonly static ProjectManager  ProjectManager  = new();
+        #pragma warning disable CS8618 // Non-nullable field must contain a non-null value... It's set in the ProgramContext, chill the fuck out.
+        public static DownloadManager DownloadManager;
+        public static PackageManager  PackageManager;
+        public static InstanceManager InstanceManager;
+        public static ProjectManager  ProjectManager;
+        #pragma warning restore CS8618
 
         // Context and Program Properties
         public readonly static ProgramContext Context = new();

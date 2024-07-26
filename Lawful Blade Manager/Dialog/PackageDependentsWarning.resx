@@ -60,12 +60,9 @@
   <metadata name="ttPrimary.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
-  <data name="lbSandboxDesc.Text" xml:space="preserve">
-    <value>The sandbox prevents you from creating an instance or project anywhere other than the sandbox path which 
-must be empty in order to be selected.
-
-This prevents accidental operating system destruction for fiends who store things in the root of a drive.</value>
-  </data>
+  <metadata name="tmContinueEnable.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>118, 17</value>
+  </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>

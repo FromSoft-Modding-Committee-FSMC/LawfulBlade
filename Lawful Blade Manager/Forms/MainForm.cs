@@ -3,6 +3,7 @@ using LawfulBladeManager.Dialog;
 using LawfulBladeManager.Instances;
 using LawfulBladeManager.Packages;
 using LawfulBladeManager.Projects;
+using System.Diagnostics;
 
 namespace LawfulBladeManager.Forms
 {
@@ -118,6 +119,13 @@ namespace LawfulBladeManager.Forms
             pcInstanceList.Controls.Clear();
         }
 
+        void OnFormLoad(object sender, EventArgs e)
+        {
+            // Check for updates automatically if the user wants to...
+            if (Program.Preferences.AutomaticallyCheckUpdates)
+                CheckForUpdates();
+        }
+
         /// <summary>
         /// Called when we change the tab view tab...
         /// </summary>
@@ -128,7 +136,7 @@ namespace LawfulBladeManager.Forms
                 EnumurateInstances();
             else
             if (tcMain.SelectedTab == tpProjects)
-                EnumurateProjects();          
+                EnumurateProjects();
         }
     }
 }

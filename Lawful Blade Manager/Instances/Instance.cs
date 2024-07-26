@@ -2,7 +2,7 @@
 using System.IO.Compression;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-
+using LawfulBladeManager.Dialog;
 using LawfulBladeManager.Packages;
 using LawfulBladeManager.Projects;
 
@@ -98,9 +98,7 @@ namespace LawfulBladeManager.Instances
             foreach(string key in Library.Keys)
             {
                 // Find the package this name
-                Package? package = null;
-
-                if (!Program.PackageManager.FindPackageByName(key, out package) || package == null)
+                if (!Program.PackageManager.FindPackageByName(key, out Package? package) || package == null)
                     return false;
 
                 if (package.Tags.Contains("Core"))
@@ -122,22 +120,45 @@ namespace LawfulBladeManager.Instances
 
         public bool UninstallPackage(Package package)
         {
+            // Check if any other packages are dependant on this package...
+            if (Program.PackageManager.FindDependantPackages(package, out Package[] dependents) > 0)
+            {
+                // Now check which of those packages are currently installed in this instance...
+                List<string> dependentPackageNames = new List<string>();
+
+                foreach(Package dependent in dependents)
+                    if (RentingPackage(dependent))
+                        dependentPackageNames.Add(dependent.Name);
+
+                // When more than one is installed, we must show the dependant package warning dialog.
+                if (dependentPackageNames.Count > 0)
+                {
+                    using PackageDependentsWarning pdw = new()
+                    {
+                        Title = $"Lawful Blade - Dependent Packages!",
+                        Brief = "The package you are trying to uninstall has the following dependents:",
+                        Warning = "If you continue with the installation you may completely brick your instance! \r\nPlease carefully consider before continuing.",
+                        Dependents = dependentPackageNames.ToArray(),
+                        AllowContinue = true
+                    };
+
+                    // If we didn't select continue, we exit now.
+                    if (pdw.ShowDialog() != DialogResult.OK)
+                        return false;
+                }
+            }
+
             // Get the library entry
             PackageLibraryEntry entry = Library[package.Name];
 
             // Delete each file
             foreach(PackageFile file in entry.Files)
             {
-                string targetFile      = Path.Combine(StoragePath, file.Filename);
-                string targetDirectory = Path.GetDirectoryName(targetFile) ?? "SCREWYOUMICROSOFT";
+                string  targetFile      = Path.Combine(StoragePath, file.Filename);
 
                 // Because of uninstall conflicts we have to check it exists first...
                 if (File.Exists(targetFile))
                     File.Delete(targetFile);
-
-                // If the directory is now empty, we can delete that too...
-                if (Directory.Exists(targetDirectory) && Directory.GetFileSystemEntries(targetDirectory).Length == 0)
-                    Directory.Delete(targetDirectory);
             }
 
             // Remove the library entry...
@@ -150,6 +171,32 @@ namespace LawfulBladeManager.Instances
 
         public bool InstallPackage(Package package)
         {
+            // Check if we have all of the packages dependencies already installed...
+            List<string> uninstalledDependencies = new();
+            foreach (string dependency in package.Dependencies)
+            {
+                if (dependency != string.Empty && !RentingPackage(dependency))
+                    uninstalledDependencies.Add(dependency);
+            }
+
+            // When we have more than 0 dependencies uninstalled, we need to warn the user...
+            if (uninstalledDependencies.Count > 0)
+            {
+                using PackageDependentsWarning pdw = new()
+                {
+                    Title = $"Lawful Blade - Missing Dependencies!",
+                    Brief = "The package you are trying to install requires the following to be installed first:",
+                    Warning = "Please install the above packages, and then install this one!",
+                    Dependents = uninstalledDependencies.ToArray(),
+                    AllowContinue = false
+                };
+
+                // If we didn't select continue, we exit now.
+                if (pdw.ShowDialog() != DialogResult.OK)
+                    return false;
+            }
+
+
             // Open up the package bundle from the cache...
             using ZipArchive bundle = ZipFile.OpenRead(Path.Combine(Program.Preferences.PackageCacheDirectory, package.BundleSourceUri));
 
@@ -187,6 +234,9 @@ namespace LawfulBladeManager.Instances
 
         public bool RentingPackage(Package package) =>
             Library.ContainsKey(package.Name);
+
+        public bool RentingPackage(string name) =>
+            Library.ContainsKey(name);
 
         public int CheckForOutdatedPackages() =>
             0;
