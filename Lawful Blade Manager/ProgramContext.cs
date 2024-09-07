@@ -1,7 +1,6 @@
 ﻿using LawfulBladeManager.Dialog;
 using LawfulBladeManager.Forms;
 using LawfulBladeManager.Packages;
-using LawfulBladeManager.Projects;
 
 namespace LawfulBladeManager
 {

@@ -98,10 +98,10 @@
             tsFunctions.Dock = DockStyle.None;
             tsFunctions.ImageScalingSize = new Size(24, 24);
             tsFunctions.Items.AddRange(new ToolStripItem[] { tsFuncDelete, tsFuncSettings, tsFuncPackages, tsFuncExport, toolStripSeparator1, tsFuncOpen });
-            tsFunctions.Location = new Point(860, 89);
+            tsFunctions.Location = new Point(829, 89);
             tsFunctions.Name = "tsFunctions";
             tsFunctions.RightToLeft = RightToLeft.Yes;
-            tsFunctions.Size = new Size(158, 31);
+            tsFunctions.Size = new Size(189, 31);
             tsFunctions.TabIndex = 9;
             // 
             // tsFuncDelete
@@ -125,6 +125,7 @@
             // tsFuncPackages
             // 
             tsFuncPackages.DisplayStyle = ToolStripItemDisplayStyle.Image;
+            tsFuncPackages.Enabled = false;
             tsFuncPackages.Image = Properties.Resources._64x_packages;
             tsFuncPackages.ImageTransparentColor = Color.Magenta;
             tsFuncPackages.Name = "tsFuncPackages";
@@ -134,6 +135,7 @@
             // tsFuncExport
             // 
             tsFuncExport.DisplayStyle = ToolStripItemDisplayStyle.Image;
+            tsFuncExport.Enabled = false;
             tsFuncExport.Image = Properties.Resources._64x_export;
             tsFuncExport.ImageTransparentColor = Color.Magenta;
             tsFuncExport.Name = "tsFuncExport";
