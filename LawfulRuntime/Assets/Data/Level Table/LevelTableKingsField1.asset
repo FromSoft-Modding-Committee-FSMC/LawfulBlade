@@ -1,0 +1,512 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ac66d35a2cad854594eb8d7c3b267fe, type: 3}
+  m_Name: LevelTableKingsField1
+  m_EditorClassIdentifier: 
+  <Levels>k__BackingField:
+  - experienceRequired: 0
+    hpDelta: 0
+    mpDelta: 0
+    stDelta: 0
+    mgDelta: 0
+  - experienceRequired: 50
+    hpDelta: 3
+    mpDelta: 2
+    stDelta: 1
+    mgDelta: 1
+  - experienceRequired: 110
+    hpDelta: 4
+    mpDelta: 1
+    stDelta: 1
+    mgDelta: 1
+  - experienceRequired: 187
+    hpDelta: 5
+    mpDelta: 4
+    stDelta: 2
+    mgDelta: 0
+  - experienceRequired: 285
+    hpDelta: 6
+    mpDelta: 2
+    stDelta: 2
+    mgDelta: 1
+  - experienceRequired: 408
+    hpDelta: 7
+    mpDelta: 3
+    stDelta: 2
+    mgDelta: 1
+  - experienceRequired: 561
+    hpDelta: 8
+    mpDelta: 3
+    stDelta: 0
+    mgDelta: 3
+  - experienceRequired: 749
+    hpDelta: 9
+    mpDelta: 5
+    stDelta: 1
+    mgDelta: 1
+  - experienceRequired: 972
+    hpDelta: 10
+    mpDelta: 4
+    stDelta: 2
+    mgDelta: 2
+  - experienceRequired: 1242
+    hpDelta: 11
+    mpDelta: 5
+    stDelta: 1
+    mgDelta: 2
+  - experienceRequired: 1556
+    hpDelta: 12
+    mpDelta: 6
+    stDelta: 2
+    mgDelta: 1
+  - experienceRequired: 1932
+    hpDelta: 13
+    mpDelta: 6
+    stDelta: 2
+    mgDelta: 3
+  - experienceRequired: 2379
+    hpDelta: 14
+    mpDelta: 6
+    stDelta: 3
+    mgDelta: 1
+  - experienceRequired: 2907
+    hpDelta: 15
+    mpDelta: 7
+    stDelta: 1
+    mgDelta: 2
+  - experienceRequired: 3527
+    hpDelta: 16
+    mpDelta: 9
+    stDelta: 3
+    mgDelta: 2
+  - experienceRequired: 4251
+    hpDelta: 17
+    mpDelta: 13
+    stDelta: 2
+    mgDelta: 3
+  - experienceRequired: 5093
+    hpDelta: 18
+    mpDelta: 17
+    stDelta: 2
+    mgDelta: 1
+  - experienceRequired: 6067
+    hpDelta: 9
+    mpDelta: 11
+    stDelta: 3
+    mgDelta: 3
+  - experienceRequired: 7191
+    hpDelta: 20
+    mpDelta: 17
+    stDelta: 2
+    mgDelta: 1
+  - experienceRequired: 8485
+    hpDelta: 21
+    mpDelta: 17
+    stDelta: 2
+    mgDelta: 2
+  - experienceRequired: 9972
+    hpDelta: 12
+    mpDelta: 8
+    stDelta: 3
+    mgDelta: 1
+  - experienceRequired: 11674
+    hpDelta: 23
+    mpDelta: 17
+    stDelta: 2
+    mgDelta: 1
+  - experienceRequired: 13622
+    hpDelta: 24
+    mpDelta: 19
+    stDelta: 1
+    mgDelta: 2
+  - experienceRequired: 15829
+    hpDelta: 25
+    mpDelta: 19
+    stDelta: 3
+    mgDelta: 1
+  - experienceRequired: 18336
+    hpDelta: 26
+    mpDelta: 17
+    stDelta: 2
+    mgDelta: 2
+  - experienceRequired: 21185
+    hpDelta: 27
+    mpDelta: 18
+    stDelta: 2
+    mgDelta: 3
+  - experienceRequired: 24424
+    hpDelta: 28
+    mpDelta: 18
+    stDelta: 3
+    mgDelta: 3
+  - experienceRequired: 27764
+    hpDelta: 28
+    mpDelta: 18
+    stDelta: 3
+    mgDelta: 3
+  - experienceRequired: 30904
+    hpDelta: 28
+    mpDelta: 18
+    stDelta: 3
+    mgDelta: 3
+  - experienceRequired: 34404
+    hpDelta: 28
+    mpDelta: 18
+    stDelta: 3
+    mgDelta: 3
+  - experienceRequired: 37904
+    hpDelta: 28
+    mpDelta: 18
+    stDelta: 3
+    mgDelta: 3
+  - experienceRequired: 41404
+    hpDelta: 28
+    mpDelta: 18
+    stDelta: 3
+    mgDelta: 3
+  - experienceRequired: 44904
+    hpDelta: 28
+    mpDelta: 18
+    stDelta: 3
+    mgDelta: 3
+  - experienceRequired: 48404
+    hpDelta: 28
+    mpDelta: 18
+    stDelta: 3
+    mgDelta: 3
+  - experienceRequired: 51904
+    hpDelta: 28
+    mpDelta: 18
+    stDelta: 3
+    mgDelta: 3
+  - experienceRequired: 55404
+    hpDelta: 28
+    mpDelta: 18
+    stDelta: 3
+    mgDelta: 3
+  - experienceRequired: 58904
+    hpDelta: 28
+    mpDelta: 18
+    stDelta: 4
+    mgDelta: 4
+  - experienceRequired: 62404
+    hpDelta: 28
+    mpDelta: 18
+    stDelta: 4
+    mgDelta: 4
+  - experienceRequired: 65904
+    hpDelta: 28
+    mpDelta: 18
+    stDelta: 4
+    mgDelta: 4
+  - experienceRequired: 69404
+    hpDelta: 28
+    mpDelta: 18
+    stDelta: 4
+    mgDelta: 4
+  - experienceRequired: 72904
+    hpDelta: 28
+    mpDelta: 18
+    stDelta: 4
+    mgDelta: 4
+  - experienceRequired: 76404
+    hpDelta: 28
+    mpDelta: 18
+    stDelta: 4
+    mgDelta: 4
+  - experienceRequired: 79904
+    hpDelta: 28
+    mpDelta: 18
+    stDelta: 5
+    mgDelta: 5
+  - experienceRequired: 83404
+    hpDelta: 28
+    mpDelta: 18
+    stDelta: 5
+    mgDelta: 5
+  - experienceRequired: 86904
+    hpDelta: 28
+    mpDelta: 18
+    stDelta: 5
+    mgDelta: 5
+  - experienceRequired: 89904
+    hpDelta: 28
+    mpDelta: 18
+    stDelta: 5
+    mgDelta: 5
+  - experienceRequired: 92904
+    hpDelta: 28
+    mpDelta: 18
+    stDelta: 5
+    mgDelta: 5
+  - experienceRequired: 95904
+    hpDelta: 26
+    mpDelta: 18
+    stDelta: 5
+    mgDelta: 5
+  - experienceRequired: 98904
+    hpDelta: 0
+    mpDelta: 18
+    stDelta: 5
+    mgDelta: 5
+  - experienceRequired: 99999
+    hpDelta: 0
+    mpDelta: 18
+    stDelta: 5
+    mgDelta: 5
+  - experienceRequired: 0
+    hpDelta: 0
+    mpDelta: 0
+    stDelta: 0
+    mgDelta: 0
+  - experienceRequired: 0
+    hpDelta: 0
+    mpDelta: 0
+    stDelta: 0
+    mgDelta: 0
+  - experienceRequired: 0
+    hpDelta: 0
+    mpDelta: 0
+    stDelta: 0
+    mgDelta: 0
+  - experienceRequired: 0
+    hpDelta: 0
+    mpDelta: 0
+    stDelta: 0
+    mgDelta: 0
+  - experienceRequired: 0
+    hpDelta: 0
+    mpDelta: 0
+    stDelta: 0
+    mgDelta: 0
+  - experienceRequired: 0
+    hpDelta: 0
+    mpDelta: 0
+    stDelta: 0
+    mgDelta: 0
+  - experienceRequired: 0
+    hpDelta: 0
+    mpDelta: 0
+    stDelta: 0
+    mgDelta: 0
+  - experienceRequired: 0
+    hpDelta: 0
+    mpDelta: 0
+    stDelta: 0
+    mgDelta: 0
+  - experienceRequired: 0
+    hpDelta: 0
+    mpDelta: 0
+    stDelta: 0
+    mgDelta: 0
+  - experienceRequired: 0
+    hpDelta: 0
+    mpDelta: 0
+    stDelta: 0
+    mgDelta: 0
+  - experienceRequired: 0
+    hpDelta: 0
+    mpDelta: 0
+    stDelta: 0
+    mgDelta: 0
+  - experienceRequired: 0
+    hpDelta: 0
+    mpDelta: 0
+    stDelta: 0
+    mgDelta: 0
+  - experienceRequired: 0
+    hpDelta: 0
+    mpDelta: 0
+    stDelta: 0
+    mgDelta: 0
+  - experienceRequired: 0
+    hpDelta: 0
+    mpDelta: 0
+    stDelta: 0
+    mgDelta: 0
+  - experienceRequired: 0
+    hpDelta: 0
+    mpDelta: 0
+    stDelta: 0
+    mgDelta: 0
+  - experienceRequired: 0
+    hpDelta: 0
+    mpDelta: 0
+    stDelta: 0
+    mgDelta: 0
+  - experienceRequired: 0
+    hpDelta: 0
+    mpDelta: 0
+    stDelta: 0
+    mgDelta: 0
+  - experienceRequired: 0
+    hpDelta: 0
+    mpDelta: 0
+    stDelta: 0
+    mgDelta: 0
+  - experienceRequired: 0
+    hpDelta: 0
+    mpDelta: 0
+    stDelta: 0
+    mgDelta: 0
+  - experienceRequired: 0
+    hpDelta: 0
+    mpDelta: 0
+    stDelta: 0
+    mgDelta: 0
+  - experienceRequired: 0
+    hpDelta: 0
+    mpDelta: 0
+    stDelta: 0
+    mgDelta: 0
+  - experienceRequired: 0
+    hpDelta: 0
+    mpDelta: 0
+    stDelta: 0
+    mgDelta: 0
+  - experienceRequired: 0
+    hpDelta: 0
+    mpDelta: 0
+    stDelta: 0
+    mgDelta: 0
+  - experienceRequired: 0
+    hpDelta: 0
+    mpDelta: 0
+    stDelta: 0
+    mgDelta: 0
+  - experienceRequired: 0
+    hpDelta: 0
+    mpDelta: 0
+    stDelta: 0
+    mgDelta: 0
+  - experienceRequired: 0
+    hpDelta: 0
+    mpDelta: 0
+    stDelta: 0
+    mgDelta: 0
+  - experienceRequired: 0
+    hpDelta: 0
+    mpDelta: 0
+    stDelta: 0
+    mgDelta: 0
+  - experienceRequired: 0
+    hpDelta: 0
+    mpDelta: 0
+    stDelta: 0
+    mgDelta: 0
+  - experienceRequired: 0
+    hpDelta: 0
+    mpDelta: 0
+    stDelta: 0
+    mgDelta: 0
+  - experienceRequired: 0
+    hpDelta: 0
+    mpDelta: 0
+    stDelta: 0
+    mgDelta: 0
+  - experienceRequired: 0
+    hpDelta: 0
+    mpDelta: 0
+    stDelta: 0
+    mgDelta: 0
+  - experienceRequired: 0
+    hpDelta: 0
+    mpDelta: 0
+    stDelta: 0
+    mgDelta: 0
+  - experienceRequired: 0
+    hpDelta: 0
+    mpDelta: 0
+    stDelta: 0
+    mgDelta: 0
+  - experienceRequired: 0
+    hpDelta: 0
+    mpDelta: 0
+    stDelta: 0
+    mgDelta: 0
+  - experienceRequired: 0
+    hpDelta: 0
+    mpDelta: 0
+    stDelta: 0
+    mgDelta: 0
+  - experienceRequired: 0
+    hpDelta: 0
+    mpDelta: 0
+    stDelta: 0
+    mgDelta: 0
+  - experienceRequired: 0
+    hpDelta: 0
+    mpDelta: 0
+    stDelta: 0
+    mgDelta: 0
+  - experienceRequired: 0
+    hpDelta: 0
+    mpDelta: 0
+    stDelta: 0
+    mgDelta: 0
+  - experienceRequired: 0
+    hpDelta: 0
+    mpDelta: 0
+    stDelta: 0
+    mgDelta: 0
+  - experienceRequired: 0
+    hpDelta: 0
+    mpDelta: 0
+    stDelta: 0
+    mgDelta: 0
+  - experienceRequired: 0
+    hpDelta: 0
+    mpDelta: 0
+    stDelta: 0
+    mgDelta: 0
+  - experienceRequired: 0
+    hpDelta: 0
+    mpDelta: 0
+    stDelta: 0
+    mgDelta: 0
+  - experienceRequired: 0
+    hpDelta: 0
+    mpDelta: 0
+    stDelta: 0
+    mgDelta: 0
+  - experienceRequired: 0
+    hpDelta: 0
+    mpDelta: 0
+    stDelta: 0
+    mgDelta: 0
+  - experienceRequired: 0
+    hpDelta: 0
+    mpDelta: 0
+    stDelta: 0
+    mgDelta: 0
+  - experienceRequired: 0
+    hpDelta: 0
+    mpDelta: 0
+    stDelta: 0
+    mgDelta: 0
+  - experienceRequired: 0
+    hpDelta: 0
+    mpDelta: 0
+    stDelta: 0
+    mgDelta: 0
+  - experienceRequired: 0
+    hpDelta: 0
+    mpDelta: 0
+    stDelta: 0
+    mgDelta: 0
+  - experienceRequired: 0
+    hpDelta: 0
+    mpDelta: 0
+    stDelta: 0
+    mgDelta: 0
+  <SourceFile>k__BackingField: Game\PARAM\0.lvt
+  <LoadInEditor>k__BackingField: 0

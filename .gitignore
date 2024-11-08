@@ -401,3 +401,10 @@ FodyWeavers.xsd
 /Testing
 /StagingPackages
 /ShippingBuild
+/LawfulRuntime/Library
+/LawfulRuntime/Temp
+/LawfulRuntime/UserSettings
+/LawfulRuntime/Assets/StreamingAssets/Game/DATA
+/LawfulRuntime/Assets/StreamingAssets/Game/PARAM
+LawfulRuntime/Assembly-CSharp.csproj
+LawfulRuntime/LawfulRuntime.sln

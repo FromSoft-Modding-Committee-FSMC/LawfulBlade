@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1be5ac0478fc4e44f98e4694ae7681df, type: 3}
+  m_Name: TestGameData
+  m_EditorClassIdentifier: 
+  <LevelTableList>k__BackingField:
+  - {fileID: 11400000, guid: 54629efd22bc6a5459bb2c595df37a19, type: 2}
+  - {fileID: 11400000, guid: d4f18d0d5c855a24f8c13ec7cd57aba4, type: 2}
+  - {fileID: 11400000, guid: a08f97560bf58014c8bba92d28ffe2e5, type: 2}
+  - {fileID: 11400000, guid: f4344228efdc34b469343c681255ca61, type: 2}
+  - {fileID: 11400000, guid: b650a3da24febe94a9e08df0e7278c34, type: 2}
+  <CurrentLevelTable>k__BackingField: {fileID: 0}
