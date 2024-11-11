@@ -1,5 +1,19 @@
 {
   "dependencies": {
+    "com.mochineko.stbimagesharp-for-unity": {
+      "version": "https://github.com/mochi-neko/StbImageSharpForUnity.git?path=/Assets/Mochineko/StbImageSharpForUnity",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "732ad2b2c025f18542bb0b35d372ef99f2ac78a1"
+    },
+    "com.stbsharp.stbimagesharp": {
+      "version": "https://github.com/mochi-neko/StbImageSharpForUnity.git?path=/Assets/StbImageSharp",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "732ad2b2c025f18542bb0b35d372ef99f2ac78a1"
+    },
     "com.unity.ext.nunit": {
       "version": "2.0.5",
       "depth": 2,
