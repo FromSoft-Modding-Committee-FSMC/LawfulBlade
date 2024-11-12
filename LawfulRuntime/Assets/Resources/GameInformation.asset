@@ -9,27 +9,27 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 18bae14e891999a439d1d3316094857c, type: 3}
+  m_Script: {fileID: 11500000, guid: c1f9fb812ef9b83489890c9e96697b6c, type: 3}
   m_Name: GameInformation
   m_EditorClassIdentifier: 
   <attractSequence>k__BackingField:
-    mode: 2
-    file: D:\dev\.NET Projects\Lawful-Blade\LawfulRuntime\Assets\StreamingAssets\Game\PARAM\TITLE.DAT
+    mode: 0
+    file: 
   <openingSequence>k__BackingField:
-    mode: 2
-    file: D:\dev\.NET Projects\Lawful-Blade\LawfulRuntime\Assets\StreamingAssets\Game\PARAM\OPENNING.DAT
+    mode: 0
+    file: 
   <endingSequence1>k__BackingField:
-    mode: 2
+    mode: 0
     file: 
   <endingSequence2>k__BackingField:
-    mode: 2
+    mode: 0
     file: 
   <endingSequence3>k__BackingField:
-    mode: 2
+    mode: 0
     file: 
   <creditsSequence>k__BackingField:
-    mode: 2
+    mode: 0
     file: 
-  <titleImage>k__BackingField: title.bmp
-  <closeImage>k__BackingField: intro1.bmp
+  <titleImage>k__BackingField: 
+  <closeImage>k__BackingField: 
   loadInEditor: 0

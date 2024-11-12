@@ -339,10 +339,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 670468882}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3f6d906ae3825174eb3fd6a9fcc315ad, type: 3}
+  m_Script: {fileID: 11500000, guid: 050d39711675a16449f14cc55fe38a65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameInformation: {fileID: 11400000, guid: 3aefd7b837ebf2442900f1837c41f9d9, type: 2}
+  gameInformation: {fileID: 11400000, guid: 00af4e2f9c92eba4f8f3dd080bae8415, type: 2}
   sequenceAudio: {fileID: 1079932686}
   sequenceVideo: {fileID: 1964443753}
   sequenceImage: {fileID: 229874075}
@@ -623,12 +623,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'XYZ
-
-    XYZ'
+  m_text: 
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 2571c3c5c0dde2c43b65950753356e3f, type: 2}
+  m_sharedMaterial: {fileID: 433268302941662937, guid: 2571c3c5c0dde2c43b65950753356e3f, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

@@ -145,10 +145,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 480577250}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c5c66d3f1cc15e741b4056f778cfe98a, type: 3}
+  m_Script: {fileID: 11500000, guid: d3caf9f1a6f6d7a47b48f010f2f4bd13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameInformation: {fileID: 11400000, guid: 3aefd7b837ebf2442900f1837c41f9d9, type: 2}
+  gameInformation: {fileID: 11400000, guid: 00af4e2f9c92eba4f8f3dd080bae8415, type: 2}
 --- !u!4 &480577252
 Transform:
   m_ObjectHideFlags: 0
