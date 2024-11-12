@@ -111,6 +111,92 @@ struct MPXTileMap
     MPXTile tiles[width * height]; 
 };
 
+struct MPXBSPUnknown1Item2
+{
+    u32 u32x00;
+    u32 u32x04;
+};
+
+struct MPXBSPUnknown1Item1
+{
+    u32 unkx00;
+    float xy1[2];
+    float xy2[2];
+    u32 count;
+    MPXBSPUnknown1Item2 items[count];
+};
+
+struct MPXBSPUnknown1
+{
+    u32 count;
+    
+    MPXBSPUnknown1Item1 items[count];
+};
+
+struct MPXBSPUnknown2Item
+{
+    u32 unkx00;
+    u32 unkx04;
+    u32 unkx08;
+    u32 unkx0c;
+    float xy1[2];
+    float xy2[2];
+    u32 unkx20;
+    u32 unkx24;
+    u32 unkx28;
+};
+
+struct MPXBSPUnknown2
+{
+    u32 count;
+    MPXBSPUnknown2Item item[count];
+};
+
+struct MPXBSPUnknown3Item
+{
+    float xy1[2];
+    float xy2[2];
+    u32 unkx10;
+    u32 unkx14;
+};
+
+struct MPXBSPUnknown3
+{
+    u32 count;
+    MPXBSPUnknown3Item item[count];
+};
+
+struct MPXBSPInfo
+{
+    MPXBSPUnknown1 bspInfo1;
+    MPXBSPUnknown2 bspInfo2;
+    MPXBSPUnknown3 bspInfo3;
+    u8 junk[(bspInfo1.count+7)/8*bspInfo1.count];
+};
+
+struct MPXTexturePath
+{
+    char filename[];
+};
+
+struct MPXTextures
+{
+    u32 count;   
+    MPXTexturePath textures[count];  
+};
+
+struct MPXVertex
+{
+    float position[3];
+    float texcoord[2];
+};
+
+struct MPXVertexBlock
+{
+    u32 count;
+    MPXVertex vertices[count];
+};
+
 struct MPXFile
 {
     // Basic Data
@@ -127,6 +213,23 @@ struct MPXFile
     MPXBlockItem items;
     u32 skyMeshID;
     MPXTileMap tilemap;
+    MPXBSPInfo bspInfo;
+    MPXTextures textures;
+    MPXVertexBlock vertices;
+    // MPX Meshes
 };
+
+// ^ The meshes are not fully reversed yet...
+// A[01 00 00 00] B[00 00] C[03 00] D[03 00]
+// A[01 00 00 00] B[00 00] C[8A 00] D[4F 00]
+// ^
+// A = Unknown
+// B = Unknown
+// C = Number of vertex references?
+// D = Number of weird primitives?..
+//
+// after are vertex references (u16), then the primitives...
+
+// Then comes a list of bog standard MHM files... Very fuckin weird.
 
 MPXFile file @ 0x00000000;
