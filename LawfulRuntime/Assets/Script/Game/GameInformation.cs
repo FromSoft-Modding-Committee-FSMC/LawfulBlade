@@ -1,3 +1,4 @@
+using Lawful.IO;
 using System;
 using System.IO;
 using System.Text;
@@ -18,98 +19,56 @@ public class GameInformation : ScriptableObject
     [field: SerializeField] public string titleImage { get; private set; }
     [field: SerializeField] public string closeImage { get; private set; }
 
-    [Header("Debugging")]
-    [SerializeField] bool loadInEditor;
-
-    /// <summary>
-    /// ScriptableObject Implementation.<br/>
-    /// Used for load in editor functionality.
-    /// </summary>
-    void OnValidate()
-    {
-        if (loadInEditor)
-        {
-            // Construct the default path to sys.dat
-            string filePath = Path.Combine(Path.GetFullPath(Application.streamingAssetsPath), "GAME", "PARAM", "sys.dat");
-
-            // Attempt to import from the legacy file
-            ImportFromLegacyFile(filePath);
-
-            // Re-disable load in editor...
-            loadInEditor = false;
-        }
-    }
-
     /// <summary>
     /// Imports legacy sys.dat file
     /// </summary>
     /// <param name="path">Path to SOM game sys.dat</param>
     public void ImportFromLegacyFile(string path)
     {
+        //
+        // WARNING:
+        //  Technically all strings are SHIFT-JIS, but we'll cross that bridge when we come to it...
+        //
+
         // Open the legacy file
-        using (BinaryReader br = new (File.OpenRead(path)))
-        {
-            // Read attract sequence
-            attractSequence = LoadSequence(br, "TITLE.DAT");
+        using FileInputStream ins = new(File.OpenRead(path));
 
-            // Read title image
-            titleImage = Sanitize(Encoding.ASCII.GetString(br.ReadBytes(31)));
-
-            // Read opening Sequence
-            openingSequence = LoadSequence(br, "OPENNING.DAT");
-
-            // Read ending sequences
-            endingSequence1 = new GameSequenceInfo
-            {
-                mode = (SequenceMode)br.ReadByte(),
-                file = Encoding.ASCII.GetString(br.ReadBytes(31)).Trim('\0')
-            };
-
-            endingSequence2 = new GameSequenceInfo
-            {
-                mode = (SequenceMode)br.ReadByte(),
-                file = Encoding.ASCII.GetString(br.ReadBytes(31))
-            };
-
-            endingSequence3 = new GameSequenceInfo
-            {
-                mode = (SequenceMode)br.ReadByte(),
-                file = Encoding.ASCII.GetString(br.ReadBytes(31))
-            };
-
-            // Read credits sequence
-            creditsSequence = new GameSequenceInfo
-            {
-                mode = (SequenceMode)br.ReadByte(),
-                file = Encoding.ASCII.GetString(br.ReadBytes(31))
-            };
-
-            // Read close image
-            closeImage = Encoding.ASCII.GetString(br.ReadBytes(31));
-        }
+        //
+        // Sequences, Title & Close Image
+        //
+        attractSequence = LoadSequence(ins, "TITLE.DAT");
+        titleImage      = ins.ReadFixedString(31);
+        openingSequence = LoadSequence(ins, "OPENNING.DAT");
+        endingSequence1 = LoadSequence(ins, "ENDING1.DAT");
+        endingSequence2 = LoadSequence(ins, "ENDING2.DAT");
+        endingSequence3 = LoadSequence(ins, "ENDING3.DAT");
+        creditsSequence = LoadSequence(ins, "STAFF.DAT");
+        closeImage      = ins.ReadFixedString(31);
     }
 
-    string Sanitize(string f) =>
-        f[..f.IndexOf('\0')].Trim();
-
-    GameSequenceInfo LoadSequence(BinaryReader br, string slideshowSource)
+    /// <summary>
+    /// Loads sequence information from the SYS.DAT file
+    /// </summary>
+    /// <param name="br">A BinaryReader to read from</param>
+    /// <param name="slideshowSource">The source of the slide show if this is not a movie or null</param>
+    /// <returns></returns>
+    GameSequenceInfo LoadSequence(FileInputStream ins, string slideshowSource)
     {
         GameSequenceInfo temp = new()
         {
-            mode = (SequenceMode)br.ReadByte(),
-            file = Encoding.ASCII.GetString(br.ReadBytes(31))
+            mode = (SequenceMode)ins.ReadU8(),
+            file = ins.ReadFixedString(31)
         };
 
         // Override with slideshow file if mode is for a slideshow
         switch(temp.mode)
         {
             case SequenceMode.Video:
-                Logger.Warn(string.Join(", ", Encoding.ASCII.GetBytes(Sanitize(temp.file))));
-                temp.file = Path.Combine(Path.GetFullPath(Application.streamingAssetsPath), "Game", "DATA", "MOVIE", Sanitize(temp.file));
+                temp.file = Path.Combine(ResourceManager.GameDataPath, "MOVIE", temp.file);
                 break;
 
             case SequenceMode.Slideshow:
-                temp.file = Path.Combine(Path.GetFullPath(Application.streamingAssetsPath), "Game", "PARAM", slideshowSource);
+                temp.file = Path.Combine(ResourceManager.GameParamPath, slideshowSource);
                 break;
         }
 
