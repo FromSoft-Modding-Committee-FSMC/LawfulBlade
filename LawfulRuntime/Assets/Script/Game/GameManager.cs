@@ -8,10 +8,12 @@ public class GameManager : MonoBehaviour
     // Inspector
     [Header("References (External)")]
     [SerializeField] GameInformation gameInformation;
+    [SerializeField] MapData gameMapData;
 
     // Properties
-    public GameStateMachine StateMachine { get; private set; } = null;
-    
+    public GameStateMachine StateMachine   { get; private set; } = null;
+    public ResourceManager ResourceManager { get; private set; } = null;
+
     // Accessor style properties
     public GameInformation GameInfo => gameInformation;
 
@@ -30,15 +32,25 @@ public class GameManager : MonoBehaviour
 
         Instance = this;
 
+        // Create Resource Manager early
+        ResourceManager = new ResourceManager();
+
         // Constant data loading...
         Logger.Info("Loading Game Information...");
         gameInformation.ImportFromLegacyFile(Path.Combine(ResourceManager.GameParamPath, "SYS.DAT"));
+
+        Logger.Info("Loading Map Data...");
+        gameMapData.LoadMapFiles();
 
         // Apply configuration options
         SetRuntimeConfiguration();
 
         // Object initialization
-        StateMachine = new GameStateMachine();
+        StateMachine    = new GameStateMachine();
+
+        // Override Initialization
+        Logger.Info("Loading Overrides...");
+        ResourceManager.LoadOverrides();
     }
 
     /// <summary>

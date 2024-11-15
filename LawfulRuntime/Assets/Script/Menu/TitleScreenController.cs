@@ -2,7 +2,6 @@ using DG.Tweening;
 using System;
 using System.Collections;
 using System.IO;
-using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -45,6 +44,22 @@ public class TitleScreenController : MonoBehaviour
         Instance = this;
 
         // Load the title screen image
+        if (ResourceManager.OverrideExists(Path.GetFileNameWithoutExtension(gameInformation.titleImage)))
+        {
+            titleImage.texture = ResourceManager.OverrideLoad<Texture2D>(Path.GetFileNameWithoutExtension(gameInformation.titleImage));
+            titleImage.enabled = true;
+
+            // Fade in the title image
+            titleImage.DOFade(1f, 1f)
+                .OnComplete(() =>
+                {
+                // Activate our "Press Any Key" text
+                screenPressAny.SetActive(true);
+                });
+
+            return;
+        }
+
         try
         {
             titleTexture = TextureFactory.LoadTextureFromFile(Path.Combine(ResourceManager.GameDataPath, "PICTURE", gameInformation.titleImage));

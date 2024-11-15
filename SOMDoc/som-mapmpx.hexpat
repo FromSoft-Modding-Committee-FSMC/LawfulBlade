@@ -197,6 +197,25 @@ struct MPXVertexBlock
     MPXVertex vertices[count];
 };
 
+struct MPXRenderMeshPrimitive
+{
+    u32 index;  // No fucking clue
+    u8 unkx04;
+    u8 unkx05;
+    u8 unkx06;
+    u8 unkx07;
+};
+
+struct MPXRenderMesh
+{
+    u32 u32x00;
+    u16 u16x04;
+    u16 indexCount;
+    u16 primitiveCount;
+    u16 indices[indexCount];
+    MPXRenderMeshPrimitive primitives[primitiveCount];
+};
+
 struct MPXFile
 {
     // Basic Data
@@ -215,8 +234,14 @@ struct MPXFile
     MPXTileMap tilemap;
     MPXBSPInfo bspInfo;
     MPXTextures textures;
+    
+    // MPX Mesh Data
     MPXVertexBlock vertices;
-    // MPX Meshes
+    
+    // Render Meshes
+    MPXRenderMesh renderMesh;
+    
+    
 };
 
 // ^ The meshes are not fully reversed yet...

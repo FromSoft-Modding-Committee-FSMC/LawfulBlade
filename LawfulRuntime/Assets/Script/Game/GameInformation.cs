@@ -51,7 +51,7 @@ public class GameInformation : ScriptableObject
         //
 
         // Open the legacy file
-        using FileInputStream ins = new(File.OpenRead(path));
+        using FileInputStream ins = new(path);
 
         //
         // Sequences, Title & Close Image

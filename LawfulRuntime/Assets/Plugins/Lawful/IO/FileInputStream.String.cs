@@ -5,6 +5,26 @@ namespace Lawful.IO
 {
     public partial class FileInputStream
     {
+        public string ReadTerminatedString() =>
+            ReadTerminatedString(Encoding.ASCII);
+
+        public string ReadTerminatedString(Encoding encoding)
+        {
+            byte[] charBuffer = new byte[256];
+            int charCounter = 0;
+
+            do
+            {
+                charBuffer[charCounter++] = ReadU8();
+            } while (charBuffer[charCounter-1] != 0x00);
+
+            string terminatedString = encoding.GetString(charBuffer, 0, charCounter);
+
+            Debug.Log(string.Join(", ", buffer[..charCounter]));
+
+            return terminatedString[..terminatedString.IndexOf('\0')];
+        }
+
         /// <summary>
         /// Reads a fixed length ascii string. Everything after a null terminator (\0) is removed.
         /// </summary>

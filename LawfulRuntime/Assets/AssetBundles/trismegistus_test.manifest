@@ -1,0 +1,21 @@
+ManifestFileVersion: 0
+UnityVersion: 6000.0.24f1
+CRC: 3598530545
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 8c34904a4f0383fcbad9d6c013dc26c4
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 5527383dc91eba37123fc67ad6efaa19
+  IncrementalBuildHash:
+    serializedVersion: 2
+    Hash: f502e84e8e99bd83a2e0b8bc451a710e
+HashAppended: 0
+ClassTypes:
+- Class: 28
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/PatchAssets/title.png
+Dependencies: []
