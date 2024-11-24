@@ -76,11 +76,36 @@ namespace Lawful.Resource.Factory
         {
             // Scan through our list of registered handlers looking for the extension
             foreach (FileFormatHandler<T> handler in registeredFormatHandlers)
-                if (Array.IndexOf(handler.Metadata.extensions, extension) >= 0)
-                    return handler; 
+            {
+                foreach(string handlerExtension in handler.Metadata.extensions)
+                {
+                    if (handlerExtension.Equals(extension, StringComparison.InvariantCultureIgnoreCase))
+                        return handler;
+                }
+            }
 
             // Failed.
             return null;
         }
+
+        /// <summary>
+        /// Gets a resource from the resource cache
+        /// </summary>
+        /// <param name="name">The name of the resource</param>
+        public T Get(ulong name) =>
+            resourceCache[name];
+
+        /// <summary>
+        /// Frees a resource from the resource cache
+        /// </summary>
+        /// <param name="name"></param>
+        public void Free(ulong name) =>
+            throw new NotImplementedException();
+
+        /// <summary>
+        /// Returns the amount of assets currently stored in the cache
+        /// </summary>
+        public int GetCacheSize() =>
+            resourceCache.Count;
     }
 }

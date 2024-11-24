@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Lawful.Resource
@@ -21,6 +22,15 @@ namespace Lawful.Resource
         public int ReferenceCount            { get; set; }
 
         /// <summary>The actual final, ready to use resource</summary>
-        public T resource                    { get; protected set; }
+        public T resource                    { get; set; }
+
+        /// <summary>
+        /// Gets the Unity Resource, if neccessary creating it first.
+        /// </summary>
+        public virtual T Get() =>
+            throw new NotImplementedException();
+
+        public virtual void Free() =>
+            throw new NotImplementedException();
     }
 }

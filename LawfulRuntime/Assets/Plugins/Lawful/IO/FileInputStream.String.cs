@@ -15,12 +15,10 @@ namespace Lawful.IO
 
             do
             {
-                charBuffer[charCounter++] = ReadU8();
-            } while (charBuffer[charCounter-1] != 0x00);
+                charBuffer[charCounter] = ReadU8();
+            } while (charBuffer[charCounter++] != 0x00);
 
             string terminatedString = encoding.GetString(charBuffer, 0, charCounter);
-
-            Debug.Log(string.Join(", ", buffer[..charCounter]));
 
             return terminatedString[..terminatedString.IndexOf('\0')];
         }

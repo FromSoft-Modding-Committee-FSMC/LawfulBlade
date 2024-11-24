@@ -347,10 +347,14 @@ MonoBehaviour:
   sequenceVideo: {fileID: 1964443753}
   sequenceImage: {fileID: 229874075}
   sequenceText: {fileID: 1749677184}
+  sequenceFontMaterial: {fileID: 2100000, guid: 95a037ca12ec2404c899da49244d2a3e, type: 2}
   sequenceData:
     numberOfSlides: 0
     audioFile: 
     slides: []
+  audioResourceName: 0
+  imageResourceName: 0
+  fontResourceName: 0
 --- !u!1 &1079932685
 GameObject:
   m_ObjectHideFlags: 0

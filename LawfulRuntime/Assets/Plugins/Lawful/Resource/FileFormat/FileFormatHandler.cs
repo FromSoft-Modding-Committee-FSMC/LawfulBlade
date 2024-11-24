@@ -30,12 +30,12 @@ namespace Lawful.Resource.FileFormat
         /// <param name="finBuffer">The byte buffer file data is provided in</param>
         /// <param name="result">The resulting data from parsing</param>
         /// <returns>True on success, false otherwise.</returns>
-        public bool Load(byte[] finBuffer, in T result)
+        public bool Load(byte[] finBuffer, in T resource)
         {
             // Simply create a file input stream and pass it to the implemented method
             using FileInputStream finStream = new(finBuffer);
 
-            return Load(finStream, result);
+            return Load(finStream, resource);
         }
 
         /// <summary>
@@ -44,12 +44,12 @@ namespace Lawful.Resource.FileFormat
         /// <param name="finPath">The path to the file we want to parse</param>
         /// <param name="result">The resulting data from parsing</param>
         /// <returns>True on success, false otherwise.</returns>
-        public bool Load(string finPath, in T result)
+        public bool Load(string finPath, in T resource)
         {
             // Simply create a file input stream and pass it to the implemented method
             using FileInputStream finStream = new(finPath);
 
-            return Load(finStream, in result);
+            return Load(finStream, in resource);
         }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace Lawful.Resource.FileFormat
         /// <param name="finStream">The stream file data is provided in</param>
         /// <param name="result">The resulting data from parsing</param>
         /// <returns>True on success, false otherwise.</returns>
-        public virtual bool Load(FileInputStream finStream, in T result) =>
+        public virtual bool Load(FileInputStream finStream, in T resource) =>
             throw new NotImplementedException();
     }
 }

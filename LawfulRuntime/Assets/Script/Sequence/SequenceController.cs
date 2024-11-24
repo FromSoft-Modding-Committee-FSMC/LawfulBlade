@@ -8,6 +8,8 @@ using UnityEngine.Video;
 using DG.Tweening;
 using TMPro;
 using System.Collections;
+using Lawful.Resource;
+using System.Text;
 
 public class SequenceController : MonoBehaviour
 {
@@ -19,9 +21,14 @@ public class SequenceController : MonoBehaviour
     [SerializeField] VideoPlayer sequenceVideo;
     [SerializeField] RawImage sequenceImage;
     [SerializeField] TextMeshProUGUI sequenceText;
+    [SerializeField] Material sequenceFontMaterial;
 
     [Header("Debugging")]
     [SerializeField] SequenceData sequenceData;
+
+    [SerializeField] ulong audioResourceName;
+    [SerializeField] ulong imageResourceName;
+    [SerializeField] ulong fontResourceName;
 
     // Events
     public event Action SequenceComplete;
@@ -39,7 +46,12 @@ public class SequenceController : MonoBehaviour
         if (Instance != null)
             throw new Exception("Cannot have more than one instance of SequenceContolller");
 
+        Logger.Info("Sequence Playback Initialized...");
+
         Instance = this;
+
+        // Load our sequence font
+        fontResourceName = ResourceManager.Load<FontResource>(Path.Combine("FONT", "SequenceText.otf"));
     }
 
     /// <summary>
@@ -63,6 +75,8 @@ public class SequenceController : MonoBehaviour
         {
             case SequenceMode.Video:
 
+                Logger.Info("Sequence Type: Video");
+
                 // Setup for video playback
                 sequenceAudio.enabled = true;
                 sequenceVideo.enabled = true;
@@ -77,10 +91,21 @@ public class SequenceController : MonoBehaviour
 
             case SequenceMode.Slideshow:
 
+                Logger.Info("Sequence Type: Slideshow");
+
                 // Setup for slideshow playback
                 sequenceAudio.enabled = true;
                 sequenceImage.enabled = true;
                 sequenceText.enabled  = true;
+
+                // Configure text font
+                sequenceText.font = ResourceManager.Get<FontResource>(fontResourceName).Get();
+
+                // Enable Underlay for the sequence text font
+                sequenceText.fontMaterial.EnableKeyword(ShaderUtilities.Keyword_Underlay);
+                sequenceText.fontMaterial.SetColor("_UnderlayColor", Color.black);
+                sequenceText.fontMaterial.SetFloat("_UnderlayOffsetX",  1f);
+                sequenceText.fontMaterial.SetFloat("_UnderlayOffsetY", -1f);
 
                 LoadSlideshowData(gameSequenceInfo.file);
                 StartCoroutine(SlideShowPlaybackCO());
@@ -89,124 +114,129 @@ public class SequenceController : MonoBehaviour
         }
     }
 
+    /// <summary>s
+    /// Loads sequence slideshow data from a file
+    /// </summary>
+    /// <param name="file">The file to load fron...</param>
     void LoadSlideshowData(string file)
     {
         sequenceData = new SequenceData();
 
-        // Gather slides...
-        List<SequenceSlide> slides = new();
+        // Start reading our sequence data
+        using StreamReader sr = new(file);
 
-        using (StreamReader sr = new (file))
+        // First comes the number of slides.
+        sequenceData.numberOfSlides = int.Parse(sr.ReadLine());
+
+        // Now we must read our slide data....
+        SequenceSlide[] slides = new SequenceSlide[sequenceData.numberOfSlides];
+
+        // First comes a list of sequence images and display data information
+        for (int i = 0; i < sequenceData.numberOfSlides; ++i)
         {
-            // Number of slides is first...
-            sequenceData.numberOfSlides = int.Parse(sr.ReadLine());
-
-            for (int i = 0; i < sequenceData.numberOfSlides; ++i)
+            slides[i] = new SequenceSlide
             {
-                slides.Add(new SequenceSlide
-                {
-                    imageFile = Path.Combine(Path.GetFullPath(Application.streamingAssetsPath), "Game", "DATA", "PICTURE", sr.ReadLine()),
-                    displayTime = int.Parse(sr.ReadLine()) / 1000f
-                });
-            }
-
-            sequenceData.audioFile = Path.Combine(Path.GetFullPath(Application.streamingAssetsPath), "Game", "DATA", "SOUND", "BGM", sr.ReadLine());
-
-            for (int i = 0; i < sequenceData.numberOfSlides; ++i)
-            {
-                // Alignment
-                sr.ReadLine();
-
-                SequenceSlide copy = slides[i];
-
-                copy.text = sr.ReadLine();
-                for (int j = 0; j < 15; ++j)
-                    copy.text += ("\n" + sr.ReadLine());
-
-                slides[i] = copy;
-            }
+                imageFile = Path.Combine("DATA", "PICTURE", sr.ReadLine()),
+                displayTime = int.Parse(sr.ReadLine()) / 1000f
+            };
         }
 
-        sequenceData.slides = slides.ToArray();
+        // The audio file is stored afterwards.
+        sequenceData.audioFile = Path.Combine("DATA", "SOUND", "BGM", sr.ReadLine());
+
+        // Now comes the text list
+        StringBuilder sb = new ();
+
+        for (int i = 0; i < sequenceData.numberOfSlides; ++i)
+        {
+            // First there is an empty line for padding
+            sr.ReadLine();
+
+            // Now read the lines for text
+            for (int j = 0; j < 16; ++j)
+                sb.AppendLine(sr.ReadLine());
+
+            // Load text from the string builder, reset the string builder
+            slides[i].text = sb.ToString();
+            sb.Clear();
+        }
+
+        // Store our loaded slides on here
+        sequenceData.slides = slides;
     }
 
     IEnumerator SlideShowPlaybackCO()
     {
-        // Load up the audio
-        AudioFactory.AudioReference slideshowAudio = null;
-
-        if (!sequenceData.audioFile.Equals("NO_BGM"))
+        // First, attempt to load the audio file
+        if (!sequenceData.audioFile.EndsWith("NO_BGM"))
         {
-            string audioPath = Path.Combine(Path.GetFullPath(Application.streamingAssetsPath), "Game", "DATA", "SOUND", "BGM", sequenceData.audioFile);
+            // Actual loading
+            audioResourceName = ResourceManager.Load<AudioResource>(sequenceData.audioFile);
+            AudioResource audioResource = ResourceManager.Get<AudioResource>(audioResourceName);
 
-            // Attempt to load audio
-            slideshowAudio = AudioFactory.LoadWavFromFile(audioPath);
-
-            // Wait for audio to be loaded...
-            while (!slideshowAudio.isReady)
-                yield return new WaitForEndOfFrame();
-
-            // Assign audio clip
-            sequenceAudio.clip = slideshowAudio.unityClip;
+            // Apply and play our audio
+            sequenceAudio.clip   = audioResource.Get();
             sequenceAudio.volume = 0f;
             sequenceAudio.Play();
 
+            // We must fade the audio in
             sequenceAudio.DOFade(1f, 1f);
         }
 
-        for(int i = 0; i < sequenceData.numberOfSlides; ++i)
+        // Now play through each slide
+        for (int i = 0; i < sequenceData.numberOfSlides; ++i)
         {
-            // Load up the image and text for this slide...
-            TextureFactory.TextureReference slideshowImage = null;
-            if (!sequenceData.slides[i].imageFile.Equals("NO_BMP"))
+            // Grab the slide
+            SequenceSlide slide = sequenceData.slides[i];
+
+            // If the image is valid, we will try to load and display it
+            if (!slide.imageFile.EndsWith("NO_BMP"))
             {
-                slideshowImage = TextureFactory.LoadTextureFromFile(Path.Combine(Path.GetFullPath(Application.streamingAssetsPath), "Game", "DATA", "PICTURE", sequenceData.slides[i].imageFile));
+                imageResourceName = ResourceManager.Load<TextureResource>(slide.imageFile);
+                TextureResource textureResource = ResourceManager.Get<TextureResource>(imageResourceName);
 
-                // Wait for our image to be ready...
-                while (!slideshowImage.isReady)
-                    yield return new WaitForEndOfFrame();
-
-                // Assign texture from image
-                sequenceImage.texture = slideshowImage.unityTexture;
+                // Apply the image
+                sequenceImage.texture = textureResource.Get();
             }
-            
-            sequenceText.text     = sequenceData.slides[i].text;
-            
-            // Fade in for one second
-            sequenceText.DOFade(1f, 1f);
-            sequenceImage.DOFade(1f, 1f);
-            yield return new WaitForSeconds(1f);
 
-            // Display for an amount of time
-            yield return new WaitForSeconds(sequenceData.slides[i].displayTime);
+            // Set the text for the slide
+            sequenceText.text = slide.text;
 
-            // Fade out for one second
-            sequenceText.DOFade(0f, 1f);
-            sequenceImage.DOFade(0f, 1f);
-            yield return new WaitForSeconds(1f);
+            // Fade in the current slide
+            Sequence fadeInSequence = DOTween.Sequence();
+            fadeInSequence.Join(sequenceText.DOFade(1f, 1f));
+            fadeInSequence.Join(sequenceImage.DOFade(1f, 1f));
+            yield return fadeInSequence.WaitForCompletion();
 
-            // Wait two seconds before displaying the next slide
+            // Wait for the display time
+            yield return new WaitForSeconds(slide.displayTime);
+
+            // Fade out the current slide
+            Sequence fadeOutSequence = DOTween.Sequence();
+            fadeOutSequence.Join(sequenceText.DOFade(0f, 1f));
+            fadeOutSequence.Join(sequenceImage.DOFade(0f, 1f));
+            yield return fadeOutSequence.WaitForCompletion();
+
+            // Wait two seconds before playing the next slide
             yield return new WaitForSeconds(2f);
 
-            // Free our texture!
-            sequenceImage.texture = null;
-            TextureFactory.FreeTexture(slideshowImage);
+            // Here is where we should be freeing our texture
+            Logger.Warn("TEXTURE LOST! MUST IMPLEMENT FREEING LOGIC!!!!");
         }
 
-        // Load up the audio
-        if (!sequenceData.audioFile.Equals("NO_BGM"))
+
+        // If we have sequence audio, we should fade it out now - and then free the asset
+        if (!sequenceData.audioFile.EndsWith("NO_BGM"))
         {
             sequenceAudio.DOFade(0f, 1f)
                 .OnComplete(() =>
                 {
                     OnSlideshowComplete();
-                    
-                    // Clear up our sequence audio
+
                     sequenceAudio.Stop();
                     sequenceAudio.clip = null;
 
-                    // Free the audio
-                    AudioFactory.FreeAudio(slideshowAudio);
+                    Logger.Warn("AUDIO LOST! MUST IMPLEMENT FREEING LOGIC!!!!");
                 });
         }
     }

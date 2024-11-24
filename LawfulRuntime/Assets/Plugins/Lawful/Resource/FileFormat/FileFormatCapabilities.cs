@@ -4,7 +4,7 @@ namespace Lawful.Resource.FileFormat
     /// File Format Capabilities are used to store what the format can be used for.<br/>
     /// The class is abstract as is expected to be overriden per format type (Image, Model etc)
     /// </summary>
-    public abstract class FileFormatCapabilities
+    public class FileFormatCapabilities
     {
         /// <summary>Set when the format handler should allow exporting</summary>
         public bool allowExport;

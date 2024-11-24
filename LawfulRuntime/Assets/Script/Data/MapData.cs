@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Lawful.IO;
+using Lawful.Resource;
 
 [CreateAssetMenu(fileName = "MapData", menuName = "Lawful Runtime/Map Data")]
 public class MapData : ScriptableObject
@@ -13,7 +14,7 @@ public class MapData : ScriptableObject
     public void LoadMapFiles()
     {
         // The base path for our map files
-        string baseMapDir = Path.Combine(ResourceManager.GameDataPath, "MAP");
+        string baseMapDir = Path.Combine(ResourceManager.GamePath, "DATA", "MAP");
 
         // Create new list and dictionary for data storage
         GameMapIDToIndex = new Dictionary<int, int>();

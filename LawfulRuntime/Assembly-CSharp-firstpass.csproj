@@ -74,17 +74,22 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Plugins\Lawful\Resource\BaseResource.cs" />
+    <Compile Include="Assets\Plugins\Lawful\Resource\FileFormat\WAV\WAVFormatHandler.cs" />
     <Compile Include="Assets\Plugins\Demigiant\DOTween\Modules\DOTweenModulePhysics.cs" />
     <Compile Include="Assets\Plugins\Lawful\Resource\ResourceState.cs" />
     <Compile Include="Assets\Plugins\Demigiant\DOTween\Modules\DOTweenModuleUtils.cs" />
     <Compile Include="Assets\Plugins\Lawful\IO\FileInputStream.Array.cs" />
+    <Compile Include="Assets\Plugins\Lawful\Resource\FileFormat\SND\SNDFormatHandler.cs" />
     <Compile Include="Assets\Plugins\Demigiant\DOTween\Modules\DOTweenModuleAudio.cs" />
     <Compile Include="Assets\Plugins\Lawful\IO\FileInputStream.Primitives.cs" />
+    <Compile Include="Assets\Plugins\Lawful\Resource\FileFormat\BMP\BMPFormatHandler.cs" />
+    <Compile Include="Assets\Plugins\Lawful\Resource\Factory\ModelFactory.cs" />
     <Compile Include="Assets\Plugins\Demigiant\DOTween\Modules\DOTweenModuleSprite.cs" />
     <Compile Include="Assets\Plugins\Demigiant\DOTween\Modules\DOTweenModuleUI.cs" />
     <Compile Include="Assets\Plugins\Lawful\IO\Endianness.cs" />
     <Compile Include="Assets\Plugins\Demigiant\DOTween\Modules\DOTweenModulePhysics2D.cs" />
     <Compile Include="Assets\Plugins\Demigiant\DOTween\Modules\DOTweenModuleUnityVersion.cs" />
+    <Compile Include="Assets\Plugins\Lawful\Resource\Factory\FontFactory.cs" />
     <Compile Include="Assets\Plugins\Demigiant\DOTween\Modules\DOTweenModuleEPOOutline.cs" />
     <Compile Include="Assets\Plugins\Lawful\Utility\HashThis.cs" />
     <Compile Include="Assets\Plugins\Lawful\IO\FileInputStream.String.cs" />
@@ -92,14 +97,22 @@
     <Compile Include="Assets\Plugins\Lawful\Resource\FileFormat\FileFormatFilter.cs" />
     <Compile Include="Assets\Plugins\Lawful\Resource\Factory\ResourceFactory.cs" />
     <Compile Include="Assets\Plugins\Lawful\IO\FileInputStream.Compounds.cs" />
+    <Compile Include="Assets\Plugins\Lawful\Resource\FileFormat\MDO\MDOFormatHandler.cs" />
     <Compile Include="Assets\Plugins\Lawful\Resource\Factory\AudioFactory.cs" />
+    <Compile Include="Assets\Plugins\Lawful\Resource\Factory\TextureFactory.cs" />
     <Compile Include="Assets\Plugins\Lawful\IO\FileInputStream.IDisposableImpl.cs" />
     <Compile Include="Assets\Plugins\Lawful\Resource\FileFormat\FileFormatHandler.cs" />
+    <Compile Include="Assets\Plugins\Lawful\Resource\ResourceManager.cs" />
     <Compile Include="Assets\Plugins\Lawful\Resource\FileFormat\FileFormatCapabilities.cs" />
+    <Compile Include="Assets\Plugins\Lawful\Resource\FileFormat\TXR\TXRFormatHandler.cs" />
+    <Compile Include="Assets\Plugins\Lawful\Resource\ModelResource.cs" />
     <Compile Include="Assets\Plugins\Lawful\IO\FileInputStream.cs" />
     <Compile Include="Assets\Plugins\Lawful\Resource\FileFormat\FileFormatMetadata.cs" />
+    <Compile Include="Assets\Plugins\Lawful\Resource\TextureResource.cs" />
+    <Compile Include="Assets\Plugins\Lawful\Resource\ResourceOverride.cs" />
     <Compile Include="Assets\Plugins\Lawful\Resource\AudioResource.cs" />
     <Compile Include="Assets\Plugins\Lawful\IO\FileInputStream.Seeking.cs" />
+    <Compile Include="Assets\Plugins\Lawful\Resource\FontResource.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Plugins\Demigiant\DOTween\DOTween.XML" />

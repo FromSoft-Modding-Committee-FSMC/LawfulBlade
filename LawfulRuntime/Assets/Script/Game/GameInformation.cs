@@ -4,6 +4,7 @@ using System.IO;
 using System.Collections.Generic;
 
 using UnityEngine;
+using Lawful.Resource;
 
 [CreateAssetMenu(fileName = "GameInformation", menuName = "Lawful Runtime/Game Information")]
 public class GameInformation : ScriptableObject
@@ -183,11 +184,11 @@ public class GameInformation : ScriptableObject
         switch(temp.mode)
         {
             case SequenceMode.Video:
-                temp.file = Path.Combine(ResourceManager.GameDataPath, "MOVIE", temp.file);
+                temp.file = Path.Combine(ResourceManager.GamePath, "DATA", "MOVIE", temp.file);
                 break;
 
             case SequenceMode.Slideshow:
-                temp.file = Path.Combine(ResourceManager.GameParamPath, slideshowSource);
+                temp.file = Path.Combine(ResourceManager.GamePath, "PARAM", slideshowSource);
                 break;
         }
 

@@ -61,5 +61,46 @@ namespace Lawful.IO
             fstream.Position = jumpStack.Pop();
             return oldPosition;
         }
+
+        /// <summary>
+        /// Returns to the offset that was jumped from at a certain depth (1 = last position, 2 = position before last position)
+        /// </summary>
+        /// <returns>the previous position</returns>
+        public long Return(int depth)
+        {
+            long oldPosition = Position;
+
+            long newPosition = 0;
+            while(depth > 0)
+            {
+                newPosition = jumpStack.Pop();
+                depth--;
+            }
+
+            fstream.Position = newPosition;
+
+            return oldPosition;
+        }
+
+        /// <summary>
+        /// Checks if we are at the end of the stream
+        /// </summary>
+        /// <returns>Returns true if we are at the end of the stream, and false otherwise</returns>
+        public bool EndOfStream() =>
+            Position == Size;
+
+        /// <summary>
+        /// Aligns the filestream to the next multiple of alignment.
+        /// </summary>
+        /// <param name="alignment">4, 8, 16 etc...</param>
+        public void Align(int alignment) =>
+            fstream.Position = (fstream.Position + (alignment - 1)) / alignment * alignment;
+
+        /// <summary>
+        /// Aligns the filestream to the previous multiple of alignment
+        /// </summary>
+        /// <param name="alignment">4, 8, 16 etc...</param>
+        public void AlignBack(int alignment) =>
+            fstream.Position = fstream.Position / alignment * alignment;
     }
 }

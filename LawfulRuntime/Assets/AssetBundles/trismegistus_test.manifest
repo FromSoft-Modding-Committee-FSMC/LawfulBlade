@@ -1,21 +1,21 @@
 ManifestFileVersion: 0
 UnityVersion: 6000.0.24f1
-CRC: 3598530545
+CRC: 3251024635
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 8c34904a4f0383fcbad9d6c013dc26c4
+    Hash: 51ac619759fbd2fd949e9f248aa763be
   TypeTreeHash:
     serializedVersion: 2
-    Hash: 5527383dc91eba37123fc67ad6efaa19
+    Hash: 9a2ca7bdbd1871f7131daf57de908e0c
   IncrementalBuildHash:
     serializedVersion: 2
-    Hash: f502e84e8e99bd83a2e0b8bc451a710e
+    Hash: 3cf155ba0420be6efcf530f5ae56163f
 HashAppended: 0
 ClassTypes:
-- Class: 28
+- Class: 83
   Script: {instanceID: 0}
 SerializeReferenceClassIdentifiers: []
 Assets:
-- Assets/PatchAssets/title.png
+- Assets/DATA/SOUND/BGM/theme.ogg
 Dependencies: []

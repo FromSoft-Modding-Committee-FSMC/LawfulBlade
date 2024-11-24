@@ -1,32 +1,22 @@
-using System;
-
 using UnityEngine;
 using Unity.Collections;
 
 namespace Lawful.Resource
 {
-    public class AudioResource : BaseResource<AudioClip>
+    public class TextureResource : BaseResource<Texture2D>
     {
-        /// <summary>The buffer containing samples</summary>
-        public NativeArray<float> SampleBuffer { get; private set; }
-
-        /// <summary>Sample Rate of the audio clip</summary>
-        public int SampleRate                  { get; private set; }
-
-        /// <summary>The number of channels </summary>
-        public int ChannelCount                { get; private set; }
+        public NativeArray<byte> PixelBuffer { get; private set; }
+        public int width;
+        public int height;
 
         /// <summary>
         /// Load a sample buffer into the audio resource.
         /// </summary>
-        /// <param name="sampleBuffer">A native array of samples</param>
-        /// <param name="sampleRate">The sample rate</param>
-        /// <param name="channelCount">The channel count</param>
-        public void LoadSamples(NativeArray<float> sampleBuffer, int sampleRate, int channelCount)
+        public void LoadPixels(NativeArray<byte> pixelBuffer, int width, int height)
         {
-            SampleBuffer = sampleBuffer;
-            SampleRate   = sampleRate;
-            ChannelCount = channelCount;
+            PixelBuffer = pixelBuffer;
+            this.width  = width;
+            this.height = height;
 
             ResourceState = ResourceState.WaitingForTransfer;
         }
@@ -36,7 +26,7 @@ namespace Lawful.Resource
         /// If the resource is waiting for transfer, it will be transferred first so expect some delay.
         /// </summary>
         /// <returns>The resource.</returns>
-        public override AudioClip Get()
+        public override Texture2D Get()
         {
             ReferenceCount++;
 
@@ -50,9 +40,12 @@ namespace Lawful.Resource
                 // Create the unity resource
                 try
                 {
-                    resource = AudioClip.Create(ResourceOrigin, SampleBuffer.Length, ChannelCount, SampleRate, false);
-                    resource.SetData(SampleBuffer, 0);
-                } 
+                    resource = new Texture2D(width, height, TextureFormat.RGBA32, false, false, true);
+                    resource.SetPixelData(PixelBuffer, 0);
+                    resource.filterMode = FilterMode.Point;
+
+                    resource.Apply();
+                }
                 catch
                 {
                     // Handle our error by forcing the resource state to unloaded
@@ -63,7 +56,7 @@ namespace Lawful.Resource
                 }
 
                 // We can free our native memory ?
-                SampleBuffer.Dispose();
+                PixelBuffer.Dispose();
                 ResourceState = ResourceState.Ready;
 
                 return resource;

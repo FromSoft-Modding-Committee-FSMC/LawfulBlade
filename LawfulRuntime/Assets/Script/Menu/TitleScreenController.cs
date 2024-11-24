@@ -1,7 +1,9 @@
 using DG.Tweening;
+using Lawful.Resource;
 using System;
 using System.Collections;
 using System.IO;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,7 +15,12 @@ public class TitleScreenController : MonoBehaviour
 
     [Header("References (Internal)")]
     [SerializeField] RawImage titleImage;
+
+    // Main Screen
     [SerializeField] GameObject screenPressAny;
+    [SerializeField] TextMeshProUGUI pressAnyKeyField;
+
+    // Main Screen, Options Lists
     [SerializeField] GameObject screenOptions;
 
     [Header("Configuration")]
@@ -27,9 +34,10 @@ public class TitleScreenController : MonoBehaviour
     public static TitleScreenController Instance { get; private set; }
 
     // Data
-    TextureFactory.TextureReference titleTexture = null;
+    ulong fontResourceName;
+
     float timeoutTimer = 0f;
-    bool  timeoutActivatedOrDisabled = false;
+    bool  timeoutActivatedOrDisabled = true;
 
     /// <summary>
     /// MonoBehaviour Implementation.<br/>
@@ -43,35 +51,9 @@ public class TitleScreenController : MonoBehaviour
 
         Instance = this;
 
-        // Load the title screen image
-        if (ResourceManager.OverrideExists(Path.GetFileNameWithoutExtension(gameInformation.titleImage)))
-        {
-            titleImage.texture = ResourceManager.OverrideLoad<Texture2D>(Path.GetFileNameWithoutExtension(gameInformation.titleImage));
-            titleImage.enabled = true;
-
-            // Fade in the title image
-            titleImage.DOFade(1f, 1f)
-                .OnComplete(() =>
-                {
-                // Activate our "Press Any Key" text
-                screenPressAny.SetActive(true);
-                });
-
-            return;
-        }
-
-        try
-        {
-            titleTexture = TextureFactory.LoadTextureFromFile(Path.Combine(ResourceManager.GameDataPath, "PICTURE", gameInformation.titleImage));
-        } 
-        catch (Exception ex)
-        {
-            Logger.Error($"Failed to load titlescreen image: {ex.Message}");
-        }
-
-        // Apply our title screen image
-        if (titleTexture != null)
-            StartCoroutine(LoadTitleScreenCO());
+        fontResourceName = ResourceManager.Load<FontResource>(Path.Combine("FONT", "TitleScreen.otf"));
+        
+        ResourceManager.LoadAsync<TextureResource>(Path.Combine("DATA", "PICTURE", gameInformation.titleImage), OnTitleLoadComplete);
     }
 
     /// <summary>
@@ -82,7 +64,27 @@ public class TitleScreenController : MonoBehaviour
     {
         Instance = null;
     }
-    
+
+    /// <summary>
+    /// Event Callback.<br/>
+    /// Called when the title image finishes loading
+    /// </summary>
+    void OnTitleLoadComplete(ulong textureName)
+    {
+        titleImage.texture = ResourceManager.Get<TextureResource>(textureName).Get();
+
+        pressAnyKeyField.font = ResourceManager.Get<FontResource>(fontResourceName).Get();
+
+        titleImage.DOFade(1f, 1f)
+        .OnComplete(() =>
+        {
+            screenPressAny.SetActive(true);
+
+            timeoutActivatedOrDisabled = false;
+        });
+    }
+
+
     /// <summary>
     /// MonoBehaviour Implementation.<br/>
     /// </summary>
@@ -113,24 +115,6 @@ public class TitleScreenController : MonoBehaviour
 
             timeoutActivatedOrDisabled = true;
         }
-    }
-
-    IEnumerator LoadTitleScreenCO()
-    {
-        while (!titleTexture.isReady)
-            yield return new WaitForEndOfFrame();
-
-        // Set our texture to the one we just loaded
-        titleImage.texture = titleTexture.unityTexture;
-        titleImage.enabled = true;
-
-        // Fade in the title image
-        titleImage.DOFade(1f, 1f)
-            .OnComplete(() =>
-            {
-                // Activate our "Press Any Key" text
-                screenPressAny.SetActive(true);
-            });
     }
 
     /// <summary>

@@ -1,3 +1,4 @@
+using Lawful.Resource;
 using System;
 using System.IO;
 
@@ -12,7 +13,6 @@ public class GameManager : MonoBehaviour
 
     // Properties
     public GameStateMachine StateMachine   { get; private set; } = null;
-    public ResourceManager ResourceManager { get; private set; } = null;
 
     // Accessor style properties
     public GameInformation GameInfo => gameInformation;
@@ -32,12 +32,9 @@ public class GameManager : MonoBehaviour
 
         Instance = this;
 
-        // Create Resource Manager early
-        ResourceManager = new ResourceManager();
-
         // Constant data loading...
         Logger.Info("Loading Game Information...");
-        gameInformation.ImportFromLegacyFile(Path.Combine(ResourceManager.GameParamPath, "SYS.DAT"));
+        gameInformation.ImportFromLegacyFile(Path.Combine(ResourceManager.GamePath, "PARAM", "SYS.DAT"));
 
         Logger.Info("Loading Map Data...");
         gameMapData.LoadMapFiles();
@@ -47,10 +44,6 @@ public class GameManager : MonoBehaviour
 
         // Object initialization
         StateMachine    = new GameStateMachine();
-
-        // Override Initialization
-        Logger.Info("Loading Overrides...");
-        ResourceManager.LoadOverrides();
     }
 
     /// <summary>

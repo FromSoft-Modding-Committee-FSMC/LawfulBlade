@@ -1,33 +1,22 @@
 using System.IO;
 using System;
 
-using UnityEngine;
-
-using Lawful.Resource.FileFormat.SND;
-using Lawful.Resource.FileFormat.WAV;
+using Lawful.Resource.FileFormat.MDO;
 using Lawful.Resource.FileFormat;
 using Lawful.Utility;
 using Lawful.IO;
 
+
 namespace Lawful.Resource.Factory
 {
-    public class AudioFactory : ResourceFactory<AudioResource>
+    public class ModelFactory : ResourceFactory<ModelResource>
     {
-        /// <summary>
-        /// Factory constructor initializes the resource factory and registers our handlers...
-        /// </summary>
-        public AudioFactory() : base()
+        /// <inheritdoc/>
+        public ModelFactory() : base()
         {
-            // Register Handlers
-            RegisterFormatHandler(new SNDFormatHandler());
-            RegisterFormatHandler(new WAVFormatHandler());
+            RegisterFormatHandler(new MDOFormatHandler());
         }
 
-        /// <summary>
-        /// Loads a resource synchronously
-        /// </summary>
-        /// <param name="path">The relative path to the resource</param>
-        /// <returns>internal name of the resource</returns>
         public ulong Load(string path)
         {
             // Calculate our hash name
@@ -44,7 +33,7 @@ namespace Lawful.Resource.Factory
                 throw new Exception($"Failed to import '{path}' located '{absolutePath}'!\nFile does not exist");
 
             // Try to find a loader for this resource
-            FileFormatHandler<AudioResource> handler = GetFormatHandler(Path.GetExtension(path)) ?? throw new Exception($"Couldn't find format handler for '{path}'!");
+            FileFormatHandler<ModelResource> handler = GetFormatHandler(Path.GetExtension(path)) ?? throw new Exception($"Couldn't find format handler for '{path}'!");
 
             // Create the stream we will use to load the file
             using FileInputStream finStream = new(absolutePath);
@@ -54,9 +43,9 @@ namespace Lawful.Resource.Factory
                 throw new Exception($"Failed to import '{path}' using handler '{handler.Metadata.name}'!");
 
             // Create the new resource 
-            AudioResource resource = new()
+            ModelResource resource = new()
             {
-                ResourceState = ResourceState.Unloaded,
+                ResourceState  = ResourceState.Unloaded,
                 ResourceSource = ResourceSource.FileSystem,
                 ResourceOrigin = path,
                 ReferenceCount = 0
