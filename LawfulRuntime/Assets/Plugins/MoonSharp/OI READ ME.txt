@@ -1,0 +1,7 @@
+This is a special optimized fork of MoonSharp provided by SmilingCatEntertainment. It changes quite a lot of core functionality in order to create a faster and cleaner script environment.
+
+SmilingCatEntertainment's Fork Repository is located here:
+https://github.com/SmilingCatEntertainment/moonsharp-unityenhanced/tree/master
+
+The original MoonSharp repository is located here:
+https://github.com/moonsharp-devs/moonsharp

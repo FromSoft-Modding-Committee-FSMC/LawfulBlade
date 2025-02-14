@@ -37,12 +37,17 @@ public class MapData : ScriptableObject
                 ID = i
             };
 
+            MapEvents events = new ();
+            events.LoadFromFile(mapFileEVT);
+
             // The actual load function. We could delay this later to only run when we actually try to access the map?..
             loadedMap.Load(mapFileMPX, mapFileEVT);
 
             // Store the map...
             GameMapIDToIndex.Add(i, GameMaps.Count);
             GameMaps.Add(loadedMap);
+
+            Logger.Info($"Map {i:D2} loaded!");
 
             break;
         }
@@ -117,6 +122,9 @@ public class MapFile
         // Basic Header
         uint mpxFlags = ins.ReadU32();
         Name = ins.ReadFixedString(32);
+
+        bool hasBPSInfo   = (mpxFlags & 0x1) > 0;
+        bool hasLightInfo = (mpxFlags & 0x2) > 0;
 
         // Music File
         IngameMusic = ins.ReadFixedString(32);
@@ -286,66 +294,69 @@ public class MapFile
         //
         // BSP BULLSHIT INCOMING
         //
-        uint BSPItem1Count = ins.ReadU32();
-        MapBSPItem1[] BSPItem1s = new MapBSPItem1[BSPItem1Count];
-
-        for (int i = 0; i < BSPItem1Count; ++i)
+        if (hasBPSInfo)
         {
-            BSPItem1s[i] = new MapBSPItem1
-            {
-                u32x00 = ins.ReadU32(),
-                xy1    = ins.ReadVector2(),
-                xy2    = ins.ReadVector2(),
-                itemCount = ins.ReadU32()
-            };
+            uint BSPItem1Count = ins.ReadU32();
+            MapBSPItem1[] BSPItem1s = new MapBSPItem1[BSPItem1Count];
 
-            BSPItem1s[i].items = new MapBSPItem2[BSPItem1s[i].itemCount];
-
-            for (int j = 0; j < BSPItem1s[i].itemCount; ++j)
+            for (int i = 0; i < BSPItem1Count; ++i)
             {
-                BSPItem1s[i].items[j] = new MapBSPItem2
+                BSPItem1s[i] = new MapBSPItem1
                 {
                     u32x00 = ins.ReadU32(),
-                    u32x04 = ins.ReadU32()
+                    xy1 = ins.ReadVector2(),
+                    xy2 = ins.ReadVector2(),
+                    itemCount = ins.ReadU32()
+                };
+
+                BSPItem1s[i].items = new MapBSPItem2[BSPItem1s[i].itemCount];
+
+                for (int j = 0; j < BSPItem1s[i].itemCount; ++j)
+                {
+                    BSPItem1s[i].items[j] = new MapBSPItem2
+                    {
+                        u32x00 = ins.ReadU32(),
+                        u32x04 = ins.ReadU32()
+                    };
+                }
+            }
+
+            uint BSPItem3Count = ins.ReadU32();
+            MapBSPItem3[] BSPItem3s = new MapBSPItem3[BSPItem3Count];
+
+            for (int i = 0; i < BSPItem3Count; ++i)
+            {
+                BSPItem3s[i] = new MapBSPItem3
+                {
+                    u32x00 = ins.ReadU32(),
+                    u32x04 = ins.ReadU32(),
+                    u32x08 = ins.ReadU32(),
+                    u32x0C = ins.ReadU32(),
+                    xy1 = ins.ReadVector2(),
+                    xy2 = ins.ReadVector2(),
+                    u32x20 = ins.ReadU32(),
+                    u32x24 = ins.ReadU32(),
+                    u32x28 = ins.ReadU32()
                 };
             }
-        }
 
-        uint BSPItem3Count = ins.ReadU32();
-        MapBSPItem3[] BSPItem3s = new MapBSPItem3[BSPItem3Count];
+            uint BSPItem4Count = ins.ReadU32();
+            MapBSPItem4[] BSPItem4s = new MapBSPItem4[BSPItem4Count];
 
-        for (int i = 0; i < BSPItem3Count; ++i)
-        {
-            BSPItem3s[i] = new MapBSPItem3
+            for (int i = 0; i < BSPItem4Count; ++i)
             {
-                u32x00 = ins.ReadU32(),
-                u32x04 = ins.ReadU32(),
-                u32x08 = ins.ReadU32(),
-                u32x0C = ins.ReadU32(),
-                xy1 = ins.ReadVector2(),
-                xy2 = ins.ReadVector2(),
-                u32x20 = ins.ReadU32(),
-                u32x24 = ins.ReadU32(),
-                u32x28 = ins.ReadU32()
-            };
-        }
+                BSPItem4s[i] = new MapBSPItem4
+                {
+                    xy1 = ins.ReadVector2(),
+                    xy2 = ins.ReadVector2(),
+                    u32x10 = ins.ReadU32(),
+                    u32x14 = ins.ReadU32()
+                };
+            }
 
-        uint BSPItem4Count = ins.ReadU32();
-        MapBSPItem4[] BSPItem4s = new MapBSPItem4[BSPItem4Count];
-
-        for (int i = 0; i < BSPItem4Count; ++i)
-        {
-            BSPItem4s[i] = new MapBSPItem4
-            {
-                xy1 = ins.ReadVector2(),
-                xy2 = ins.ReadVector2(),
-                u32x10 = ins.ReadU32(),
-                u32x14 = ins.ReadU32()
-            };
+            // Skip strange unknown BSP junk
+            ins.ReadU8Array((int)((BSPItem1Count + 7) / 8 * BSPItem1Count));
         }
-        
-        // Skip strange unknown BSP junk
-        ins.ReadU8Array((int)((BSPItem1Count + 7) / 8 * BSPItem1Count));
 
         //
         // Textures (fucking tricky cunts)

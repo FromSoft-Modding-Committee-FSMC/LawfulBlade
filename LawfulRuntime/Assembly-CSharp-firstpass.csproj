@@ -1278,6 +1278,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="MoonSharp.csproj">
+      <Project>{8F725895-053C-BED1-0EF4-D9104BB9750F}</Project>
+      <Name>MoonSharp</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />

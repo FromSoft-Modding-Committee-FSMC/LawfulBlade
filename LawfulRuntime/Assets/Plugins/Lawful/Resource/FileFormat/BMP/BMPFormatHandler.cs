@@ -138,9 +138,31 @@ namespace Lawful.Resource.FileFormat.BMP
                         }
                         break;
 
-                    // To do...
+                    // Direct 24-Bit
+                    // TO-DO: We could potentially merge our 16/24/32 BPPs together.
+                    case 24:
+                        int bytesPerRow   = 3 * width;
+                        int paddingPerRow = (4 - (bytesPerRow & 3)) & 3;
+
+                        for (int y = 0; y < height; ++y)
+                        {
+                            int rowPosition = rowStride * y;
+
+                            for (int x = 0; x < width; x++)
+                            {
+                                int rowColumnOffset = rowPosition + (4 * x);
+
+                                imageBuffer[rowColumnOffset + 2] = finStream.ReadU8(); // b
+                                imageBuffer[rowColumnOffset + 1] = finStream.ReadU8(); // g
+                                imageBuffer[rowColumnOffset + 0] = finStream.ReadU8(); // r
+                                imageBuffer[rowColumnOffset + 3] = 0xFF; // a (doesn't exist in BMP, so assume max opacity)
+                            }
+
+                            finStream.SeekRelative(paddingPerRow);
+                        }
+                        break;
+
                     case 16: throw new Exception("16-bit BMP files are not supported.");
-                    case 24: throw new Exception("24-bit BMP files are not supported.");
                     case 32: throw new Exception("32-bit BMP files are not supported.");
                 }
             }

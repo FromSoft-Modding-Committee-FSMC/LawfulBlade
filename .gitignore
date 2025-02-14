@@ -402,6 +402,7 @@ FodyWeavers.xsd
 /StagingPackages
 /ShippingBuild
 /LawfulRuntime/Library
+/LawfulRuntime/Game Packs
 /LawfulRuntime/Temp
 /LawfulRuntime/UserSettings
 /LawfulRuntime/Assets/StreamingAssets/Game/DATA
