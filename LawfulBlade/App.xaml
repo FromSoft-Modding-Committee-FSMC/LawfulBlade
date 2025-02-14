@@ -1,0 +1,9 @@
+﻿<Application x:Class="LawfulBlade.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:LawfulBlade"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <BitmapImage x:Key="butOpenInstance" UriSource="pack://application:,,,/Resource/64x_open.png"/>
+    </Application.Resources>
+</Application>

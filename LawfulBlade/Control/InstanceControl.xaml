@@ -1,0 +1,43 @@
+﻿<UserControl x:Class="LawfulBlade.Control.InstanceControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:LawfulBlade.Control"
+             mc:Ignorable="d" 
+             d:DesignHeight="128" d:DesignWidth="1024">
+    <Grid Background="#FF202020">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="128" />
+            <ColumnDefinition Width="5*" />
+            <ColumnDefinition Width="2*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1.75*" />
+            <RowDefinition Height="1.25*" />
+            <RowDefinition Height="1*" />
+        </Grid.RowDefinitions>
+        <Image x:Name="instanceImageField" Grid.Column="0" Grid.RowSpan="3" Margin="8,8,8,8" Source="{StaticResource butOpenInstance}"/>
+        <TextBlock x:Name="instanceNameField" Grid.Column="1" Grid.Row="0" Text="Instance Name" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="8,0,0,0" FontSize="32" FontWeight="Bold" TextDecorations="Underline" Foreground="#FFF0F0F0"/>
+        <TextBlock x:Name="instanceDescField" Grid.Column="1" Grid.Row="1" Text="Instance Desc Line #1&#xA;Instance Desc Line #2" Foreground="#FFF0F0F0" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="8,0,0,0"/>
+        <StackPanel Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="8,0,0,0" Orientation="Horizontal">
+            <TextBlock Text="Tag #1" Foreground="#FFF0F0F0" Background="LightCoral" Margin="0,0,8,0" Padding="4,0,4,0"/>
+            <TextBlock Text="Tag #2" Foreground="#FFF0F0F0" Background="LightCoral" Margin="0,0,8,0" Padding="4,0,4,0"/>
+            <TextBlock Text="Tag #3" Foreground="#FFF0F0F0" Background="LightCoral" Margin="0,0,8,0" Padding="4,0,4,0"/>
+            <TextBlock Text="Tag #4" Foreground="#FFF0F0F0" Background="LightCoral" Margin="0,0,8,0" Padding="4,0,4,0"/>
+            <TextBlock Text="Tag #5" Foreground="#FFF0F0F0" Background="LightCoral" Margin="0,0,8,0" Padding="4,0,4,0"/>
+        </StackPanel>
+        <StackPanel Grid.Column="2" Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,8,0">
+            <Button HorizontalAlignment="Center" VerticalAlignment="Center" Margin="4,0,0,0" BorderThickness="1,1,1,1">
+                <Image Source="{StaticResource butOpenInstance}"/>
+            </Button>
+            <Button HorizontalAlignment="Center" VerticalAlignment="Center" Margin="4,0,0,0">
+                <Image Source="{StaticResource butOpenInstance}"/>
+            </Button>
+            <Button HorizontalAlignment="Center" VerticalAlignment="Center" Margin="4,0,0,0">
+                <Image Source="{StaticResource butOpenInstance}"/>
+            </Button>
+        </StackPanel>
+        
+    </Grid>
+</UserControl>

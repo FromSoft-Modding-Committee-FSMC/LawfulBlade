@@ -158,7 +158,7 @@
             // 
             cmRightC.Items.AddRange(new ToolStripItem[] { cmShowInExplorer });
             cmRightC.Name = "cmRightC";
-            cmRightC.Size = new Size(220, 48);
+            cmRightC.Size = new Size(220, 26);
             // 
             // cmShowInExplorer
             // 
