@@ -1,0 +1,88 @@
+﻿<Window xmlns:Control="clr-namespace:LawfulBlade.Control"  x:Class="LawfulBlade.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LawfulBlade"
+        mc:Ignorable="d"
+        Title="Lawful Blade" Height="540" Width="960"
+        Icon="{StaticResource lbIcon}" Background="#FF101010">
+
+    <DockPanel>
+        <!-- Menu Bar Definition -->
+        <Menu DockPanel.Dock="Top">
+            <!-- FILE -->
+            <MenuItem Header="File">
+                <MenuItem Header="New">
+                    <MenuItem Header="Instance..." Click="OnInstanceCreateInstance"/>
+                    <MenuItem Header="Project..."/>
+                </MenuItem>
+                <MenuItem Header="Add">
+                    <MenuItem Header="External Instance..." Click="OnInstanceImportInstance"/>
+                    <MenuItem Header="External Project..."/>
+                </MenuItem>
+                <Separator/>
+                <MenuItem Header="Preferences" />
+                <MenuItem Header="Exit" Click="OnMenuFileExit" />
+            </MenuItem>
+
+            <!-- PACKAGES -->
+            <MenuItem Header="Packages">
+                <MenuItem Header="Manage Repositories"/>
+            </MenuItem>
+
+            <!-- HELP -->
+            <MenuItem Header="Help" HorizontalAlignment="Right">
+                <MenuItem Header="Check for Updates" Click="OnMenuHelpCheckForUpdates"/>
+                <Separator/>
+                <MenuItem Header="Report a Problem" Click="OnMenuHelpReportAProblem"/>
+                <MenuItem Header="Release Notes" Click="OnMenuHelpReleaseNotes"/>
+                <MenuItem Header="About" Click="OnMenuHelpAbout"/>
+            </MenuItem>
+        </Menu>
+        <Grid>
+            <TabControl Background="#FF202020" BorderBrush="#FF101010">
+                
+                <!-- INSTANCES TAB -->
+                <TabItem Header="Instances">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="4*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Button Zone -->
+                        <StackPanel Grid.Column="0" Orientation="Vertical" Margin="0,0,4,0">
+                            <!-- Create Instance Button -->
+                            <Button Background="#FF282828" BorderBrush="#FF181818" Margin="0,0,0,1" Click="OnInstanceCreateInstance">
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="{StaticResource 96-96Create}" Width="24" Height="24" VerticalAlignment="Bottom" Margin="2,2,8,2"/>
+                                    <TextBlock HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="#FFF0F0F0">Create New Instance</TextBlock>
+                                </StackPanel>
+                            </Button>
+
+                            <!-- Add Instance Button -->
+                            <Button Background="#FF282828" BorderBrush="#FF181818" Margin="0,0,0,1" Click="OnInstanceImportInstance">
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="{StaticResource 96-96Import}" Width="24" Height="24" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="2,2,8,2"/>
+                                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="#FFF0F0F0">Import Instance</TextBlock>
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                        
+                        <!-- Instance Zone -->
+                        <ScrollViewer Grid.Column="1" Background="#101010" VerticalScrollBarVisibility="Auto">
+                            <StackPanel x:Name="instanceList" Orientation="Vertical" />
+                        </ScrollViewer>
+
+                    </Grid>
+                </TabItem>
+                
+                <!-- PROJECTS TAB -->
+                <TabItem Header="Projects">
+                    
+                </TabItem>
+            </TabControl>
+        </Grid>
+    </DockPanel>
+</Window>

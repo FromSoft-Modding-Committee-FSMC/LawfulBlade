@@ -2,8 +2,27 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:LawfulBlade"
-             StartupUri="MainWindow.xaml">
+             Startup="OnApplicationStartup"
+             Exit="OnApplicationShutdown">
+
     <Application.Resources>
-        <BitmapImage x:Key="butOpenInstance" UriSource="pack://application:,,,/Resource/64x_open.png"/>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Theme\Dark.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <BitmapImage x:Key="48-48Delete" UriSource="Resource\48x48_delete.png"/>
+            <BitmapImage x:Key="48-48Execute" UriSource="Resource\48x48_execute.png"/>
+            <BitmapImage x:Key="48-48Packages" UriSource="Resource\48x48_managePackages.png"/>
+            <BitmapImage x:Key="48-48Shortcut" UriSource="Resource\48x48_shortcut.png"/>
+            <BitmapImage x:Key="48-48Runtime" UriSource="Resource\48x48_runtime.png"/>
+            <BitmapImage x:Key="96-96Create" UriSource="Resource\96x96_create.png"/>
+            <BitmapImage x:Key="96-96Import" UriSource="Resource\96x96_import.png"/>
+
+            <BitmapImage x:Key="256-256InstanceDefault" UriSource="Resource\256x256_instancedefault.png"/>
+            <BitmapImage x:Key="256-256ProjectDefault" UriSource="Resource\256x256_projectdefault.png"/>
+            
+            <BitmapImage x:Key="lbIcon" UriSource="Resource\moonlight.ico"/>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

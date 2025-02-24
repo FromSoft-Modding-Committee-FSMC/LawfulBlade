@@ -1,0 +1,67 @@
+﻿<Window x:Class="LawfulBlade.Dialog.AboutDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LawfulBlade.Dialog"
+        mc:Ignorable="d"
+        Title="Lawful Blade - About" Height="480" Width="640"
+        Icon="{StaticResource lbIcon}" ResizeMode="NoResize" WindowStartupLocation="CenterOwner" ShowInTaskbar="False" Background="#FF202020">
+    <Window.Resources>
+        <BitmapImage x:Key="imgLawfulBladeHeader" UriSource="..\Resource\576x128_lawfulbladeheader.png"/>
+    </Window.Resources>
+
+    <Grid Margin="8,8,8,8">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="4*" />
+            <RowDefinition Height="7*" />
+            <RowDefinition Height="1*" />
+        </Grid.RowDefinitions>
+        
+        <!-- Header Image -->
+        <Image Grid.Column="0" Grid.Row="0" Source="{StaticResource imgLawfulBladeHeader}" Margin="0,0,0,4"/>
+
+        <!-- About Content -->
+        <ScrollViewer Grid.Column="0" Grid.Row="1" Margin="0,4,0,0" VerticalScrollBarVisibility="Auto">
+            <RichTextBox Background="#FF101010" IsDocumentEnabled="True" AllowDrop="False" IsReadOnly="True">
+                <!-- Move this fucking shit to an RTF document -->
+                <FlowDocument>
+                    <Paragraph Foreground="#FF4080F0" FontWeight="Bold" TextAlignment="Center" FontSize="16">
+                        <LineBreak/>
+                        <Hyperlink NavigateUri="https://www.swordofmoonlight.com" RequestNavigate="OnRequestNavigate">Home Page</Hyperlink>
+                        <LineBreak/>
+                        <Hyperlink NavigateUri="https://github.com/FromSoft-Modding-Committee-FSMC/LawfulBlade" RequestNavigate="OnRequestNavigate">Source Code</Hyperlink>
+                    </Paragraph>
+                    <Paragraph Foreground="White">
+                        Lawful Blade is a Sword of Moonlight Instance/Project/Package manager, designed and created by a huge FromSoftware nerd for other FromSoftware nerds. It is open source under the MIT license and written in C#.
+                    </Paragraph>
+                    <Paragraph Foreground="White">
+                        Contributors: StolenBattenberg
+                    </Paragraph>
+                    <Paragraph Foreground="White">
+                        Dependencies:
+                        <Hyperlink NavigateUri="https://github.com/oleg-st/ZstdSharp" RequestNavigate="OnRequestNavigate">ZstdSharp</Hyperlink> (MIT),
+                        <Hyperlink NavigateUri="https://github.com/Verta-IT/ThemeWPF" RequestNavigate="OnRequestNavigate">ThemeWPF</Hyperlink> (MIT),
+                        <Hyperlink NavigateUri="https://github.com/dlemstra/Magick.NET" RequestNavigate="OnRequestNavigate">Magick.NET</Hyperlink> (Apache 2.0),
+                        
+                    </Paragraph>
+                    <Paragraph Foreground="White">
+                        Special Thanks:
+                        <Run Foreground="#FF804080">Kurobake</Run> (early adoption),
+                        <Run Foreground="#FF804080">Verdite Cat</Run> (early adoption, being literate)
+                    </Paragraph>
+                </FlowDocument>
+            </RichTextBox>
+        </ScrollViewer>
+        
+        <!-- Button Array -->
+        <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,8,0,0">
+            <Button Background="#FF308FA0" Foreground="#FFF0F0F0" BorderBrush="#FF434346" IsDefault="True" Padding="4,2,4,2" Click="OnConfirmDialog">
+                <AccessText>_Okidoki</AccessText>
+            </Button>
+        </StackPanel>
+    </Grid>
+</Window>

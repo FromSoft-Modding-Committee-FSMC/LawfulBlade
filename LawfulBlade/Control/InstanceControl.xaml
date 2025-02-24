@@ -17,25 +17,26 @@
             <RowDefinition Height="1.25*" />
             <RowDefinition Height="1*" />
         </Grid.RowDefinitions>
-        <Image x:Name="instanceImageField" Grid.Column="0" Grid.RowSpan="3" Margin="8,8,8,8" Source="{StaticResource butOpenInstance}"/>
-        <TextBlock x:Name="instanceNameField" Grid.Column="1" Grid.Row="0" Text="Instance Name" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="8,0,0,0" FontSize="32" FontWeight="Bold" TextDecorations="Underline" Foreground="#FFF0F0F0"/>
-        <TextBlock x:Name="instanceDescField" Grid.Column="1" Grid.Row="1" Text="Instance Desc Line #1&#xA;Instance Desc Line #2" Foreground="#FFF0F0F0" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="8,0,0,0"/>
-        <StackPanel Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="8,0,0,0" Orientation="Horizontal">
-            <TextBlock Text="Tag #1" Foreground="#FFF0F0F0" Background="LightCoral" Margin="0,0,8,0" Padding="4,0,4,0"/>
-            <TextBlock Text="Tag #2" Foreground="#FFF0F0F0" Background="LightCoral" Margin="0,0,8,0" Padding="4,0,4,0"/>
-            <TextBlock Text="Tag #3" Foreground="#FFF0F0F0" Background="LightCoral" Margin="0,0,8,0" Padding="4,0,4,0"/>
-            <TextBlock Text="Tag #4" Foreground="#FFF0F0F0" Background="LightCoral" Margin="0,0,8,0" Padding="4,0,4,0"/>
-            <TextBlock Text="Tag #5" Foreground="#FFF0F0F0" Background="LightCoral" Margin="0,0,8,0" Padding="4,0,4,0"/>
-        </StackPanel>
+        <Image x:Name="instIconField" Grid.Column="0" Grid.RowSpan="3" Margin="8,8,8,8"/>
+        <TextBlock x:Name="instNameField" Grid.Column="1" Grid.Row="0" Text="Instance Name" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="8,0,0,0" FontSize="32" FontWeight="Bold" TextDecorations="Underline" Foreground="#FFF0F0F0"/>
+        <TextBlock x:Name="instDescField" Grid.Column="1" Grid.Row="1" Text="Instance Desc Line #1&#xA;Instance Desc Line #2" Foreground="#FFF0F0F0" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="8,0,0,0"/>
+        <StackPanel x:Name="tagList" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="8,0,0,0" Orientation="Horizontal"/>
         <StackPanel Grid.Column="2" Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,8,0">
-            <Button HorizontalAlignment="Center" VerticalAlignment="Center" Margin="4,0,0,0" BorderThickness="1,1,1,1">
-                <Image Source="{StaticResource butOpenInstance}"/>
+            <Button HorizontalAlignment="Center" VerticalAlignment="Center" Margin="4,0,0,0" BorderThickness="1,1,1,1" Width="24" Height="24"
+                    ToolTip="Open...">
+                <Image Source="{StaticResource 48-48Execute}"/>
             </Button>
-            <Button HorizontalAlignment="Center" VerticalAlignment="Center" Margin="4,0,0,0">
-                <Image Source="{StaticResource butOpenInstance}"/>
+            <Button HorizontalAlignment="Center" VerticalAlignment="Center" Margin="4,0,0,0" BorderThickness="1,1,1,1" Width="24" Height="24"
+                    ToolTip="Manage Packages..." Click="OnClickManagePackages">
+                <Image Source="{StaticResource 48-48Packages}"/>
             </Button>
-            <Button HorizontalAlignment="Center" VerticalAlignment="Center" Margin="4,0,0,0">
-                <Image Source="{StaticResource butOpenInstance}"/>
+            <Button HorizontalAlignment="Center" VerticalAlignment="Center" Margin="4,0,0,0" BorderThickness="1,1,1,1" Width="24" Height="24"
+                    ToolTip="Create Shortcut..." Click="OnClickCreateShortcut">
+                <Image Source="{StaticResource 48-48Shortcut}"/>
+            </Button>
+            <Button HorizontalAlignment="Center" VerticalAlignment="Center" Margin="4,0,0,0" BorderThickness="1,1,1,1" Width="24" Height="24"
+                    ToolTip="Delete..." Click="OnClickDelete">
+                <Image Source="{StaticResource 48-48Delete}"/>
             </Button>
         </StackPanel>
         

@@ -18,7 +18,6 @@ namespace LawfulBladeUpdater
                 goto UpdateFail;
             }
 
-
             // Lets make sure the process that launched the updater is closed...
             try
             {
@@ -83,11 +82,13 @@ namespace LawfulBladeUpdater
 
             UpdateSuccess:
             Console.WriteLine($"Success!\nYou are now running Lawful Blade Version {versionNumber}!".Colourize(0x58D68D));
+            Console.WriteLine($"Press any key to exit...");
             Console.ReadKey();
             return;
 
             UpdateFail:
             Console.WriteLine("Failed!!".Colourize(0xE74C3C));
+            Console.WriteLine($"Press any key to exit...");
             Console.ReadKey();
             return;
         }
