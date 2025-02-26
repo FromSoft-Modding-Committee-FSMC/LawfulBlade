@@ -55,7 +55,7 @@ namespace LawfulBlade.Core.Package
         /// <summary>
         /// Bundle file path
         /// </summary>
-        [JsonInclude]
+        [JsonIgnore]
         public string Bundle { get; private set; }
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace LawfulBlade.Core.Package
                 Version     = args.Version,
                 Authors     = args.Authors,
                 Tags        = args.Tags,
-                UUID        = GuidExtensions.GenerateGuid(args.Name, args.Description, DateTime.UtcNow).ToString()
+                UUID        = args.UUID
             };
 
             // Wrangle dependency UUIDs using the names...
@@ -222,8 +222,8 @@ namespace LawfulBlade.Core.Package
                      ?? throw new Exception("Package file contains invalid tree, it is corrupt!");
                 }
             }
-            
-            // Store the bundle path in the package...
+
+            // Store the path to the bundle...
             package.Bundle = path;
 
             return package;

@@ -6,6 +6,7 @@ using LawfulBlade.Core.Extensions;
 using System.ComponentModel;
 using LawfulBlade.Core.Instance;
 using LawfulBlade.Core.Package;
+using System.Text.Json;
 
 namespace LawfulBlade
 {
@@ -40,9 +41,7 @@ namespace LawfulBlade
         void OnApplicationStartup(object sender, StartupEventArgs e)
         {
             // Initialization Stage #1
-            // Here is command line interaction...
-
-            // This needs parsing properly, lad...
+            Preferences = Preferences.Load();
 
             // If there are any arguments, we can kick out...
             if (e.Args.Length > 0)
@@ -50,10 +49,9 @@ namespace LawfulBlade
                 switch(e.Args[0])
                 {
                     case "inst":
-                        // If we want to launch an instance, we need to initialize those
+                        // Load all instances, then find the one with the matching UUID - launch it.
                         InstanceManager.Initialize();
-
-                        // Logic for executing an instance!
+                        InstanceManager.GetInstanceByUUID(e.Args[1])?.Launch(null, true);
                         break;
 
                     case "proj":
@@ -92,9 +90,6 @@ namespace LawfulBlade
             Directory.CreateDirectory(TemporaryPath);
             Directory.CreateDirectory(AppDataPath);
 
-            // Load Preferences
-            Preferences = Preferences.Load();
-
             // Fix Section
             Winblows.ApplyFixes();
 
@@ -108,7 +103,7 @@ namespace LawfulBlade
 
             // Load Instances, Projects
             InstanceManager.Initialize();
-            Debug.Info($"Managing {InstanceManager.Count} instances, {0} projects...");       
+            Debug.Info($"Managing {InstanceManager.Count} instances, {0} projects...");
 
             // Construct new main window
             MainWindow = new MainWindow();
@@ -157,65 +152,42 @@ namespace LawfulBlade
             // The version info file does exist, lets download it into our temporary path
             string versionFile = Path.Combine(TemporaryPath, "version");
             string updatesFile = Path.Combine(TemporaryPath, "updates.zip");
+            bool   needsUpdate = false;
 
-            UpdateInfo updateInfo = new UpdateInfo();
+            // Create new Update Info object...
+            info = new UpdateInfo();
 
-            // Task to check if there is an update ready...
-            Task<bool> checkUpdatesTask = new Task<bool>(() =>
+            // Start the busy dialog...
+            BusyDialog.ShowBusy(
+                "Lawful Blade - Checking for Updates...", 
+                "So long, fare thee well. Pip pip cheerio - \r\nWe'll be back soon!"
+                );
+
+            // Check if the version info file exists...
+            Uri versionInfo = new Uri(RemoteVersionURL);
+
+            if (!DownloadManager.DownloadExists(versionInfo))
+                Debug.Warn($"Cannot retrieve version information from URL: '{RemoteVersionURL}'");
+            else
             {
-                // Check if the version info file exists...
-                Uri versionInfo = new Uri(RemoteVersionURL);
+                DownloadManager.DownloadSync(versionInfo, Path.Combine(TemporaryPath, versionFile));
 
-                if (!DownloadManager.DownloadExists(versionInfo))
-                    Debug.Warn($"Cannot retrieve version information from URL: '{RemoteVersionURL}'");
-                else
-                {
-                    DownloadManager.DownloadSync(versionInfo, Path.Combine(TemporaryPath, versionFile));
+                // Assuming the file downloaded correctly, we can now open and read it.
+                string[] versionFileLines = File.ReadAllLines(versionFile);
 
-                    // Assuming the file downloaded correctly, we can now open and read it.
-                    string[] versionFileLines = File.ReadAllLines(versionFile);
+                // We must parse the versions as integers to do comparisons...
+                int currentVersion = int.Parse(Version.Strip('.'));
+                int newVersion     = int.Parse(versionFileLines[0].Strip('.').TrimEnd('D', 'S'));
 
-                    // We must parse the versions as integers to do comparisons...
-                    int currentVersion = int.Parse(Version.Strip('.'));
-                    int newVersion     = int.Parse(versionFileLines[0].Strip('.').TrimEnd('D', 'S'));
+                info.version = versionFileLines[0];
+                info.targetUrl = versionFileLines[1];
 
-                    // Only offer an update if the current version is older
-                    if (currentVersion < newVersion)
-                    {
-                        // Copy information into the updateInfo struct
-                        updateInfo.version   = versionFileLines[0];
-                        updateInfo.targetUrl = versionFileLines[1];
+                needsUpdate = currentVersion < newVersion;
+            }
 
-                        // Download the update file in advance, even if the user doesn't want it. Screw 'em...
-                        DownloadManager.DownloadSync(new Uri(updateInfo.targetUrl), updatesFile);
+            BusyDialog.HideBusy();
 
-                        // Hide busy
-                        BusyDialog.Instance.HideBusy();
-
-                        // Return true because there is an update
-                        return true;
-                    }
-                }
-
-                // Hide busy
-                BusyDialog.Instance.HideBusy();
-
-                // Return false because there is no update
-                return false;
-            });
-            
-            // Start the check updates task
-            checkUpdatesTask.Start();
-
-            // Show the busy message
-            BusyDialog.Instance.ShowBusy("So long, fare thee well. Pip pip cheerio - \r\nWe'll be back soon!");
-
-            // Wait for the check to complete
-            checkUpdatesTask.Wait();
-
-            info = updateInfo;
-
-            return checkUpdatesTask.Result;
+            return needsUpdate;
         }
 
         public void PerformUpdate(UpdateInfo updateInfo)

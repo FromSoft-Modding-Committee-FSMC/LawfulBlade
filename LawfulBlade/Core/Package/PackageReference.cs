@@ -9,9 +9,9 @@ namespace LawfulBlade.Core.Package
     public struct PackageReference
     {
         /// <summary>The UUID of the package</summary>
-        public string UUID { get; private set; }
+        public string UUID { get; set; }
 
         /// <summary>The version of the package</summary>
-        public string Version { get; private set; }
+        public string Version { get; set; }
     }
 }

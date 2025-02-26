@@ -32,8 +32,11 @@ namespace LawfulBlade.Dialog
         {
             InitializeComponent();
 
+            // Some Event Binding...
+            Loaded += OnLoaded;
+
             // Grab all core packages...
-            corePackages = PackageManager.GetPackagesByTag("Core");
+            corePackages = PackageManager.GetRepositoryPackagesByTag("Core");
 
             if (corePackages.Length > 0)
             {
@@ -41,10 +44,12 @@ namespace LawfulBlade.Dialog
                 coreComboBox.SelectedIndex = 0;
                 coreComboBox.Text = corePackages[0].Name;
             }
-            else
-                Loaded += OnLoaded;
         }
 
+        /// <summary>
+        /// Event Callback.<br/>
+        /// Called when the form is loaded
+        /// </summary>
         void OnLoaded(object sender, RoutedEventArgs e)
         {
             if (corePackages.Length <= 0)
@@ -67,11 +72,6 @@ namespace LawfulBlade.Dialog
                 if (instNameField.Text == string.Empty)
                     throw new Exception("'Name' field cannot be empty!");
 
-                if (coreComboBox.SelectedIndex >= corePackages.Length)
-                    if (MessageBox.Show("EY! Only use an 'Empty' core if you know what you're doing! Do you know what you're doing?", "Lawful Blade", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
-                        return;
-
-
                 Instance instance = Instance.Create(new InstanceCreateArgs
                 {
                     Name            = instNameField.Text,
@@ -84,7 +84,7 @@ namespace LawfulBlade.Dialog
                 // First creation always saves...
                 instance.Save();
 
-                InstanceManager.Instances.Add(instance);
+                InstanceManager.AddInstance(instance);
             } 
             catch (Exception ex)
             {

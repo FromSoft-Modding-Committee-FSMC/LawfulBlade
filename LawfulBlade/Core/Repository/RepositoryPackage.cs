@@ -54,6 +54,12 @@ namespace LawfulBlade.Core
         public string Icon { get; private set; }
 
         /// <summary>
+        /// Bundle file path
+        /// </summary>
+        [JsonInclude]
+        public string Bundle { get; set; }
+
+        /// <summary>
         /// True if the package bundle is locally cached...
         /// </summary>
         [JsonIgnore]

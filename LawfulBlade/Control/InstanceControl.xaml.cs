@@ -98,7 +98,7 @@ namespace LawfulBlade.Control
                 return;
 
             // Delete Instance Content...
-            InstanceManager.Instances.Remove(Instance);
+            InstanceManager.RemoveInstance(Instance);
             Instance.Delete();
         }
 
@@ -118,5 +118,12 @@ namespace LawfulBlade.Control
             // Show the Package Manager Dialog
             (new PackageManagerDialog()).ShowDialog();
         }
+
+        /// <summary>
+        /// Event Callback.<br/>
+        /// Launches the instance.
+        /// </summary>
+        void OnClickLaunch(object sender, RoutedEventArgs e) =>
+            Instance.Launch(null, false);
     }
 }

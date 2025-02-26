@@ -22,6 +22,9 @@ namespace LawfulBlade
 
             // Population
             PopulateInstanceList();
+
+            // Populate the instance list every single time the instance manager content changes...
+            InstanceManager.InstancesChanged += PopulateInstanceList;
         }
 
         /**
@@ -55,18 +58,18 @@ namespace LawfulBlade
                     Instance newInstance = Instance.Import(ofd.FolderName);
                     newInstance.Save();
 
-                    BusyDialog.Instance.HideBusy();
+                    // BusyDialog.Instance.HideBusy();
 
                     return newInstance;
                 });
                 importInstanceTask.Start();
 
-                BusyDialog.Instance.ShowBusy();
+                // BusyDialog.Instance.ShowBusy();
 
                 // Wait for result to be ready...
                 importInstanceTask.Wait();
 
-                InstanceManager.Instances.Add(importInstanceTask.Result);
+                InstanceManager.AddInstance(importInstanceTask.Result);
 
                 PopulateInstanceList();
             }
@@ -102,6 +105,14 @@ namespace LawfulBlade
          * This region stores all events fired from the 'File' section of the menu
         **/
         #region Menu - File
+
+        /// <summary>
+        /// Event Handler<br/>
+        /// Opens up the preferences dialog when called
+        /// </summary>
+        void OnMenuFilePreferences(object sender, RoutedEventArgs e) =>
+            new PreferencesDialog().ShowDialog();
+
         /// <summary>
         /// Event Handler<br/>
         /// Listens for the 'Exit' button
@@ -182,5 +193,6 @@ namespace LawfulBlade
             new AboutDialog().ShowDialog();
 
         #endregion
+
     }
 }

@@ -1,4 +1,4 @@
-﻿<Window x:Class="LawfulBlade.Dialog.BusyDialog"
+﻿<Window x:Name="busyWindow" x:Class="LawfulBlade.Dialog.BusyDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -21,7 +21,7 @@
             <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
 
-        <TextBlock x:Name="BusyTextBlock" HorizontalAlignment="Center" Foreground="#FFF0F0F0" TextAlignment="Center" TextWrapping="Wrap" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center">
+        <TextBlock x:Name="busyMessage" HorizontalAlignment="Center" Foreground="#FFF0F0F0" TextAlignment="Center" TextWrapping="Wrap" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center">
             BUSY DOING SOME SHIT CHECK BACK LATER
         </TextBlock>
 

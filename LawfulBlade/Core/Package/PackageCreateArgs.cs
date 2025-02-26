@@ -22,6 +22,9 @@ namespace LawfulBlade.Core.Package
         public string[] Tags;
 
         [JsonInclude]
+        public string   UUID;
+
+        [JsonInclude]
         public string[] Dependencies;
 
         [JsonIgnore]

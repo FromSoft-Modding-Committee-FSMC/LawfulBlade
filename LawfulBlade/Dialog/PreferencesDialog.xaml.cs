@@ -1,6 +1,4 @@
-﻿using LawfulBlade.Core;
-using LawfulBlade.Core.Package;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,18 +15,13 @@ using System.Windows.Shapes;
 namespace LawfulBlade.Dialog
 {
     /// <summary>
-    /// Interaction logic for PackageManagerDialog.xaml
+    /// Interaction logic for PreferencesDialog.xaml
     /// </summary>
-    public partial class PackageManagerDialog : Window
+    public partial class PreferencesDialog : Window
     {
-        readonly RepositoryPackage[] avaliablePackages;
-
-        public PackageManagerDialog()
+        public PreferencesDialog()
         {
             InitializeComponent();
-
-            // Get every single package...
-            avaliablePackages = PackageManager.GetRepositoryPackages();
         }
     }
 }

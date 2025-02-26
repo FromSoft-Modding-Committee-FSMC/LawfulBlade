@@ -66,12 +66,11 @@ namespace LawfulBlade.Core
                 if (!File.Exists(Path.Combine(args.CreateRoot, $"{packageFile}.IAZ")))
                     throw new Exception($"Missing package: {packagePath}!");
 
-                repository.PackageLibrary.Add(
-                    RepositoryPackage.FromPackage(Package.Package.Load(packagePath, true))
-                    );
-            }
+                RepositoryPackage repoPackage = RepositoryPackage.FromPackage(Package.Package.Load(packagePath, true));
+                repoPackage.Bundle = $"{packageFile}.IAZ";
 
-            
+                repository.PackageLibrary.Add(repoPackage);
+            }            
 
             return repository;
         }
@@ -111,6 +110,7 @@ namespace LawfulBlade.Core
             // Create the {PackageName}.LIB file
             byte[] encodedLib = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(PackageLibrary));
 
+            File.WriteAllText(Path.Combine(args.CreateRoot, $"{PackageRoot}.TEAPOT"), JsonSerializer.Serialize(PackageLibrary));
             using FileStream outputStream   = File.OpenWrite(Path.Combine(args.CreateRoot, $"{PackageRoot}.LIB"));
             using BrotliStream brotliStream = new (outputStream, CompressionLevel.SmallestSize);
             brotliStream.Write(encodedLib);

@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Threading;
 
 namespace LawfulBlade.Dialog
 {
@@ -7,17 +8,9 @@ namespace LawfulBlade.Dialog
     /// </summary>
     public partial class BusyDialog : Window
     {
-        // Busy state is used because async is annoying to think about.
-        enum BusyState
-        {
-            Closed,
-            WaitForOpen,
-            Open
-        }
-
         // Array of various waiting messages
-        readonly string[] waitMessages = new string[]
-{
+        static readonly string[] waitMessages =
+        [
             /* Thanks, me! */
             "Don't fall asleep just yet!",
             "You must construct additional pylons!",
@@ -51,49 +44,78 @@ namespace LawfulBlade.Dialog
             "Don't worry - a few bits tried to escape, but we caught them",
             "Downloading more RAM...",
             "TODO: Insert elevator music...",
-};
-
-        // Singleton Instance
-        public static BusyDialog Instance { get; private set; } = new();
+        ];
 
         // Cache an instance of random here to avoid fucking the GC'er
         static readonly Random random = new();
 
-        // The busy state holder...
-        BusyState state = BusyState.Closed;
+        // We store the instance of busy to make sure only one exists...
+        static BusyDialog instance;
+        static Thread busyThread;
 
-        BusyDialog()
-        {
+
+        /// <summary>
+        /// Private Constructor...
+        /// </summary>
+        BusyDialog() =>
             InitializeComponent();
 
-            // Bind up to the events
-            Loaded += OnLoaded;
-        }
-
-        void OnLoaded(object sender, RoutedEventArgs e) =>
-            state = BusyState.Open;
-
-        public void ShowBusy()
+        /// <summary>
+        /// Shows the busy dialog with a specific title and message
+        /// </summary>
+        public static void ShowBusy(string title, string message)
         {
-            state = BusyState.WaitForOpen;
+            // Don't show busy if it is not null...
+            if (instance != null || busyThread != null)
+                return;
 
-            // Set a random message to tell the user they're waiting an amount of time...
-            BusyTextBlock.Text = waitMessages[random.Next(waitMessages.Length)];
+            busyThread = new(() =>
+            {
+                instance = new BusyDialog();
 
-            // Set initial result to wait for open...
-            ShowDialog();
+                // Set the title and message...
+                instance.busyWindow.Title = title;
+                instance.busyMessage.Text = message;
+
+                // Show the busy dialog
+                instance.ShowDialog();
+            });
+  
+            busyThread.SetApartmentState(ApartmentState.STA);
+            busyThread.Start();
         }
 
-        public void ShowBusy(string message)
+        /// <summary>
+        /// Shows the busy dialog with a specific message
+        /// </summary>
+        public static void ShowBusy(string message) =>
+            ShowBusy("Lawful Blade - Busy...", message);
+
+        /// <summary>
+        /// Shows the busy dialog with a random message
+        /// </summary>
+        public static void ShowBusy() =>
+            ShowBusy("Lawful Blade - Busy...", waitMessages[random.Next(waitMessages.Length)]);
+
+        /// <summary>
+        /// Stops the busy dialog...
+        /// </summary>
+        public static void HideBusy()
         {
-            state = BusyState.WaitForOpen;
+            // Get the dispatcher
+            Dispatcher busyDispatcher = Dispatcher.FromThread(busyThread);
+            busyDispatcher.Invoke(instance.Close);
+            busyThread.Join(1000);  // Do we really want this?..
 
-            // Set the custom field
-            BusyTextBlock.Text = message;
-
-            // Set initial result to wait for open...
-            ShowDialog();
+            // Now we can clear the dispatcher...
+            busyDispatcher = null;
+            busyThread = null;
+            instance = null;
         }
+    }
+}
+
+/*
 
 
         public void HideBusy()
@@ -107,5 +129,4 @@ namespace LawfulBlade.Dialog
 
             state = BusyState.Closed;
         }
-    }
-}
+            */

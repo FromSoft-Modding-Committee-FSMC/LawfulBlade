@@ -22,7 +22,7 @@
                     <MenuItem Header="External Project..."/>
                 </MenuItem>
                 <Separator/>
-                <MenuItem Header="Preferences" />
+                <MenuItem Header="Preferences" Click="OnMenuFilePreferences" />
                 <MenuItem Header="Exit" Click="OnMenuFileExit" />
             </MenuItem>
 

@@ -19,6 +19,18 @@ namespace LawfulBlade.Core
         public bool ShowDebugConsole = false;
 
         /// <summary>
+        /// If Locale Emulator should be used when launching instances and projects
+        /// </summary>
+        [JsonInclude]
+        public bool UseLocaleEmulator = false;
+
+        /// <summary>
+        /// The path to locale emulators installation directory
+        /// </summary>
+        [JsonInclude]
+        public string LocaleEmulatorPath = string.Empty;
+
+        /// <summary>
         /// Private Constructor.<br/>
         /// We only want the preferences to be constructed internally.
         /// </summary>

@@ -5,6 +5,11 @@ namespace LawfulBlade.Core.Instance
     public static class InstanceManager
     {
         /// <summary>
+        /// Event invoked when an instance is added or removed
+        /// </summary>
+        public static event Action InstancesChanged;
+
+        /// <summary>
         /// List of all avaliable instances
         /// </summary>
         public static List<Instance> Instances { get; private set; }
@@ -42,6 +47,45 @@ namespace LawfulBlade.Core.Instance
                 if (loadedInstance != null)
                     Instances.Add(loadedInstance);
             }
+        }
+
+        /// <summary>
+        /// Gets an instance from the list of managed isntances by the UUID
+        /// </summary>
+        public static Instance GetInstanceByUUID(string UUID)
+        {
+            foreach (Instance instance in Instances)
+            {
+                if (instance.UUID == UUID)
+                    return instance;
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Adds an instance to the list of managed instances...
+        /// </summary>
+        public static void AddInstance(Instance instance)
+        {
+            // Add instance
+            Instances.Add(instance);
+
+            // Raise the instance changed event...
+            InstancesChanged?.Invoke();
+        }
+
+        /// <summary>
+        /// Removes an instance to the list of managed instances...
+        /// </summary>
+        /// <param name="instance"></param>
+        public static void RemoveInstance(Instance instance)
+        {
+            // Remove instance
+            Instances.Remove(instance);
+
+            // Raise the instance changed event...
+            InstancesChanged?.Invoke();
         }
 
         /// <summary>
