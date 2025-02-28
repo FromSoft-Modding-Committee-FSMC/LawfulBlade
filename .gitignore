@@ -396,18 +396,16 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
-/ShippingRepositories
 /ShippingPackages
-/Testing
-/StagingPackages
 /ShippingBuild
+/Deprecated
 /LawfulRuntime/Library
 /LawfulRuntime/Game Packs
 /LawfulRuntime/Temp
 /LawfulRuntime/UserSettings
 /LawfulRuntime/Assets/StreamingAssets/Game/DATA
 /LawfulRuntime/Assets/StreamingAssets/Game/PARAM
-LawfulRuntime/Assembly-CSharp.csproj
-LawfulRuntime/LawfulRuntime.sln
+/LawfulRuntime/Assembly-CSharp.csproj
+/LawfulRuntime/LawfulRuntime.sln
 /LawfulRuntime/Assets/StreamingAssets
-LawfulRuntime/Assembly-CSharp-firstpass.csproj
+/LawfulRuntime/Assembly-CSharp-firstpass.csproj
