@@ -9,7 +9,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
-namespace LawfulBlade.Core.Instance
+namespace LawfulBlade.Core
 {
     public partial class Instance : PackageTarget
     {
@@ -36,6 +36,12 @@ namespace LawfulBlade.Core.Instance
         /// </summary>
         [JsonInclude]
         public string[] Tags { get; private set; }
+
+        /// <summary>
+        /// The time when the instance was last accessed.
+        /// </summary>
+        [JsonInclude]
+        public DateTime LastAccessDateTime;
 
         /// <summary>
         /// Dictionary of avaliable commands for the instance (launchInstance, launchProject)
@@ -83,6 +89,7 @@ namespace LawfulBlade.Core.Instance
                 Root = Path.Combine(App.InstancePath, instanceGuid.ToString()),
                 Packages = [],
                 Tags = [.. (new string[] { "Managed" }), .. creationArgs.Tags],
+                LastAccessDateTime = DateTime.Now,
                 Dirty = true // Created instances are always marked dirty...
             };
 
@@ -151,6 +158,7 @@ namespace LawfulBlade.Core.Instance
                     instance.UUID  = GuidExtensions.GenerateGuid(instance.Name, instance.Description, DateTime.Now).ToString();
                     instance.Root  = Path.Combine(App.InstancePath, instance.UUID);
                     instance.Tags = [.. instance.Tags, .. new string[] { "Imported" }];
+                    instance.LastAccessDateTime = DateTime.Now;
                     instance.Dirty = true;
                 }   
             }
@@ -308,6 +316,11 @@ namespace LawfulBlade.Core.Instance
                 sw.WriteLine($"IconIndex=0");
                 sw.WriteLine($"IconFile={Path.Combine(Root, "instance.ico")}");
             }
+
+            LastAccessDateTime = DateTime.Now;
+            Dirty = true;
+
+            Message.Info("Shortcut Created!", true);
         }
 
         /// <summary>
@@ -327,7 +340,7 @@ namespace LawfulBlade.Core.Instance
                     variable.Type switch
                     {
                         // String type can be expanded
-                        InstanceVariableType.String => ExpandVariable(variable.Value),
+                        InstanceVariableType.String => ExpandVariable(variable.Value, project),
 
                         // Any other variable type can not.
                         _                           => variable.GetValue(),
@@ -358,14 +371,14 @@ namespace LawfulBlade.Core.Instance
                     return;
                 }
 
-                Debug.Info($"Launching Project: '{"BATTENBERG DIDN'T FILL IN THE PROJECT INFO CALL HIM AN IDIOT LOLLOLOLOLOL"}'!");
+                Debug.Info($"Launching Project: '{project.Name}'!");
             }
 
             // We now need to expand our command, because some variables might be present...
             launchCommand = new()
             {
-                Execute   = ExpandVariable(launchCommand.Execute),
-                Arguments = launchCommand.Arguments.Select(x => ExpandVariable(x)).ToArray()  // CHEEKY CHEEKY CHEEKY HEHEHEHEEHEH
+                Execute   = ExpandVariable(launchCommand.Execute, project),
+                Arguments = launchCommand.Arguments.Select(x => ExpandVariable(x, project)).ToArray()  // CHEEKY CHEEKY CHEEKY HEHEHEHEEHEH
             };
 
             // Also adding \"\" to any arguments with spaces.
@@ -383,6 +396,10 @@ namespace LawfulBlade.Core.Instance
                 // Locale Emulator is loaded into the execute field.
                 launchCommand.Execute = Path.Combine(App.Preferences.LocaleEmulatorPath, "LEProc.exe");
             }
+
+            // Set the last access and dirty settings
+            LastAccessDateTime = DateTime.Now;
+            Dirty = true;
 
             // Finally we cna create the process start info, and start the process...
             Process process = Process.Start(new ProcessStartInfo
@@ -449,7 +466,7 @@ namespace LawfulBlade.Core.Instance
         /// <summary>
         /// Expands variables in a given string
         /// </summary>
-        string ExpandVariable(string variableSource)
+        string ExpandVariable(string variableSource, Project project)
         {
             // Get N matches for expansion...
             MatchCollection matches = ExpandVariablePattern().Matches(variableSource);
@@ -462,7 +479,7 @@ namespace LawfulBlade.Core.Instance
                 {
                     "programDir"  => App.ProgramPath,
                     "instanceDir" => Root,
-                    "projectDir"  => "fucking implement this bellend",
+                    "projectDir"  => project == null ? throw new NotImplementedException() : project.Root,
                     _ => throw new Exception($"Unknown Variable: '{match.Groups[1].Value}'")
                 };
 

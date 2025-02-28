@@ -10,28 +10,26 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="3*"/>
             <RowDefinition Height="0.75*"/>
-            <RowDefinition Height="28px"/>
+            <RowDefinition Height="24px"/>
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0" Background="#FF101010">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="0.75*"/>
-                <ColumnDefinition Width="3*"/>
                 <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
 
             <!-- Panel Contains a list of filters for packages... -->
             <StackPanel x:Name="filterList" Grid.Column="0" Background="#FF202020">
-                <TextBlock Foreground="#FFC0C0C0" HorizontalAlignment="Left" Margin="0,3,0,7">Package Filters...</TextBlock>
-                <StackPanel Orientation="Horizontal" Margin="4,0,0,0">
-                    <CheckBox/>
-                    <TextBlock Margin="2,0,0,0" Foreground="#FFF0F0F0">Example</TextBlock>
-                </StackPanel>
+
             </StackPanel>
             
             <!-- Panel is used to store our avaliable packages -->
-            <StackPanel x:Name="packageList" Grid.Column="1"/>
-
+            <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
+                <StackPanel x:Name="packageList"/>
+            </ScrollViewer>
+            
             <!-- Panel contains information about the packages... -->
             <StackPanel Grid.Column="2" Background="#FF202020">
                 
@@ -47,7 +45,7 @@
 
             <!-- Button Array -->
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Margin="0,0,4,0" Background="#FF308FA0" VerticalAlignment="Center">
+            <Button Margin="0,0,4,0" Background="#FF308FA0" VerticalAlignment="Center" Click="OnClickDone">
                 <TextBlock Margin="4,0,4,0">Done</TextBlock>
             </Button>
         </StackPanel>

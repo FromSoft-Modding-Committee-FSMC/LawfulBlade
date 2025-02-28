@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using LawfulBlade.Core;
+using System.ComponentModel;
+using System.Windows;
 using System.Windows.Threading;
 
 namespace LawfulBlade.Dialog
@@ -52,13 +54,36 @@ namespace LawfulBlade.Dialog
         // We store the instance of busy to make sure only one exists...
         static BusyDialog instance;
         static Thread busyThread;
-
+        static bool isCloseAllowed = true;
 
         /// <summary>
         /// Private Constructor...
         /// </summary>
-        BusyDialog() =>
+        BusyDialog()
+        {
             InitializeComponent();
+
+            // Event Bindings
+            Loaded += OnLoaded;
+        }
+
+        void OnLoaded(object sender, RoutedEventArgs e)
+        {
+            Winblows.WindowDisableSysMenu(this);
+        }
+
+        /// <summary>
+        /// Override.<br/>
+        /// We need to prevent this window from being closed until we say it can be closed.
+        /// </summary>
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            // Cancel the event.
+            e.Cancel = !isCloseAllowed;  // Cancel this when instance is not null
+
+            // idk what this does, probably important...
+            base.OnClosing(e);
+        }
 
         /// <summary>
         /// Shows the busy dialog with a specific title and message
@@ -80,7 +105,10 @@ namespace LawfulBlade.Dialog
                 // Show the busy dialog
                 instance.ShowDialog();
             });
-  
+
+            // Don't allow the user to close the window
+            isCloseAllowed = false;
+
             busyThread.SetApartmentState(ApartmentState.STA);
             busyThread.Start();
         }
@@ -102,31 +130,19 @@ namespace LawfulBlade.Dialog
         /// </summary>
         public static void HideBusy()
         {
-            // Get the dispatcher
+            // The user will now be allowed to close the window again
+            isCloseAllowed = true;
+
+            // Get the dispatcher for our busy thread, and invoke the close command on it.
             Dispatcher busyDispatcher = Dispatcher.FromThread(busyThread);
             busyDispatcher.Invoke(instance.Close);
-            busyThread.Join(1000);  // Do we really want this?..
 
-            // Now we can clear the dispatcher...
-            busyDispatcher = null;
+            // We join the busy thread on to the main thread until close has executed...
+            busyThread.Join(1000);
+
+            // Now we can clear thread and instance up.
             busyThread = null;
-            instance = null;
+            instance   = null;
         }
     }
 }
-
-/*
-
-
-        public void HideBusy()
-        {
-            // Exit early if already closed...
-            if (state == BusyState.Closed)
-                return;
-
-            // Invoke an action to hide the busy dialog
-            Application.Current.Dispatcher.BeginInvoke(Hide);
-
-            state = BusyState.Closed;
-        }
-            */

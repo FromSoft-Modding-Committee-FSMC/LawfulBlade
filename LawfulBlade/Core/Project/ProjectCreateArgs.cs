@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace LawfulBlade.Core
 {
-    public struct InstanceCreateArgs
+    public struct ProjectCreateArgs
     {
         public string Name;
         public string Description;
-        public string IconFilePath;
-        public string[] Tags;
-        public string CorePackageUUID;
+        public string Author;
+        public string IconFile;
+        public Instance Owner;
     }
 }

@@ -1,11 +1,11 @@
-﻿<Window x:Class="LawfulBlade.Dialog.CreateInstanceDialog"
+﻿<Window x:Class="LawfulBlade.Dialog.CreateProjectDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LawfulBlade.Dialog"
         mc:Ignorable="d"
-        Title="Lawful Blade - Create Instance" Height="480" Width="640" Background="#FF202020"
+        Title="Lawful Blade - Create Project" Height="480" Width="640" Background="#FF202020"
         Icon="{StaticResource lbIcon}" ResizeMode="NoResize" WindowStartupLocation="CenterOwner" ShowInTaskbar="False">
 
     <DockPanel Margin="8,8,8,8">
@@ -13,12 +13,16 @@
 
             <!-- Dialog Label -->
             <TextBlock Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="#FFF0F0F0" FontSize="22" FontWeight="Bold" Margin="0,8,0,16">
-            Create New Instance...
+            Create New Project...
             </TextBlock>
 
             <!-- Name Field -->
             <TextBlock Foreground="#FFF0F0F0" Margin="0,0,0,4">Name</TextBlock>
             <TextBox x:Name="nameField" Background="#FF202020" BorderBrush="#FF404040" Foreground="#FFF0F0F0"/>
+
+            <!-- Author Field -->
+            <TextBlock Foreground="#FFF0F0F0" Margin="0,4,0,4">Author</TextBlock>
+            <TextBox x:Name="authorField" Background="#FF202020" BorderBrush="#FF404040" Foreground="#FFF0F0F0"/>
 
             <Grid Margin="0,0,0,8">
                 <Grid.ColumnDefinitions>
@@ -29,22 +33,21 @@
                 <!-- Description Field -->
                 <StackPanel Grid.Column="0" Orientation="Vertical" Margin="0,0,0,0">
                     <TextBlock Foreground="#FFF0F0F0" Margin="0,8,0,4">Description</TextBlock>
-                    <TextBox x:Name="instDescField" Background="#FF202020" BorderBrush="#FF404040" TextWrapping="Wrap" MaxLines="8" MinLines="8" Foreground="#FFF0F0F0"/>
+                    <TextBox x:Name="descField" Background="#FF202020" BorderBrush="#FF404040" TextWrapping="Wrap" MaxLines="8" MinLines="8" Foreground="#FFF0F0F0"/>
                 </StackPanel>
 
                 <!-- Icon Field -->
                 <StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,0,0,0">
                     <TextBlock Foreground="#FFF0F0F0" Margin="0,8,0,4">Icon</TextBlock>
                     <Border Background="#FF101010" HorizontalAlignment="Left" MouseDown="OnIconMouseDown">
-                        <Image x:Name="instIconField" Width="129" Height="129" HorizontalAlignment="Left"/>
+                        <Image x:Name="iconField" Width="129" Height="129" HorizontalAlignment="Left"/>
                     </Border>
                 </StackPanel>
             </Grid>
 
-
-            <!-- Name Field -->
-            <TextBlock Foreground="#FFF0F0F0" Margin="0,0,0,4">Core</TextBlock>
-            <ComboBox x:Name="coreComboBox"/>
+            <!-- Instance Field -->
+            <TextBlock Foreground="#FFF0F0F0" Margin="0,0,0,4">Instance</TextBlock>
+            <ComboBox x:Name="instanceField"/>
 
         </StackPanel>
 

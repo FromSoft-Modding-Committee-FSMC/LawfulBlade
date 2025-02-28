@@ -62,5 +62,8 @@ namespace LawfulBlade.Core.Package
             // Finally, add this package to the package references list
             Packages.Add(new PackageReference { UUID = package.UUID, Version = package.Version });
         }
+
+        public virtual bool HasPackageByUUID(string uuid) =>
+            Packages.Select(x => x.UUID).Contains(uuid);
     }
 }

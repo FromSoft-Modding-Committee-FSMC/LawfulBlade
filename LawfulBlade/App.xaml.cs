@@ -4,9 +4,7 @@ using System.IO;
 using LawfulBlade.Dialog;
 using LawfulBlade.Core.Extensions;
 using System.ComponentModel;
-using LawfulBlade.Core.Instance;
 using LawfulBlade.Core.Package;
-using System.Text.Json;
 
 namespace LawfulBlade
 {
@@ -57,8 +55,8 @@ namespace LawfulBlade
                     case "proj":
                         // If we want to launch a project, we need to initialize instances and projects...
                         InstanceManager.Initialize();
-                        
-                        // Logic for executing an project!
+                        ProjectManager.Initialize();
+                        ProjectManager.GetProjectByUUID(e.Args[1])?.Launch(true);
                         break;
 
                     case "mkpk":    // MAKE PACKAGE
@@ -103,7 +101,8 @@ namespace LawfulBlade
 
             // Load Instances, Projects
             InstanceManager.Initialize();
-            Debug.Info($"Managing {InstanceManager.Count} instances, {0} projects...");
+            ProjectManager.Initialize();
+            Debug.Info($"Managing {InstanceManager.Count} instances, {ProjectManager.Count} projects...");
 
             // Construct new main window
             MainWindow = new MainWindow();
@@ -136,6 +135,9 @@ namespace LawfulBlade
 
             // Shutdown Instance Manager
             InstanceManager.Shutdown();
+
+            // Shutdown Project Manager
+            ProjectManager.Shutdown();
 
             // Shutdown package manager
             PackageManager.Shutdown();

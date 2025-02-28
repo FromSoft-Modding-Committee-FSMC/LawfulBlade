@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace LawfulBlade.Core.Instance
+namespace LawfulBlade.Core
 {
     public static class InstanceManager
     {
@@ -47,6 +47,9 @@ namespace LawfulBlade.Core.Instance
                 if (loadedInstance != null)
                     Instances.Add(loadedInstance);
             }
+
+            // Sort instances by the LastAccess time
+            Instances.Sort(Comparer<Instance>.Create((a, b) => (int)(b.LastAccessDateTime.Ticks - a.LastAccessDateTime.Ticks)));
         }
 
         /// <summary>

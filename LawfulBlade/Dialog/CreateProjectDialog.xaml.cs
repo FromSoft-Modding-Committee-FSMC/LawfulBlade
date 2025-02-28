@@ -1,53 +1,42 @@
 ﻿using ImageMagick;
+using LawfulBlade.Core;
 using Microsoft.Win32;
 using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 
-using LawfulBlade.Core;
-using LawfulBlade.Core.Package;
-
 namespace LawfulBlade.Dialog
 {
-    /// <summary>
-    /// Interaction logic for CreateInstanceDialog.xaml
-    /// </summary>
-    public partial class CreateInstanceDialog : Window
+    public partial class CreateProjectDialog : Window
     {
-        protected string lastIconPath = string.Empty;
-
-        protected RepositoryPackage[] corePackages;
-
-        public CreateInstanceDialog()
+        /// <summary>
+        /// Default Constructor.<br/>
+        /// </summary>
+        public CreateProjectDialog()
         {
             InitializeComponent();
 
-            // Some Event Binding...
+            // Event Bindings
             Loaded += OnLoaded;
 
-            // Grab all core packages...
-            corePackages = PackageManager.GetRepositoryPackagesByTag("Core");
-
-            if (corePackages.Length > 0)
+            // Populate the instance field...
+            if (InstanceManager.Count > 0)
             {
-                coreComboBox.ItemsSource = corePackages.Select(x => x.Name);
-                coreComboBox.SelectedIndex = 0;
-                coreComboBox.Text = corePackages[0].Name;
+                instanceField.ItemsSource = InstanceManager.Instances.Select(x => x.Name);
+                instanceField.SelectedIndex = 0;
+                instanceField.Text = InstanceManager.Instances[0].Name;
             }
         }
 
         /// <summary>
         /// Event Callback.<br/>
-        /// Called when the form is loaded
+        /// When there are no instances, this event gets fired.
         /// </summary>
         void OnLoaded(object sender, RoutedEventArgs e)
         {
-            if (corePackages.Length <= 0)
-            {
-                MessageBox.Show("No core packages were avaliable! An instance cannot be created!", "Lawful Blade", MessageBoxButton.OK, MessageBoxImage.Warning);
+            if (Message.Warning("No core packages were avaliable! An instance cannot be created!", (InstanceManager.Count == 0)))
                 OnCancelButton(null, null);
-            }
         }
 
         /// <summary>
@@ -56,22 +45,22 @@ namespace LawfulBlade.Dialog
         /// </summary>
         void OnCreateButton(object sender, RoutedEventArgs e)
         {
-            // Validate 'nameField'
+            // Validate Name
             if (Message.Warning("Name field cannot be empty.", (nameField.Text == string.Empty)))
                 return;
 
-            // Create instance
-            Instance instance = Instance.Create(new InstanceCreateArgs
+            // Create the project
+            Project project = Project.Create(new ProjectCreateArgs
             {
-                Name            = nameField.Text,
-                Description     = instDescField.Text,
-                IconFilePath    = lastIconPath,
-                Tags            = [],
-                CorePackageUUID = corePackages[coreComboBox.SelectedIndex].UUID
+                Name        = nameField.Text,
+                Description = descField.Text,
+                Author      = authorField.Text,
+                IconFile    = ((BitmapImage)iconField.Source).UriSource.AbsolutePath ?? string.Empty,
+                Owner       = InstanceManager.Instances[instanceField.SelectedIndex],
             });
 
-            InstanceManager.AddInstance(instance);
-            instance.Save();
+            ProjectManager.AddProject(project);
+            project.Save();
 
             // On Successful creation, we want to close this dialog
             Close();
@@ -96,22 +85,22 @@ namespace LawfulBlade.Dialog
                 string magickFilter = "All Files (*.*)|*.*";
 
                 // Build a filter form ImageMagick Supported formats...
-                foreach (MagickFormatInfo format in MagickNET.SupportedFormats)
+                foreach(MagickFormatInfo format in MagickNET.SupportedFormats)
                 {
                     // Skip any formats that cannot be read...
                     if (!format.SupportsReading)
                         continue;
 
-                    magickFilter += $"|{format.Description} (*.{format.Format})|*.{format.Format}";
+                    magickFilter += $"|{format.Description} (*.{format.Format})|*.{format.Format}";        
                 }
 
                 // Show an open file dialog
                 OpenFileDialog ofd = new()
                 {
                     Multiselect = false,
-                    Filter = magickFilter
+                    Filter      = magickFilter
                 };
-
+                
                 // Show the OFD
                 if (ofd.ShowDialog() == true)
                 {
@@ -119,8 +108,7 @@ namespace LawfulBlade.Dialog
                     if (!File.Exists(ofd.FileName))
                         return;
 
-                    instIconField.Source = new BitmapImage(new Uri(ofd.FileName));
-                    lastIconPath = ofd.FileName;
+                    iconField.Source = new BitmapImage(new Uri(ofd.FileName));
                 }
             }
         }

@@ -5,9 +5,7 @@ using System.Diagnostics;
 using System.Net.NetworkInformation;
 using LawfulBlade.Core;
 using LawfulBlade.Control;
-using LawfulBlade.Core.Instance;
 using Microsoft.Win32;
-using LawfulBlade.Core.Extensions;
 
 namespace LawfulBlade
 {
@@ -20,11 +18,13 @@ namespace LawfulBlade
         {
             InitializeComponent();
 
-            // Population
-            PopulateInstanceList();
-
             // Populate the instance list every single time the instance manager content changes...
             InstanceManager.InstancesChanged += PopulateInstanceList;
+            PopulateInstanceList();
+
+            // Populate the project list every time the project manager content changes
+            ProjectManager.ProjectsChanged += PopulateProjectList;
+            PopulateProjectList();
         }
 
         /**
@@ -35,14 +35,13 @@ namespace LawfulBlade
         /// Event Handler<br/>
         /// Listens for the 'Create New Instance' button
         /// </summary>
-        void OnInstanceCreateInstance(object sender, RoutedEventArgs e)
-        {
+        void OnInstanceCreateInstance(object sender, RoutedEventArgs e) =>
             (new CreateInstanceDialog()).ShowDialog();
 
-            // After the dialog has been shown, we must repopulate our instances...
-            PopulateInstanceList();
-        }
-
+        /// <summary>
+        /// Event Handler<br/>
+        /// Listens for the 'Import Instance' button
+        /// </summary>
         void OnInstanceImportInstance(object sender, RoutedEventArgs e)
         {
             OpenFolderDialog ofd = new OpenFolderDialog { };
@@ -102,6 +101,40 @@ namespace LawfulBlade
         #endregion
 
         /**
+         * This region stores all events fired from the 'projects' tab
+        **/
+        #region Tab - Projects
+        /// <summary>
+        /// Event Handler<br/>
+        /// Listens for the 'Create New Project' button
+        /// </summary>
+        void OnInstanceCreateProject(object sender, RoutedEventArgs e) =>
+            (new CreateProjectDialog()).ShowDialog();
+
+        void PopulateProjectList()
+        {
+            // Kill off any old instance controls
+            projectList.Children.Clear();
+
+            // Populate with new instance controls based on the currently held instances...
+            foreach (Project project in ProjectManager.Projects)
+            {
+                // Create an instance control for this instance
+                ProjectControl projectControl = new ProjectControl(project)
+                {
+                    // Initial configuration requirements, because WPF sorta sucky
+                    Margin = new Thickness(1, 1, 1, 0),
+                    Height = 128
+                };
+
+                // Shove this into the instance list...
+                projectList.Children.Add(projectControl);
+            }
+        }
+
+        #endregion
+
+        /**
          * This region stores all events fired from the 'File' section of the menu
         **/
         #region Menu - File
@@ -119,6 +152,21 @@ namespace LawfulBlade
         /// </summary>
         void OnMenuFileExit(object sender, RoutedEventArgs e) =>
             Application.Current.Shutdown();
+
+        #endregion
+
+        #region Menu - Packages
+        /// <summary>
+        /// Event Handler<br/>
+        /// Listens for the 'Clear Package Cache' button
+        /// </summary>
+        void OnMenuPackagesClearCache(object sender, RoutedEventArgs e)
+        {
+            if (MessageBox.Show("Are you sure you want to clear the package cache? This will increase the time it takes for future package installations!", "Lawful Blade", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
+                return;
+
+            new DirectoryInfo(App.PackageCachePath).Delete(true);
+        }
 
         #endregion
 

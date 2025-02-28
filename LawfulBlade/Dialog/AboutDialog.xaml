@@ -39,11 +39,7 @@
                         Lawful Blade is a Sword of Moonlight Instance/Project/Package manager, designed and created by a huge FromSoftware nerd for other FromSoftware nerds. It is open source under the MIT license and written in C#.
                     </Paragraph>
                     <Paragraph Foreground="White">
-                        Contributors: StolenBattenberg
-                    </Paragraph>
-                    <Paragraph Foreground="White">
                         Dependencies:
-                        <Hyperlink NavigateUri="https://github.com/oleg-st/ZstdSharp" RequestNavigate="OnRequestNavigate">ZstdSharp</Hyperlink> (MIT),
                         <Hyperlink NavigateUri="https://github.com/Verta-IT/ThemeWPF" RequestNavigate="OnRequestNavigate">ThemeWPF</Hyperlink> (MIT),
                         <Hyperlink NavigateUri="https://github.com/dlemstra/Magick.NET" RequestNavigate="OnRequestNavigate">Magick.NET</Hyperlink> (Apache 2.0),
                         
@@ -52,6 +48,9 @@
                         Special Thanks:
                         <Run Foreground="#FF804080">Kurobake</Run> (early adoption),
                         <Run Foreground="#FF804080">Verdite Cat</Run> (early adoption, being literate)
+                    </Paragraph>
+                    <Paragraph Foreground="White">
+                        This software is dedicated to the late Michael Pearson, whos groundbreaking (and tireless) work on Sword of Moonlight laid the foundations for much of what is possible today. Rest in peace.
                     </Paragraph>
                 </FlowDocument>
             </RichTextBox>

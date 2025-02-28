@@ -36,8 +36,8 @@ public class GameManager : MonoBehaviour
         Logger.Info("Loading Game Information...");
         gameInformation.ImportFromLegacyFile(Path.Combine(ResourceManager.GamePath, "PARAM", "SYS.DAT"));
 
-        Logger.Info("Loading Map Data...");
-        gameMapData.LoadMapFiles();
+        // Logger.Info("Loading Map Data...");
+        // gameMapData.LoadMapFiles();
 
         // Apply configuration options
         SetRuntimeConfiguration();

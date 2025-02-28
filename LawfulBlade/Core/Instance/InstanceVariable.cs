@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace LawfulBlade.Core.Instance
+namespace LawfulBlade.Core
 {
     public struct InstanceVariable
     {
