@@ -1,9 +1,11 @@
-﻿using LawfulBlade.Control;
+﻿using ImageMagick;
+using LawfulBlade.Control;
 using LawfulBlade.Core;
 using LawfulBlade.Core.Package;
 using System.Security.Policy;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace LawfulBlade.Dialog
@@ -144,12 +146,39 @@ namespace LawfulBlade.Dialog
 
             foreach (RepositoryPackage package in repoPackage)
             {
-                packageList.Children.Add(new PackageControl(package, Target)
+                PackageControl packageControl = new PackageControl(package, Target)
                 {
                     Margin = new Thickness(1, 1, 1, 0),
                     Height = 48
-                });
+                };
+
+                packageControl.MouseDown += OnClickPackageControl;
+
+                packageList.Children.Add(packageControl);
             }
+        }
+
+        /// <summary>
+        /// Event Handler.<br/>
+        /// When a package in the list is selected, this event is called.
+        /// </summary>
+        void OnClickPackageControl(object sender, MouseButtonEventArgs e)
+        {
+            PackageControl packageControl = ((PackageControl)sender);
+
+            if (packageControl == null)
+                return;
+
+            // We can load the info for the selected package...
+            RepositoryPackage package = packageControl.Package;
+
+            infoIconField.Source  = MagickImage.FromBase64(package.Icon).ToBitmapSource();
+            infoNameField.Text    = package.Name;
+            infoUUIDField.Text    = package.UUID;
+            infoVersionField.Text = package.Version;
+            infoAuthorField.Text  = string.Join(", ", package.Authors);
+            infoTagField.Text     = string.Join(", ", package.Tags);
+            infoDescField.Text    = package.Description;
         }
 
         /// <summary>

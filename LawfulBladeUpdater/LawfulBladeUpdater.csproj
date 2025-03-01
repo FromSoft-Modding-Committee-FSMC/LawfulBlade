@@ -8,6 +8,7 @@
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <PublishTrimmed>True</PublishTrimmed>
     <PublishAot>True</PublishAot>
+    <StartupObject>LawfulBladeUpdater.Program</StartupObject>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

@@ -32,29 +32,8 @@ namespace LawfulBladeUpdater
                 goto UpdateFail;
             }
 
-            // Get the info file path...
-            string infoFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "version");
-
-            // When the info file doesn't exist... oopsy...
-            if (!File.Exists(infoFile))
-            {
-                Console.WriteLine("Couldn't find version file! The update cannot proceed.".Colourize(0xF39C12));
-                goto UpdateFail;
-            }
-
-            // Read the info file...
-            string versionNumber = string.Empty, updateFileName = string.Empty;
-            bool breakingChanges = false;
-
-            using (StreamReader sr = new(File.OpenRead(infoFile)))
-            {
-                versionNumber   = sr.ReadLine() ?? string.Empty;
-                updateFileName  = Path.GetFileName(sr.ReadLine()) ?? string.Empty;
-                breakingChanges = bool.Parse(sr.ReadLine() ?? "false");
-            }
-
             // Get the update file path...
-            string updateFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, updateFileName);
+            string updateFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "updates.zip");
 
             if (!File.Exists(updateFile))
             {
@@ -77,11 +56,8 @@ namespace LawfulBladeUpdater
             // We can now clean up by deleting the update dir
             Console.WriteLine($"Cleaning...");
             File.Delete(updateFile);
-            File.Delete(infoFile);
-            goto UpdateSuccess;
 
-            UpdateSuccess:
-            Console.WriteLine($"Success!\nYou are now running Lawful Blade Version {versionNumber}!".Colourize(0x58D68D));
+            Console.WriteLine($"Success!\nYou are now running the latest version of Lawful Blades!".Colourize(0x58D68D));
             Console.WriteLine($"Press any key to exit...");
             Console.ReadKey();
             return;

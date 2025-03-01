@@ -184,7 +184,7 @@ namespace LawfulBlade
             if(((App)Application.Current).CheckForProgramUpdate(out UpdateInfo updateInfo))
             {
                 // Do we want the update?
-                if (MessageBox.Show($"A new version of Lawful Blade is avaliable! (Your version = {App.Version}, new version = {updateInfo.version})\nDo you want to update?", "Lawful Blade", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.OK)
+                if (MessageBox.Show($"A new version of Lawful Blade is avaliable! (Your version = {App.Version}, new version = {updateInfo.Version})\nDo you want to update?", "Lawful Blade", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
                     ((App)Application.Current).PerformUpdate(updateInfo);
             }
             else

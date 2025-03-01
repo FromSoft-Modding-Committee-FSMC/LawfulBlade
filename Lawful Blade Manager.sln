@@ -3,11 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33516.290
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LawfulBladeManagerOld", "Lawful Blade Manager\LawfulBladeManagerOld.csproj", "{82B775F7-1624-4E05-A21E-A87CCE26DBA7}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LawfulBladeUpdater", "LawfulBladeUpdater\LawfulBladeUpdater.csproj", "{30F6B793-62B9-4DCA-A011-882C5B4CA5C0}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deprecated", "Deprecated", "{593B7281-0419-4FDC-8581-710908857BC5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LawfulBlade", "LawfulBlade\LawfulBlade.csproj", "{3DED6B22-F913-42C7-867F-3218DCB1E767}"
 EndProject
@@ -17,10 +13,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{82B775F7-1624-4E05-A21E-A87CCE26DBA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{82B775F7-1624-4E05-A21E-A87CCE26DBA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{82B775F7-1624-4E05-A21E-A87CCE26DBA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{82B775F7-1624-4E05-A21E-A87CCE26DBA7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{30F6B793-62B9-4DCA-A011-882C5B4CA5C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{30F6B793-62B9-4DCA-A011-882C5B4CA5C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{30F6B793-62B9-4DCA-A011-882C5B4CA5C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -32,9 +24,6 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{82B775F7-1624-4E05-A21E-A87CCE26DBA7} = {593B7281-0419-4FDC-8581-710908857BC5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EF4B0DE8-0DD2-4816-83CE-1674E21E0B5A}

@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Http;
 using System.Net.NetworkInformation;
+using System.Text.Json;
 
 namespace LawfulBlade.Core
 {
@@ -65,6 +66,30 @@ namespace LawfulBlade.Core
             // Poll for the file by doing a web request
             using HttpRequestMessage request = new(HttpMethod.Head, source);
             using HttpResponseMessage response = httpClient.Send(request);
+
+            return (response.StatusCode == HttpStatusCode.OK);
+        }
+
+        /// <summary>
+        /// Sends a HTTP request to recover the newest version...
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="version"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public static bool RequestVersion(Uri source, out UpdateInfo version)
+        {
+            // Make sure we're connected to the internet...
+            if (!NetworkInterface.GetIsNetworkAvailable())
+                throw new Exception("No internet connection!");
+
+            // Poll for the file by doing a web request
+            using HttpRequestMessage request = new(HttpMethod.Get, source);
+            using HttpResponseMessage response = httpClient.Send(request);
+
+            // Decode the response...
+            using StreamReader sr = new StreamReader(response.Content.ReadAsStream());
+            version = JsonSerializer.Deserialize<UpdateInfo>(sr.ReadToEnd());
 
             return (response.StatusCode == HttpStatusCode.OK);
         }

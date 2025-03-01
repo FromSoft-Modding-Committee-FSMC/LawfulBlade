@@ -23,9 +23,14 @@
             N/A
         </TextBlock>
 
-        <!-- Tag -->
+        <!-- Button Array... -->
+        <Button x:Name="buttonBG" Grid.Column="2" VerticalAlignment="Center" Background="#FFF08040" Margin="0,0,4,0" Click="OnClickAction" Width="96">
+            <TextBlock x:Name="buttonText" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Silver" Margin="4,0,4,0" Text="Nout"/>
+        </Button>
+        <!--
         <TextBlock x:Name="tagField" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" Background="#FFF08040" Padding="4,2,4,2" Foreground="Silver" Margin="0,0,4,0">
             N/A
         </TextBlock>
+        -->
     </Grid>
 </UserControl>

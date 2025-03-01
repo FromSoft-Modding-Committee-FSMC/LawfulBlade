@@ -9,7 +9,7 @@
     <Grid Background="#FF202020">
         <Grid.RowDefinitions>
             <RowDefinition Height="3*"/>
-            <RowDefinition Height="0.75*"/>
+            <RowDefinition Height="1px"/>
             <RowDefinition Height="24px"/>
         </Grid.RowDefinitions>
 
@@ -21,29 +21,42 @@
             </Grid.ColumnDefinitions>
 
             <!-- Panel Contains a list of filters for packages... -->
-            <StackPanel x:Name="filterList" Grid.Column="0" Background="#FF202020">
+            <StackPanel x:Name="filterList" Grid.Column="0" Background="#FF202020"/>
 
-            </StackPanel>
-            
             <!-- Panel is used to store our avaliable packages -->
             <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
                 <StackPanel x:Name="packageList"/>
             </ScrollViewer>
-            
+
             <!-- Panel contains information about the packages... -->
             <StackPanel Grid.Column="2" Background="#FF202020">
-                
+                <!-- Info: Picture -->
+                <StackPanel Orientation="Horizontal">
+                    <Border  Width="128" Height="128" Background="#FF101010" BorderBrush="Black" BorderThickness="1,1,1,1" Margin="3,3,3,3">
+                        <Image x:Name="infoIconField"/>
+                    </Border>
+                    <StackPanel Orientation="Vertical" Margin="3,3,3,3">
+                        <TextBlock x:Name="infoNameField" Foreground="#FFF0F0F0" Text="Name Here..." FontSize="18" TextTrimming="WordEllipsis"/>
+                        <TextBlock x:Name="infoUUIDField" Foreground="#FF909090" Text="UUID: 00000000-0000-0000000000000000" FontSize="10"/>
+                        <TextBlock x:Name="infoVersionField" Foreground="#FF909090" Text="Version: 0.0" FontSize="10"/>
+                        <TextBlock x:Name="infoAuthorField" Foreground="#FF909090" Text="Authors: n/a" FontSize="10"/>
+                        <TextBlock x:Name="infoTagField" Foreground="#FF909090" Text="Tags: n/a" FontSize="10"/>
+                    </StackPanel>
+                </StackPanel>
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="3,3,3,3">
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Foreground="#FFF0F0F0" FontSize="10" Margin="0,0,0,3" Text="Description: "/>
+                        <TextBlock x:Name="infoDescField" MinHeight="192" Background="#FF101010" Foreground="#FFF0F0F0" TextWrapping="Wrap"/>
+                        <TextBlock Foreground="#FFF0F0F0" FontSize="10" Margin="0,0,0,3" Text="Dependencies: "/>
+                        <TextBlock x:Name="infoDependsField" MinHeight="64" Background="#FF101010" Foreground="#FFF0F0F0" TextWrapping="Wrap"/>
+                    </StackPanel>
+                </ScrollViewer>
             </StackPanel>
         </Grid>
 
-        <!-- We can use this area to display status to the user?.. -->
-        <Border Grid.Row="1" Background="#FF181818" BorderBrush="#FF101010" BorderThickness="1">
-            <ScrollViewer VerticalScrollBarVisibility="Auto">
-                <TextBlock Foreground="#FFF0F0F0" Margin="4,0,4,0">hellohello</TextBlock>
-            </ScrollViewer>
-        </Border>
+        <Border Grid.Row="1" Background="#FF101010"></Border>
 
-            <!-- Button Array -->
+        <!-- Button Array -->
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button Margin="0,0,4,0" Background="#FF308FA0" VerticalAlignment="Center" Click="OnClickDone">
                 <TextBlock Margin="4,0,4,0">Done</TextBlock>

@@ -61,6 +61,13 @@ namespace LawfulBlade.Core.Package
 
             // Finally, add this package to the package references list
             Packages.Add(new PackageReference { UUID = package.UUID, Version = package.Version });
+
+            Dirty = true;
+        }
+
+        public virtual void UninstallPackage(Package package)
+        {
+
         }
 
         public virtual bool HasPackageByUUID(string uuid) =>

@@ -5,6 +5,7 @@ using LawfulBlade.Dialog;
 using LawfulBlade.Core.Extensions;
 using System.ComponentModel;
 using LawfulBlade.Core.Package;
+using System.Text.Json;
 
 namespace LawfulBlade
 {
@@ -23,7 +24,7 @@ namespace LawfulBlade
         public static readonly string ResourcePath      = Path.Combine(ProgramPath, "Resource");
         public static readonly string ReleaseNotesFile  = Path.Combine(ProgramPath, $"release-notes-v{Version.Strip('.')}.txt");
         public static readonly string ReportAProblemURL = @"https://github.com/FromSoft-Modding-Committee-FSMC/Lawful-Blade/issues";
-        public static readonly string RemoteVersionURL  = @"https://raw.githubusercontent.com/FromSoft-Modding-Committee-FSMC/Lawful-Blade/main/version";
+        public static readonly string RemoteVersionURL  = @"https://lawful.swordofmoonlight.com/version.php";
 
         public static Preferences Preferences { get; private set; }
 
@@ -88,6 +89,9 @@ namespace LawfulBlade
             Directory.CreateDirectory(TemporaryPath);
             Directory.CreateDirectory(AppDataPath);
 
+            File.WriteAllText(Path.Combine(App.AppDataPath, "test.json"),
+                JsonSerializer.Serialize(new UpdateInfo { Version = "0.00", SourceF = "https://lawful.swordofmoonlight.com" }));
+
             // Fix Section
             Winblows.ApplyFixes();
 
@@ -115,7 +119,7 @@ namespace LawfulBlade
                 if (CheckForProgramUpdate(out UpdateInfo updateInfo))
                 {
                     // Do we want the update?
-                    if (MessageBox.Show($"A new version of Lawful Blade is avaliable! (Your version = {Version}, new version = {updateInfo.version})\nDo you want to update?", "Lawful Blade", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.OK)
+                    if (MessageBox.Show($"A new version of Lawful Blade is avaliable! (Your version = {Version}, new version = {updateInfo.Version})\nDo you want to update?", "Lawful Blade", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
                         PerformUpdate(updateInfo);
                 }
             }
@@ -149,15 +153,10 @@ namespace LawfulBlade
         /// <summary>
         /// Checks for remote updates
         /// </summary>
-        public bool CheckForProgramUpdate(out UpdateInfo info)
+        public bool CheckForProgramUpdate(out UpdateInfo versionInfo)
         {
             // The version info file does exist, lets download it into our temporary path
-            string versionFile = Path.Combine(TemporaryPath, "version");
-            string updatesFile = Path.Combine(TemporaryPath, "updates.zip");
             bool   needsUpdate = false;
-
-            // Create new Update Info object...
-            info = new UpdateInfo();
 
             // Start the busy dialog...
             BusyDialog.ShowBusy(
@@ -165,36 +164,41 @@ namespace LawfulBlade
                 "So long, fare thee well. Pip pip cheerio - \r\nWe'll be back soon!"
                 );
 
-            // Check if the version info file exists...
-            Uri versionInfo = new Uri(RemoteVersionURL);
-
-            if (!DownloadManager.DownloadExists(versionInfo))
-                Debug.Warn($"Cannot retrieve version information from URL: '{RemoteVersionURL}'");
-            else
+            // Check for the newest version...
+            if (DownloadManager.RequestVersion(new Uri(RemoteVersionURL), out versionInfo))
             {
-                DownloadManager.DownloadSync(versionInfo, Path.Combine(TemporaryPath, versionFile));
-
-                // Assuming the file downloaded correctly, we can now open and read it.
-                string[] versionFileLines = File.ReadAllLines(versionFile);
-
                 // We must parse the versions as integers to do comparisons...
                 int currentVersion = int.Parse(Version.Strip('.'));
-                int newVersion     = int.Parse(versionFileLines[0].Strip('.').TrimEnd('D', 'S'));
-
-                info.version = versionFileLines[0];
-                info.targetUrl = versionFileLines[1];
+                int newVersion     = int.Parse(versionInfo.Version.Strip('.'));
 
                 needsUpdate = currentVersion < newVersion;
-            }
+
+                // If we do need an update, download the payload now...
+                if (needsUpdate)
+                    DownloadManager.DownloadSync(new Uri(versionInfo.SourceF), Path.Combine(TemporaryPath, "updates.zip"));
+            } 
+            else
+                Debug.Warn($"Cannot retrieve version information from URL: '{RemoteVersionURL}'");
 
             BusyDialog.HideBusy();
 
-            return needsUpdate;
+            return true; //needsUpdate;
         }
 
-        public void PerformUpdate(UpdateInfo updateInfo)
+        public void PerformUpdate(UpdateInfo versionInfo)
         {
-            MessageBox.Show("Unimplemented");
+            // First copy the updater to our temporary path...
+            File.Copy(Path.Combine(ProgramPath, "LawfulBladeUpdater.exe"), Path.Combine(TemporaryPath, "LawfulBladeUpdater.exe"), true);
+
+            // Get some info about our current process...
+            string processID   = $"{Environment.ProcessId}";
+            string processName = System.Diagnostics.Process.GetCurrentProcess().ProcessName;
+
+            // Start the updater...
+            System.Diagnostics.Process process = 
+                System.Diagnostics.Process.Start(Path.Combine(TemporaryPath, "LawfulBladeUpdater.exe"), [processID, processName, ProgramPath]);
+
+            Current.Shutdown(0);
         }
     }
 }

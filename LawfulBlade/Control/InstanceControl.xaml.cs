@@ -106,6 +106,8 @@ namespace LawfulBlade.Control
         {
             // Show the Package Manager Dialog
             (new PackageManagerDialog(Instance)).ShowDialog();
+
+            Instance.Save();
         }
 
         /// <summary>
