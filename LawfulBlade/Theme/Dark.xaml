@@ -85,6 +85,54 @@
     <SolidColorBrush x:Key="TextBoxIsEditingBorderBrush" Color="#FF3296FA" />
     <SolidColorBrush x:Key="TextBoxIsInactiveSelectionHighlightBrush" Color="#FF666666" />
 
+    <SolidColorBrush x:Key="GroupBoxForeground" Color="#FFE5E5E5" />
+    <SolidColorBrush x:Key="GroupBoxHeaderForeground" Color="#FFE5E5E5" />
+    <SolidColorBrush x:Key="GroupBoxHeaderBackground" Color="#2D2D30" />
+    <SolidColorBrush x:Key="GroupBoxBackground" Color="#252526" />
+    <SolidColorBrush x:Key="GroupBoxBorderBrush" Color="#3F3F46" />
+
+    <!--  GroupBox  -->
+    <Style TargetType="{x:Type GroupBox}">
+        <Setter Property="Background" Value="{StaticResource GroupBoxBackground}" />
+        <Setter Property="BorderBrush" Value="{StaticResource GroupBoxBorderBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource GroupBoxForeground}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding" Value="5" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type GroupBox}">
+                    <Border BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            SnapsToDevicePixels="True">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="0" Background="{StaticResource GroupBoxHeaderBackground}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <ContentPresenter Margin="4,2,2,4"
+                                                  VerticalAlignment="Center"
+                                                  ContentSource="Header"
+                                                  RecognizesAccessKey="True"
+                                                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                                  TextElement.Foreground="{StaticResource GroupBoxHeaderForeground}" />
+                            </Grid>
+                            <ScrollViewer Grid.Row="1"
+                                          VerticalAlignment="Stretch"
+                                          Background="{TemplateBinding Background}"
+                                          CanContentScroll="True"
+                                          VerticalScrollBarVisibility="Auto">
+                                <ContentPresenter Margin="{TemplateBinding Padding}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                            </ScrollViewer>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
     <!--  ComboBox  -->
 

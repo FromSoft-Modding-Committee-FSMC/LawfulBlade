@@ -17,10 +17,12 @@
                     <MenuItem Header="Instance..." Click="OnInstanceCreateInstance"/>
                     <MenuItem Header="Project..." Click="OnInstanceCreateProject"/>
                 </MenuItem>
+                <!--
                 <MenuItem Header="Add">
                     <MenuItem Header="External Instance..." Click="OnInstanceImportInstance"/>
                     <MenuItem Header="External Project..."/>
                 </MenuItem>
+                -->
                 <Separator/>
                 <MenuItem Header="Preferences" Click="OnMenuFilePreferences" />
                 <MenuItem Header="Exit" Click="OnMenuFileExit" />
@@ -63,12 +65,14 @@
                             </Button>
 
                             <!-- Import Instance Button -->
+                            <!--
                             <Button Background="#FF282828" BorderBrush="#FF181818" Margin="0,0,0,1" Click="OnInstanceImportInstance">
                                 <StackPanel Orientation="Horizontal">
                                     <Image Source="{StaticResource 96-96Import}" Width="24" Height="24" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="2,2,8,2"/>
                                     <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="#FFF0F0F0">Import Instance</TextBlock>
                                 </StackPanel>
                             </Button>
+                            -->
                         </StackPanel>
                         
                         <!-- Instance Zone -->
@@ -98,12 +102,14 @@
                             </Button>
 
                             <!-- Import Project Button -->
+                            <!--
                             <Button Background="#FF282828" BorderBrush="#FF181818" Margin="0,0,0,1">
                                 <StackPanel Orientation="Horizontal">
                                     <Image Source="{StaticResource 96-96Import}" Width="24" Height="24" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="2,2,8,2"/>
                                     <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="#FFF0F0F0">Import Project</TextBlock>
                                 </StackPanel>
                             </Button>
+                            -->
                         </StackPanel>
 
                         <!-- Project Zone -->

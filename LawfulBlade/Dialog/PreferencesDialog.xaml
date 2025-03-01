@@ -6,7 +6,54 @@
         xmlns:local="clr-namespace:LawfulBlade.Dialog"
         mc:Ignorable="d"
         Title="Lawful Blade - Preferences" Icon="{StaticResource lbIcon}" Height="480" Width="640" Background="#FF202020" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" ShowInTaskbar="False">
-    <Grid>
-        
-    </Grid>
+    <DockPanel Margin="8,8,8,8">
+
+        <!-- Preferences -->
+        <ScrollViewer DockPanel.Dock="Top" VerticalScrollBarVisibility="Auto">
+            <StackPanel Orientation="Vertical">
+                <GroupBox Header="General" Foreground="#FFF0F0F0" Margin="0,0,0,4">
+                    <StackPanel Orientation="Vertical">
+                        <!-- Check for Updates Switch -->
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
+                            <CheckBox x:Name="checkForUpdates" Margin="0,0,2,0" ToolTip="Checks for program updates on start up."/>
+                            <TextBlock Text="Automatically check for updates?"/>
+                        </StackPanel>
+
+                        <!-- Show Debugging Console Switch-->
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
+                            <CheckBox x:Name="showDebugConsole" Margin="0,0,2,0" ToolTip="Shows a debug console on start up (requires restart)"/>
+                            <TextBlock Text="Show debug console on start up?"/>
+                        </StackPanel>
+                    </StackPanel>
+                </GroupBox>
+
+                <GroupBox Header="Locale Emulator" Foreground="#FFF0F0F0" Margin="0,0,0,4">
+                    <StackPanel Orientation="Vertical">
+                        <!-- Locale Emulator path-->
+                        <DockPanel Margin="0,0,0,4" LastChildFill="true">
+                            <TextBlock Text="Locale Emulator Path: " Margin="0,0,2,0" />
+                            <TextBox x:Name="localEmuPath" AcceptsReturn="True" DockPanel.Dock="Left" HorizontalAlignment="Stretch" Background="#FF101010" BorderBrush="Black" Foreground="#FFF0F0F0"/>
+                        </DockPanel>
+                        <!-- Use Locale Emulator -->
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
+                            <CheckBox x:Name="useLocaleEmulator" Margin="0,0,2,0" ToolTip="Checks for program updates on start up."/>
+                            <TextBlock Text="Use Locale Emulator?"/>
+                        </StackPanel>
+                    </StackPanel>
+                </GroupBox>
+            </StackPanel>
+        </ScrollViewer>
+ 
+
+
+        <!-- Button Array -->
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right" DockPanel.Dock="Bottom">
+            <Button Margin="0,0,4,0" Click="OnClickCancel">
+                <TextBlock Margin="4,0,4,0">Cancel</TextBlock>
+            </Button>
+            <Button Margin="0,0,4,0" Background="#FF308FA0" Click="OnClickConfirm">
+                <TextBlock Margin="4,0,4,0">Confirm</TextBlock>
+            </Button>
+        </StackPanel>
+    </DockPanel>
 </Window>
