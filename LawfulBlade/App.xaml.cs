@@ -23,6 +23,7 @@ namespace LawfulBlade
         public static readonly string TemporaryPath     = Path.Combine(Path.GetTempPath(), "FSMC", "LawfulBlade");
         public static readonly string ResourcePath      = Path.Combine(ProgramPath, "Resource");
         public static readonly string ReleaseNotesFile  = Path.Combine(ProgramPath, $"release-notes-v{Version.Strip('.')}.txt");
+        public static readonly string RuntimeGenPath    = Path.Combine(ProgramPath, "Runtime");
         public static readonly string ReportAProblemURL = @"https://github.com/FromSoft-Modding-Committee-FSMC/Lawful-Blade/issues";
         public static readonly string RemoteVersionURL  = @"https://lawful.swordofmoonlight.com/version.php";
 
@@ -108,6 +109,9 @@ namespace LawfulBlade
             ProjectManager.Initialize();
             Debug.Info($"Managing {InstanceManager.Count} instances, {ProjectManager.Count} projects...");
 
+            // Load Runtime Generators...
+            RuntimeManager.Initialize();
+            Debug.Info($"There are {RuntimeManager.Count} runtimes avaliable!");
             // Construct new main window
             MainWindow = new MainWindow();
             MainWindow.Closing += (object sender, CancelEventArgs e) => { Current.Shutdown(); };   // Windows yet again sucking a big cock

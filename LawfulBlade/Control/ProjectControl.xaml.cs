@@ -1,5 +1,6 @@
 ﻿using ImageMagick;
 using LawfulBlade.Core;
+using LawfulBlade.Dialog;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -47,8 +48,10 @@ namespace LawfulBlade.Control
         /// Event Callback.<br/>
         /// Creates a shortcut to the instance when pressed.
         /// </summary>
-        void OnClickCreateRuntime(object sender, RoutedEventArgs e) =>
-            Message.Warning("Not Implemented!", true);
+        void OnClickCreateRuntime(object sender, RoutedEventArgs e)
+        {
+            (new PublishProjectDialog(Project)).ShowDialog();
+        }
 
         /// <summary>
         /// Event Callback.<br/>

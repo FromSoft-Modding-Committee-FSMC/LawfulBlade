@@ -90,6 +90,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\LawfulBladeSDK\LawfulBladeSDK.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Dialog\PublishProjectDialog.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Dialog\CreateProjectDialog.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -100,6 +107,12 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Dialog\PublishProjectDialog.xaml">
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
 
 </Project>

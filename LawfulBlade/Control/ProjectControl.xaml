@@ -36,7 +36,7 @@
             </Button>
 
             <!-- Runtime Button -->
-            <Button HorizontalAlignment="Center" VerticalAlignment="Center" Margin="4,0,0,0" BorderThickness="1,1,1,1" Width="24" Height="24" ToolTip="Generate Runtime..." Click="OnClickCreateRuntime">
+            <Button HorizontalAlignment="Center" VerticalAlignment="Center" Margin="4,0,0,0" BorderThickness="1,1,1,1" Width="24" Height="24" ToolTip="Publish..." Click="OnClickCreateRuntime">
                 <Image Source="{StaticResource 48-48Runtime}"/>
             </Button>
 
