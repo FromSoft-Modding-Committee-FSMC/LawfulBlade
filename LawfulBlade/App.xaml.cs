@@ -14,7 +14,7 @@ namespace LawfulBlade
         /// <summary>
         /// 'Global' Constant Data
         /// </summary>
-        public static readonly string Version           = @"0.31";
+        public static readonly string Version           = @"1.00";
         public static readonly string ProgramPath       = AppDomain.CurrentDomain.BaseDirectory;
         public static readonly string AppDataPath       = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "FSMC", "LawfulBlade");
         public static readonly string ProjectPath       = Path.Combine(AppDataPath, "projects");
@@ -90,9 +90,6 @@ namespace LawfulBlade
             Directory.CreateDirectory(TemporaryPath);
             Directory.CreateDirectory(AppDataPath);
 
-            File.WriteAllText(Path.Combine(App.AppDataPath, "test.json"),
-                JsonSerializer.Serialize(new UpdateInfo { Version = "0.00", SourceF = "https://lawful.swordofmoonlight.com" }));
-
             // Fix Section
             Winblows.ApplyFixes();
 
@@ -112,6 +109,7 @@ namespace LawfulBlade
             // Load Runtime Generators...
             RuntimeManager.Initialize();
             Debug.Info($"There are {RuntimeManager.Count} runtimes avaliable!");
+
             // Construct new main window
             MainWindow = new MainWindow();
             MainWindow.Closing += (object sender, CancelEventArgs e) => { Current.Shutdown(); };   // Windows yet again sucking a big cock

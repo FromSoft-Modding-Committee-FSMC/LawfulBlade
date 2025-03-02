@@ -8,10 +8,17 @@
         Title="Lawful Blade - Publish Project" Height="480" Width="640" Background="#FF202020"
         Icon="{StaticResource lbIcon}" ResizeMode="NoResize" WindowStartupLocation="CenterOwner" ShowInTaskbar="False">
 
-    <DockPanel Margin="8,8,8,8">
-        <ScrollViewer DockPanel.Dock="Top" VerticalScrollBarVisibility="Auto">
+    <Grid Margin="8,8,8,8">
+        <!-- Row Defs -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="24px"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Scroll Viewer stores main content -->
+        <ScrollViewer DockPanel.Dock="Top" VerticalScrollBarVisibility="Auto" Grid.Row="0">
             <StackPanel x:Name="propertyGroups" Orientation="Vertical">
-                
+
                 <!-- Dialog Label -->
                 <TextBlock Text="Publish Project..." Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="#FFF0F0F0" FontSize="22" FontWeight="Bold" Margin="0,8,0,12"/>
 
@@ -50,7 +57,7 @@
                         <!-- Runtime Field -->
                         <TextBlock Text="Runtime" Foreground="#FFF0F0F0" Margin="0,4,0,2"/>
                         <ComboBox x:Name="runtimeList" Text="None"/>
-                        
+
                         <!-- Output Field -->
                         <TextBlock Text="Output Directory" Foreground="#FFF0F0F0" Margin="0,4,0,2"/>
                         <Button Margin="0,0,4,0" Click="OnClickTargetField" >
@@ -58,14 +65,14 @@
                         </Button>
                     </StackPanel>
                 </GroupBox>
-                
-                <!-- Additional Propertry Groups loaded below...-->    
-                
+
+                <!-- Additional Propertry Groups loaded below...-->
+
             </StackPanel>
         </ScrollViewer>
 
         <!-- Button Array -->
-        <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right" DockPanel.Dock="Bottom">
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right" Grid.Row="1">
             <Button Margin="0,0,4,0" Click="OnCancelButton">
                 <TextBlock Margin="4,0,4,0">Cancel</TextBlock>
             </Button>
@@ -73,5 +80,5 @@
                 <TextBlock Margin="4,0,4,0">Confirm</TextBlock>
             </Button>
         </StackPanel>
-    </DockPanel>
+    </Grid>
 </Window>

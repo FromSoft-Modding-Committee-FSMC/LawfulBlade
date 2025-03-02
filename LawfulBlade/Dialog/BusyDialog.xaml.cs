@@ -54,6 +54,7 @@ namespace LawfulBlade.Dialog
         // We store the instance of busy to make sure only one exists...
         static BusyDialog instance;
         static Thread busyThread;
+        static Dispatcher busyThreadDispatcher;
         static bool isCloseAllowed = true;
 
         /// <summary>
@@ -110,6 +111,7 @@ namespace LawfulBlade.Dialog
             isCloseAllowed = false;
 
             busyThread.SetApartmentState(ApartmentState.STA);
+            busyThreadDispatcher = Dispatcher.FromThread(busyThread);
             busyThread.Start();
         }
 
@@ -133,16 +135,24 @@ namespace LawfulBlade.Dialog
             // The user will now be allowed to close the window again
             isCloseAllowed = true;
 
-            // Get the dispatcher for our busy thread, and invoke the close command on it.
-            Dispatcher busyDispatcher = Dispatcher.FromThread(busyThread);
-            busyDispatcher.Invoke(instance.Close);
+            // Close the instance using our dispatcher
+            Dispatcher.FromThread(busyThread).Invoke(instance.Close);
 
             // We join the busy thread on to the main thread until close has executed...
             busyThread.Join(1000);
 
             // Now we can clear thread and instance up.
+            busyThreadDispatcher = null;
             busyThread = null;
             instance   = null;
+        }
+
+        public static void SetBusyMessage(string message)
+        {
+            if (instance == null)
+                return;
+
+            Dispatcher.FromThread(busyThread).Invoke(() => { instance.busyMessage.Text = message; });
         }
     }
 }

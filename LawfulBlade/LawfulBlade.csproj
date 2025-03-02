@@ -6,7 +6,7 @@
     <Nullable>disable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
-    <PackageIcon>moonlight.png</PackageIcon>
+    <PackageIcon>Resource\moonlight.ico</PackageIcon>
     <ApplicationIcon>Resource\moonlight.ico</ApplicationIcon>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <StartupObject>LawfulBlade.App</StartupObject>
@@ -35,6 +35,7 @@
     <None Remove="Resource\96x96_create.png" />
     <None Remove="Resource\96x96_import.png" />
     <None Remove="Resource\moonlight.ico" />
+    <None Remove="Resource\moonlight.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -74,6 +75,11 @@
     <Content Include="Resource\moonlight.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Resource\moonlight.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -100,13 +106,6 @@
     <Compile Update="Dialog\CreateProjectDialog.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="Resource\moonlight.png">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
   </ItemGroup>
 
   <ItemGroup>

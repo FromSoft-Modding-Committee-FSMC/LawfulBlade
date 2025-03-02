@@ -41,6 +41,9 @@ namespace LawfulBlade.Core
         /// </summary>
         public static void ApplyFixes()
         {
+            // Fucking idiotic
+            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+
             SystemParameters.StaticPropertyChanged += OnSystemStaticPropertyChanged;
             OnSystemStaticPropertyChanged(null, null!);
         }
