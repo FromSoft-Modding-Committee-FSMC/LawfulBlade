@@ -20,9 +20,27 @@
     <ClInclude Include="detver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="logf.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sominput.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="somwindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="logf.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sominput.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="somwindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

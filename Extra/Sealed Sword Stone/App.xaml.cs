@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Diagnostics;
+using System.IO;
 using System.Text.Json;
 using System.Windows;
 
@@ -25,14 +26,14 @@ public partial class App : Application
 
     public static void StartGame()
     {
-        // Create our suspended process
-        ProcessEx process = ProcessEx.StartSuspendedProcess(Path.Combine(ProgramPath, LauncherConfig.GameExecutable));
+        Process.Start(new ProcessStartInfo
+        {
+            FileName  = "Unsealer.exe",
+            Arguments = $"/D:Unsealer.dll \"{LauncherConfig.GameExecutable}\"",
+            CreateNoWindow = true
+        });
 
-        // Inject our patch
-        process.InjectPayload(Path.Combine(ProgramPath, LauncherConfig.GamePatch));
-
-        // Resume the process
-        process.ResumeProcess();
+        Current.Shutdown(0);
     }
 }
 

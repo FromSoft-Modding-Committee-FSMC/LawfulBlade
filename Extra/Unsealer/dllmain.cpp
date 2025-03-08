@@ -11,21 +11,57 @@
 
 // First party includes
 #include "detours.h"
+#include "logf.h"
+
+#include "somwindow.h"
+#include "sominput.h"
 
 // Include libraries, fuck C++ man. I love C#
 #pragma comment(lib, "detours.lib")
 
 // DLL ENTRY POINT WOOHOO
-BOOL APIENTRY DllMain(HMODULE module, DWORD  reason, LPVOID reserved)
+EXTFUNC BOOL APIENTRY DllMain(HMODULE module, DWORD  reason, LPVOID reserved)
 {
     switch (reason)
     {
         case DLL_PROCESS_ATTACH:
-            MessageBoxA(NULL, "I'm in", "Caption", 0);
+            LogFInit();
+            LogFWrite("Attached Unsealer... IMIN Protocol Successful.", "DllMain");
+
+            // Bind our detours...
+            DetourTransactionBegin();
+            DetourUpdateThread(GetCurrentThread());
+
+            // SoM Specific - Window
+            DetourAttach(&(PVOID&)ProxiedRegisterClassA, ProxyRegisterClassA);
+
+            // SoM Specific - Input
+            DetourAttach(&(PVOID&)ProxiedSomInputInit, ProxySomInputInit);
+            DetourAttach(&(PVOID&)ProxiedSomInputSetKeyEnabled, ProxySomInputSetKeyEnabled);
+            DetourAttach(&(PVOID&)ProxiedSomInputKeyboardPoll, ProxySomInputKeyboardPoll);
+
+            DetourTransactionCommit();
+
             break;
 
         case DLL_PROCESS_DETACH:
-            MessageBoxA(NULL, "I'm out", "Caption", 0);
+
+            // Bind our detours...
+            DetourTransactionBegin();
+            DetourUpdateThread(GetCurrentThread());
+
+            // SoM Specific - Window
+            DetourDetach(&(PVOID&)ProxiedRegisterClassA, ProxyRegisterClassA);
+
+            // SoM Specific - Input
+            DetourDetach(&(PVOID&)ProxiedSomInputInit, ProxySomInputInit);
+            DetourDetach(&(PVOID&)ProxiedSomInputSetKeyEnabled, ProxySomInputSetKeyEnabled);
+            DetourDetach(&(PVOID&)ProxiedSomInputKeyboardPoll, ProxySomInputKeyboardPoll);
+
+            DetourTransactionCommit();
+
+            LogFWrite("Detached Unsealer.", "DllMain");
+
             break;
     }
 

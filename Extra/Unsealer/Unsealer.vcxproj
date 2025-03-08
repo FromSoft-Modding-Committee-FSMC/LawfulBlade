@@ -145,10 +145,16 @@
   <ItemGroup>
     <ClInclude Include="detours.h" />
     <ClInclude Include="detver.h" />
+    <ClInclude Include="logf.h" />
+    <ClInclude Include="sominput.h" />
+    <ClInclude Include="somwindow.h" />
     <ClInclude Include="syelog.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="logf.cpp" />
+    <ClCompile Include="sominput.cpp" />
+    <ClCompile Include="somwindow.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
