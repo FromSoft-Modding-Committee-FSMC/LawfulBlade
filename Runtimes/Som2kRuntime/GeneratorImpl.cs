@@ -75,6 +75,13 @@ namespace Som2kRuntime
                 File.Copy(Path.Combine(PrjParam, "SHOP.DAT"), Path.Combine(PubParam, "SHOP.DAT"), true);
                 File.Copy(Path.Combine(PrjParam, "SYS.DAT"), Path.Combine(PubParam, "SYS.DAT"), true);
 
+                // Technically only one of these is required, but I haven't figured out what field dictates that yet
+                File.Copy(Path.Combine(PrjParam, "0.lvt"), Path.Combine(PubParam, "0.LVT"), true);
+                File.Copy(Path.Combine(PrjParam, "1.lvt"), Path.Combine(PubParam, "1.LVT"), true);
+                File.Copy(Path.Combine(PrjParam, "2.lvt"), Path.Combine(PubParam, "2.LVT"), true);
+                File.Copy(Path.Combine(PrjParam, "3.lvt"), Path.Combine(PubParam, "3.LVT"), true);
+                File.Copy(Path.Combine(PrjParam, "4.lvt"), Path.Combine(PubParam, "4.LVT"), true);
+
                 // SYS.DAT stuff...
                 UpdateStatus?.Invoke("Processing System Settings...");
 
@@ -99,11 +106,123 @@ namespace Som2kRuntime
                     File.Copy(Path.Combine(PrjParam, "STAFF.DAT"), Path.Combine(PubParam, "STAFF.DAT"), true);
 
                 // DATA\\ENEMY
+                UpdateStatus?.Invoke("Processing Enemy Definitions...");
+
+                string EdtEnemy = Path.Combine(args.InstancePath, "DATA", "ENEMY");
+                string PubEnemy = Path.Combine(args.PublishPath,  "DATA", "ENEMY");
+
+                if (Directory.Exists(EdtEnemy))
+                {
+                    if (!Directory.Exists(PubEnemy))
+                    {
+                        Directory.CreateDirectory(PubEnemy);
+                        Directory.CreateDirectory(Path.Combine(PubEnemy, "MODEL"));
+                    }       
+
+                    // We need to load the ENEMY.PR2 so we can parse what models we need...
+                    EnemyPR2File EnemyPR2 = new (Path.Combine(PubParam, "ENEMY.PR2"));
+
+                    foreach (EnemyPR2Item item in EnemyPR2.Items)
+                    {
+                        // Copy Model
+                        File.Copy(
+                            Path.Combine(EdtEnemy, "MODEL", item.modelName),
+                            Path.Combine(PubEnemy, "MODEL", item.modelName),
+                            true);
+                        
+                        // Copy Control Points (if they exist, they should...)
+                        if (File.Exists(Path.Combine(EdtEnemy, "MODEL", Path.ChangeExtension(item.modelName, "cp").ToUpperInvariant())))
+                        {
+                            File.Copy(
+                                Path.Combine(EdtEnemy, "MODEL", Path.ChangeExtension(item.modelName, "cp")),
+                                Path.Combine(PubEnemy, "MODEL", Path.ChangeExtension(item.modelName, "cp").ToUpperInvariant()),
+                                true);
+                        }
+
+                        // Copy external texture if it exists...
+                        if (item.hasExternalTexture)
+                        {
+                            if (!Directory.Exists(Path.Combine(PubEnemy, "TEXTURE")))
+                                Directory.CreateDirectory(Path.Combine(PubEnemy, "TEXTURE"));
+
+                            File.Copy(
+                                Path.Combine(EdtEnemy, "TEXTURE", item.externalTextureName),
+                                Path.Combine(PubEnemy, "TEXTURE", item.externalTextureName.ToUpperInvariant()),
+                                true);
+                        }
+                    }
+
+                    // We also need to copy the default KAGE and KAGE2 models (used for shadows?..)
+                    File.Copy(Path.Combine(EdtEnemy, "MODEL", "KAGE.MDL"),  Path.Combine(PubEnemy, "MODEL", "KAGE.MDL"), true);
+                    File.Copy(Path.Combine(EdtEnemy, "MODEL", "KAGE2.MDL"), Path.Combine(PubEnemy, "MODEL", "KAGE2.MDL"), true);
+                    File.Copy(Path.Combine(EdtEnemy, "MODEL", "KAGE2.MDO"), Path.Combine(PubEnemy, "MODEL", "KAGE2.MDO"), true);
+                    File.Copy(Path.Combine(EdtEnemy, "MODEL", "KAGE3.MDL"), Path.Combine(PubEnemy, "MODEL", "KAGE3.MDL"), true);
+                    File.Copy(Path.Combine(EdtEnemy, "MODEL", "KAGE3.MDO"), Path.Combine(PubEnemy, "MODEL", "KAGE3.MDO"), true);
+                }
+
 
                 // DATA\\ITEM
+                UpdateStatus?.Invoke("Processing Item Definitions...");
+
+                string EdtItem = Path.Combine(args.InstancePath, "DATA", "ITEM");
+                string PubItem = Path.Combine(args.PublishPath, "DATA", "ITEM");
+
+                if (Directory.Exists(EdtItem))
+                {
+                    if (!Directory.Exists(PubItem))
+                    {
+                        Directory.CreateDirectory(PubItem);
+                        Directory.CreateDirectory(Path.Combine(PubItem, "MODEL"));
+                    }
+
+                    // Load Item PR2 for wrangling
+                    ItemPR2File ItemPR2 = new(Path.Combine(PubParam, "ITEM.PR2"));
+
+                    foreach (ItemPR2Item item in ItemPR2.Items)
+                    {
+                        // Copy Model
+                        File.Copy(
+                            Path.Combine(EdtItem, "MODEL", item.modelFile),
+                            Path.Combine(PubItem, "MODEL", item.modelFile),
+                            true);
+
+                        // Copy Model #2... These are used for swing animations, so swords mostly
+                        string swingModel = $"{Path.GetFileNameWithoutExtension(item.modelFile)}_0{Path.GetExtension(item.modelFile)}";
+                        if (File.Exists(Path.Combine(EdtItem, "MODEL", swingModel)))
+                        {
+                            // Copy Model
+                            File.Copy(
+                                Path.Combine(EdtItem, "MODEL", swingModel),
+                                Path.Combine(PubItem, "MODEL", swingModel),
+                                true);
+                        }
+
+                        // Copy Textures (using filenames inside MDO)
+                        string[] textureFiles = Path.GetExtension(item.modelFile).ToUpperInvariant() switch
+                        {
+                            ".MDO" => MDOFile.GetTexturesFromMDO(Path.Combine(EdtItem, "MODEL", item.modelFile)),
+                            _      => Array.Empty<string>(),
+                        };
+
+                        foreach (string textureFile in textureFiles)
+                        {
+                            File.Copy(
+                                Path.Combine(EdtItem, "MODEL", textureFile),
+                                Path.Combine(PubItem, "MODEL", textureFile),
+                                true);
+                        }
+                    }
+
+                    // SoM requires a few more files here too
+                    File.Copy(Path.Combine(EdtItem, "MODEL", "gold.mdo"), Path.Combine(PubItem, "MODEL", "GOLD.MDO"), true);
+                    File.Copy(Path.Combine(EdtItem, "MODEL", "gold.txr"), Path.Combine(PubItem, "MODEL", "GOLD.TXR"), true);
+                    File.Copy(Path.Combine(EdtItem, "MODEL", "ude01.txr"), Path.Combine(PubItem, "MODEL", "UDE01.TXR"), true);                
+                }
+
 
                 // DATA\\MAP
                 string PrjMap = Path.Combine(args.ProjectPath, "DATA", "MAP");
+                string EdtMap = Path.Combine(args.InstancePath, "DATA", "MAP");
                 string PubMap = Path.Combine(args.PublishPath, "DATA", "MAP");
 
                 if (Directory.Exists(PrjMap))
@@ -118,7 +237,36 @@ namespace Som2kRuntime
                     // Copy all the EVT files...
                     foreach (FileInfo file in (new DirectoryInfo(PrjMap)).GetFiles("*.evt"))
                         File.Copy(file.FullName, Path.Combine(PubMap, $"{Path.GetFileName(file.FullName)}"), true);
+
+                    if (Directory.Exists(EdtMap))
+                    {
+                        // Copy all the textures from the editor... We won't filter these because fuck it.
+                        CopyDir(new DirectoryInfo(Path.Combine(EdtMap, "TEXTURE")), Path.Combine(PubMap, "TEXTURE"));
+
+                        if (!Directory.Exists(Path.Combine(PubMap, "MODEL")))
+                            Directory.CreateDirectory(Path.Combine(PubMap, "MODEL"));
+
+                        // And copy all the sky models...
+                        foreach(FileInfo mdoFile in new DirectoryInfo(Path.Combine(EdtMap, "MODEL")).GetFiles("*.mdo"))
+                        {
+                            // Copy the actual MDO file
+                            File.Copy(mdoFile.FullName, Path.Combine(PubMap, "MODEL", mdoFile.Name), true);
+
+                            // Get MDO textures
+                            string[] textureFiles = MDOFile.GetTexturesFromMDO(mdoFile.FullName);
+
+                            foreach (string textureFile in textureFiles)
+                            {
+                                File.Copy(
+                                    Path.Combine(EdtMap, "MODEL", textureFile),
+                                    Path.Combine(PubMap, "MODEL", textureFile),
+                                    true);
+                            }
+                        }
+                    }
+                        
                 }
+
 
                 // DATA\\MENU
                 UpdateStatus?.Invoke("Processing Menu...");
@@ -162,13 +310,101 @@ namespace Som2kRuntime
                 string EdtMy = Path.Combine(args.InstancePath, "DATA", "MY", "MODEL");
                 string PubMy = Path.Combine(args.PublishPath, "DATA", "MY", "MODEL");
 
-                if (Directory.Exists(PubMy))
+                if (Directory.Exists(EdtMy))
                     CopyDir(new DirectoryInfo(EdtMy), PubMy);
-                
+
 
                 // DATA\\NPC
+                UpdateStatus?.Invoke("Processing NPC Definitions...");
+
+                string EdtNPC = Path.Combine(args.InstancePath, "DATA", "NPC");
+                string PubNPC = Path.Combine(args.PublishPath, "DATA", "NPC");
+
+                if (Directory.Exists(EdtNPC))
+                {
+                    if (!Directory.Exists(PubNPC))
+                    {
+                        Directory.CreateDirectory(PubNPC);
+                        Directory.CreateDirectory(Path.Combine(PubNPC, "MODEL"));
+                    }
+
+                    // We need to load the ENEMY.PR2 so we can parse what models we need...
+                    NpcPR2File NpcPR2 = new(Path.Combine(PubParam, "NPC.PR2"));
+
+                    foreach (NpcPR2Item item in NpcPR2.Items)
+                    {
+                        // Copy Model
+                        File.Copy(
+                            Path.Combine(EdtNPC, "MODEL", item.modelName),
+                            Path.Combine(PubNPC, "MODEL", item.modelName),
+                            true);
+
+                        // Copy Control Points
+                        if (File.Exists(Path.Combine(EdtNPC, "MODEL", Path.ChangeExtension(item.modelName, "cp").ToUpperInvariant())))
+                        {
+                            File.Copy(
+                                Path.Combine(EdtNPC, "MODEL", Path.ChangeExtension(item.modelName, "cp")),
+                                Path.Combine(PubNPC, "MODEL", Path.ChangeExtension(item.modelName, "cp").ToUpperInvariant()),
+                                true);
+                        }
+
+                        // Copy external texture
+                        if (item.hasExternalTexture)
+                        {
+                            if (!Directory.Exists(Path.Combine(PubNPC, "TEXTURE")))
+                                Directory.CreateDirectory(Path.Combine(PubNPC, "TEXTURE"));
+
+                            File.Copy(
+                                Path.Combine(EdtNPC, "TEXTURE", item.externalTextureName),
+                                Path.Combine(PubNPC, "TEXTURE", item.externalTextureName.ToUpperInvariant()),
+                                true);
+                        }
+                    }
+                }
+
 
                 // DATA\\OBJ
+                UpdateStatus?.Invoke("Processing Object Definitions...");
+
+                string EdtObject = Path.Combine(args.InstancePath, "DATA", "OBJ");
+                string PubObject = Path.Combine(args.PublishPath, "DATA", "OBJ");
+
+                if (Directory.Exists(EdtObject))
+                {
+                    if (!Directory.Exists(PubObject))
+                    {
+                        Directory.CreateDirectory(PubObject);
+                        Directory.CreateDirectory(Path.Combine(PubObject, "MODEL"));
+                    }
+
+                    // We need to load the ENEMY.PR2 so we can parse what models we need...
+                    ObjectPR2File ObjectPR2 = new(Path.Combine(PubParam, "OBJ.PR2"));
+
+                    foreach (ObjectPR2Item item in ObjectPR2.Items)
+                    {
+                        // Copy Model
+                        File.Copy(
+                            Path.Combine(EdtObject, "MODEL", item.modelFile),
+                            Path.Combine(PubObject, "MODEL", item.modelFile),
+                            true);
+
+                        // Copy Textures - Objects don't support external textures!!! :D
+                        string[] textureFiles = Path.GetExtension(item.modelFile).ToUpperInvariant() switch
+                        {
+                            ".MDO" => MDOFile.GetTexturesFromMDO(Path.Combine(EdtObject, "MODEL", item.modelFile)),
+                            _ => Array.Empty<string>(),
+                        };
+
+                        foreach (string textureFile in textureFiles)
+                        {
+                            File.Copy(
+                                Path.Combine(EdtObject, "MODEL", textureFile),
+                                Path.Combine(PubObject, "MODEL", textureFile),
+                                true);
+                        }
+                    }
+                }
+
 
                 // DATA\\PICTURE
                 UpdateStatus?.Invoke("Processing Pictures...");
@@ -200,21 +436,31 @@ namespace Som2kRuntime
                     File.Copy(file.FullName, Path.Combine(PubSound, $"{Path.GetFileName(file.FullName)}"), true);
 
                 UpdateStatus?.Invoke("Processing Music...");
-                string PrjMusic = Path.Combine(args.InstancePath, "DATA", "SOUND", "BGM");
-                string PubMusic = Path.Combine(args.PublishPath,  "DATA", "SOUND", "BGM");
+                string PrjMusic = Path.Combine(args.ProjectPath, "DATA", "BGM");
+                string PubMusic = Path.Combine(args.PublishPath, "DATA", "SOUND", "BGM");
 
                 if (Directory.Exists(PrjMusic))
                     CopyDir(new DirectoryInfo(PrjMusic), PubMusic);
 
-
-                // INI, EXE
+                //
+                // Stage 3: These last files are weirdly handled
+                //
                 UpdateStatus?.Invoke("Finalizing...");
-                File.Copy(Path.Combine(args.ProjectPath, "SOM_DB.INI"), Path.Combine(args.PublishPath, "GAME.INI"), true);
-                File.Copy(Path.Combine(args.InstancePath, "TOOL", "som_rt.exe"), Path.Combine(args.PublishPath, "GAME.EXE"), true);
 
-                //
-                // done !!!!
-                //
+                // PROJECT.DAT
+                // This has a really shit anti-tamper which is just the size of "npc.pr2" and "enemy.pr2" added together.
+                int pdatTamperVal = 0;
+                    pdatTamperVal += File.ReadAllBytes(Path.Combine(PubParam, "ENEMY.PR2")).Length;
+                    pdatTamperVal += File.ReadAllBytes(Path.Combine(PubParam, "NPC.PR2")).Length;
+
+                File.WriteAllBytes(Path.Combine(args.PublishPath, "PROJECT.DAT"), BitConverter.GetBytes(pdatTamperVal));
+
+                // INI
+                File.Copy(Path.Combine(args.ProjectPath, "SOM_DB.INI"), Path.Combine(args.PublishPath, $"{args.ProjectName}.INI"), true);
+
+                // EXE
+                File.Copy(Path.Combine(args.InstancePath, "TOOL", "som_rt.exe"), Path.Combine(args.PublishPath, $"{args.ProjectName}.EXE"), true);
+                PatchExecutableResources(args);
             }
             catch (Exception ex)
             {
@@ -237,6 +483,26 @@ namespace Som2kRuntime
                 ]);
 
             transcodeProcess.WaitForExit();
+        }
+
+        public void PatchExecutableResources(GeneratorStartArgs args)
+        {
+            string rceditPath = Path.Combine(ProgramPath, "Tools", "rcedit.exe");
+
+            Process resourceEditProcess = Process.Start(rceditPath,
+                [
+                    $"{Path.Combine(args.PublishPath, $"{args.ProjectName}.EXE")}",                             // Executable
+                    "--set-icon", $"{Path.Combine(args.ProjectPath, "project.ico")}",                           // Set Icon
+                    "--set-version-string", "FileDescription",  $"Sword of Moonlight Game",
+                    "--set-version-string", "LegalCopyright",   $"©{DateTime.Now.Year} {args.AuthorName}",      // Set Copyright
+                    "--set-version-string", "OriginalFilename", $"{args.ProjectName}.exe",                      // Set Original Filename
+                    "--set-version-string", "ProductName", $"{args.ProjectName}",                               // Set Product Name
+                    "--set-version-string", "FileVersion", $"1.00",
+                    "--set-version-string", "ProductVersion", $"1.00",
+                    "--set-version-string", "CompanyName", $"{args.AuthorName}"
+                ]);
+
+            resourceEditProcess.WaitForExit();
         }
 
         public void CompileMap(string inputFile, string projectDir, string instanceDir, string outputFile)

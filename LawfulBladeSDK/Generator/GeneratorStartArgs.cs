@@ -11,5 +11,7 @@ namespace LawfulBladeSDK.Generator
         public string InstancePath { get; set; }
         public string ProjectPath { get; set; }
         public string PublishPath { get; set; }
+        public string ProjectName { get; set; }
+        public string AuthorName { get; set; }
     }
 }

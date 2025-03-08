@@ -69,7 +69,7 @@ namespace LawfulBlade.Dialog
             descField.Text   = project.Description;
             authorField.Text = Environment.GetEnvironmentVariable("USERNAME");
             iconField.Source = project.Icon.ToBitmapSource();
-            targetField.Text = project.Root;
+            targetField.Text = Path.Combine(project.Root, "PUBLISH");
 
             Project = project;
         }
@@ -165,8 +165,8 @@ namespace LawfulBlade.Dialog
             // Show the folder selector dialog...
             OpenFolderDialog dialog = new OpenFolderDialog
             {
-                DefaultDirectory = targetField.Text,
-                InitialDirectory = targetField.Text
+                DefaultDirectory = Path.GetDirectoryName(targetField.Text),
+                InitialDirectory = Path.GetDirectoryName(targetField.Text)
             };
 
             // Open the dialog and get the path
@@ -206,7 +206,9 @@ namespace LawfulBlade.Dialog
             {
                 ProjectPath  = Project.Root,
                 InstancePath = Instance.Root,
-                PublishPath  = targetField.Text
+                PublishPath  = targetField.Text,
+                ProjectName  = nameField.Text,
+                AuthorName   = authorField.Text
             });
 
             BusyDialog.HideBusy();

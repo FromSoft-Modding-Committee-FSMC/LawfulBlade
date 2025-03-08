@@ -1,0 +1,6 @@
+{
+  "GameName": "REIGN",
+  "GameExecutable": "Diadem of Maunstraut.EXE",
+  "GamePatch": "DetoursTest.dll",
+  "LauncherMusic": "the_hush.wav"
+}

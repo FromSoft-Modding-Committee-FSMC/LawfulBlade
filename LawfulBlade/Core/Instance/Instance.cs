@@ -56,6 +56,12 @@ namespace LawfulBlade.Core
         public List<InstanceVariable> Variables { get; private set; }
 
         /// <summary>
+        /// The template for creating projects for this instance
+        /// </summary>
+        [JsonInclude]
+        public List<InstanceTemplate> ProjectTemplate { get; private set; }
+       
+        /// <summary>
         /// The icon data for this instance
         /// </summary>
         [JsonIgnore]
@@ -132,6 +138,15 @@ namespace LawfulBlade.Core
                 File.Delete(cmdJsonFile);
             }
 
+            // Locate and 'install' template.json
+            string temJsonFile = Path.Combine(instance.Root, "template.json");
+            if (!File.Exists(temJsonFile))
+                Debug.Warn("No 'template.json' file found! You will have to manually create one!");
+            else
+            {
+                instance.ProjectTemplate = JsonSerializer.Deserialize<List<InstanceTemplate>>(File.ReadAllText(temJsonFile));
+                File.Delete(temJsonFile);
+            }
             // After installing the package, hide busy...
             BusyDialog.HideBusy();
                
@@ -466,7 +481,7 @@ namespace LawfulBlade.Core
         /// <summary>
         /// Expands variables in a given string
         /// </summary>
-        string ExpandVariable(string variableSource, Project project)
+        public string ExpandVariable(string variableSource, Project project)
         {
             // Get N matches for expansion...
             MatchCollection matches = ExpandVariablePattern().Matches(variableSource);
@@ -480,6 +495,7 @@ namespace LawfulBlade.Core
                     "programDir"  => App.ProgramPath,
                     "instanceDir" => Root,
                     "projectDir"  => project == null ? throw new NotImplementedException() : project.Root,
+                    "projectName" => project == null ? throw new NotImplementedException() : project.Name,
                     _ => throw new Exception($"Unknown Variable: '{match.Groups[1].Value}'")
                 };
 

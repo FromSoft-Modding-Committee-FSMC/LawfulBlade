@@ -49,13 +49,21 @@ namespace LawfulBlade.Dialog
             if (Message.Warning("Name field cannot be empty.", (nameField.Text == string.Empty)))
                 return;
 
+            // Retrieve the icon file path from the source
+            string iconFilePath = string.Empty;
+            if (((BitmapImage)iconField.Source) != null)
+            {
+                if (((BitmapImage)iconField.Source).UriSource != null)
+                    iconFilePath = ((BitmapImage)iconField.Source).UriSource.AbsolutePath;
+            }
+
             // Create the project
             Project project = Project.Create(new ProjectCreateArgs
             {
                 Name        = nameField.Text,
                 Description = descField.Text,
                 Author      = authorField.Text,
-                IconFile    = ((BitmapImage)iconField.Source).UriSource.AbsolutePath ?? string.Empty,
+                IconFile    = iconFilePath,
                 Owner       = InstanceManager.Instances[instanceField.SelectedIndex],
             });
 

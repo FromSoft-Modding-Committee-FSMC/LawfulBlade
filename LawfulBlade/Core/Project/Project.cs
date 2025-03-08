@@ -96,15 +96,42 @@ namespace LawfulBlade.Core
             if (!Directory.Exists(project.Root))
                 Directory.CreateDirectory(project.Root);
 
-            // We need to copy the template project from the instance...
-            new DirectoryInfo(Path.Combine(createArgs.Owner.Root, "template")).Copy(project.Root);
+            // We need to run the template which is assossiated with the instance.
+            foreach (InstanceTemplate template in createArgs.Owner.ProjectTemplate)
+            {
+                // Content must be expanded in case there are any variables
+                for (int i = 0; i < template.Content.Length; ++i)
+                    template.Content[i] = createArgs.Owner.ExpandVariable(template.Content[i], project);
+                    
+                // Create Project with Template
+                switch (template.Type)
+                {
+                    // MAKE DIRECTORY
+                    case "maked":
+                        if (!Directory.Exists(Path.Combine(project.Root, template.Content[0])))
+                            Directory.CreateDirectory(Path.Combine(project.Root, template.Content[0]));
+                        break;
 
-            // And create the .SOM file
-            using StreamWriter projectSom = new(File.Open(Path.Combine(project.Root, $"{project.Name}.som"), FileMode.CreateNew));
-            projectSom.WriteLine(project.Name);
-            projectSom.WriteLine(0);
-            projectSom.Flush();
-            projectSom.Close();
+                    // COPY DIRECTORY
+                    case "copyd":
+                        new DirectoryInfo(Path.Combine(createArgs.Owner.Root, template.Content[0])).Copy(Path.Combine(project.Root, template.Content[1]));
+                        break;
+
+                    // MAKE FILE
+                    case "makef":
+                        File.WriteAllLines(Path.Combine(project.Root, template.Content[0]), template.Content[1..]);
+                        break;
+
+                    // COPY FILE
+                    case "copyf":
+                        File.Copy(Path.Combine(createArgs.Owner.Root, template.Content[0]), Path.Combine(project.Root, template.Content[1].ToUpperInvariant()), true);
+                        break;
+
+                    default:
+                        Debug.Error($"Unknown Template Command: '{template.Type}'!");
+                        break;
+                }
+            }
 
             // Save the project.json file now, because we don't really need to save these constantly
             File.WriteAllText(Path.Combine(project.Root, $"project.json"), JsonSerializer.Serialize(project));
