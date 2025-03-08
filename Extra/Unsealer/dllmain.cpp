@@ -1,19 +1,35 @@
-// dllmain.cpp : Defines the entry point for the DLL application.
-#include "pch.h"
+// Move these to a header battenberg
+#define EXTFUNC extern "C" __declspec(dllexport)
+#define WIN32_LEAN_AND_MEAN
 
-BOOL APIENTRY DllMain( HMODULE hModule,
-                       DWORD  ul_reason_for_call,
-                       LPVOID lpReserved
-                     )
+// Third party includes
+#include <Windows.h>
+#include <fstream>
+#include <iostream>
+#include <sstream>
+#include <string>
+
+// First party includes
+#include "detours.h"
+
+// Include libraries, fuck C++ man. I love C#
+#pragma comment(lib, "detours.lib")
+
+// DLL ENTRY POINT WOOHOO
+BOOL APIENTRY DllMain(HMODULE module, DWORD  reason, LPVOID reserved)
 {
-    switch (ul_reason_for_call)
+    switch (reason)
     {
-    case DLL_PROCESS_ATTACH:
-    case DLL_THREAD_ATTACH:
-    case DLL_THREAD_DETACH:
-    case DLL_PROCESS_DETACH:
-        break;
+        case DLL_PROCESS_ATTACH:
+            MessageBoxA(NULL, "I'm in", "Caption", 0);
+            break;
+
+        case DLL_PROCESS_DETACH:
+            MessageBoxA(NULL, "I'm out", "Caption", 0);
+            break;
     }
+
+    // Always return true or some processes crash
     return TRUE;
 }
 
