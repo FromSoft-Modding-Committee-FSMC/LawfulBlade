@@ -11,15 +11,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="detours.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="syelog.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="detver.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="logf.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -27,6 +18,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="somwindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="somconf.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="somsound.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -41,6 +38,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="somwindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="somconf.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="somsound.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

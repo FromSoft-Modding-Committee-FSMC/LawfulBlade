@@ -12,12 +12,14 @@
 // First party includes
 #include "detours.h"
 #include "logf.h"
-
 #include "somwindow.h"
 #include "sominput.h"
+#include "somsound.h"
+#include "somconf.h"
 
 // Include libraries, fuck C++ man. I love C#
-#pragma comment(lib, "detours.lib")
+#pragma comment(lib, "sdk\\detours\\lib\\detours.lib")
+#pragma comment(lib, "sdk\\fmod\\lib\\fmod_vc.lib")
 
 // DLL ENTRY POINT WOOHOO
 EXTFUNC BOOL APIENTRY DllMain(HMODULE module, DWORD  reason, LPVOID reserved)
@@ -28,17 +30,37 @@ EXTFUNC BOOL APIENTRY DllMain(HMODULE module, DWORD  reason, LPVOID reserved)
             LogFInit();
             LogFWrite("Attached Unsealer... IMIN Protocol Successful.", "DllMain");
 
+            LoadGameConfiguration();
+            LogFWrite("Game Config Load OK!", "DllMain");
+
+            LoadUserConfiguration();
+            LogFWrite("User Config Load OK!", "DllMain");
+
             // Bind our detours...
             DetourTransactionBegin();
             DetourUpdateThread(GetCurrentThread());
 
+            // Logger
+            DetourAttach(&(PVOID&)ProxiedOutputDebugStringA, ProxyOutputDebugStringA);
+
+            // SoM Specific
+            SomSoundInitDetours();
+
             // SoM Specific - Window
+            DetourAttach(&(PVOID&)ProxiedCreateWindowExA, ProxyCreateWindowExA);
             DetourAttach(&(PVOID&)ProxiedRegisterClassA, ProxyRegisterClassA);
+
+            // SoM Specific - Drawing
+            DetourAttach(&(PVOID&)ProxiedSomSetDisplay, ProxySomSetDisplayVars);
 
             // SoM Specific - Input
             DetourAttach(&(PVOID&)ProxiedSomInputInit, ProxySomInputInit);
             DetourAttach(&(PVOID&)ProxiedSomInputSetKeyEnabled, ProxySomInputSetKeyEnabled);
             DetourAttach(&(PVOID&)ProxiedSomInputKeyboardPoll, ProxySomInputKeyboardPoll);
+            DetourAttach(&(PVOID&)ProxiedSomInputKeyCheck, ProxySomInputKeyCheck);
+
+            // TEMP TO MOVE
+            DetourAttach(&(PVOID&)ProxiedSomSoundCreateBuffer, ProxySomSoundCreateBuffer);
 
             DetourTransactionCommit();
 
@@ -46,17 +68,32 @@ EXTFUNC BOOL APIENTRY DllMain(HMODULE module, DWORD  reason, LPVOID reserved)
 
         case DLL_PROCESS_DETACH:
 
-            // Bind our detours...
+            // Unbind our detours...
             DetourTransactionBegin();
             DetourUpdateThread(GetCurrentThread());
 
+            // Logger
+            DetourDetach(&(PVOID&)ProxiedOutputDebugStringA, ProxyOutputDebugStringA);
+
+            // SoM Specific
+            SomSoundKillDetours();
+
             // SoM Specific - Window
+            DetourDetach(&(PVOID&)ProxiedCreateWindowExA, ProxyCreateWindowExA);
             DetourDetach(&(PVOID&)ProxiedRegisterClassA, ProxyRegisterClassA);
+
+            // SoM Specific - Drawing
+            DetourDetach(&(PVOID&)ProxiedSomSetDisplay, ProxySomSetDisplayVars);
 
             // SoM Specific - Input
             DetourDetach(&(PVOID&)ProxiedSomInputInit, ProxySomInputInit);
             DetourDetach(&(PVOID&)ProxiedSomInputSetKeyEnabled, ProxySomInputSetKeyEnabled);
             DetourDetach(&(PVOID&)ProxiedSomInputKeyboardPoll, ProxySomInputKeyboardPoll);
+            DetourDetach(&(PVOID&)ProxiedSomInputKeyCheck, ProxySomInputKeyCheck);
+
+
+            // TEMP TO MOVE
+            DetourDetach(&(PVOID&)ProxiedSomSoundCreateBuffer, ProxySomSoundCreateBuffer);
 
             DetourTransactionCommit();
 

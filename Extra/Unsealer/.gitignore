@@ -1,0 +1,5 @@
+/sdk/*.hpp
+/sdk/fmod/inc
+/sdk/fmod/lib
+/sdk/detours/inc
+/sdk/detours/lib

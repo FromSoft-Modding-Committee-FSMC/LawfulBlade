@@ -503,6 +503,15 @@ namespace Som2kRuntime
                 ]);
 
             resourceEditProcess.WaitForExit();
+
+            string pechksumPath = Path.Combine(ProgramPath, "Tools", "pechksum.exe");
+
+            Process pechksumProcess = Process.Start(pechksumPath,
+                ["/nologo",
+                $"{Path.Combine(args.PublishPath, $"{args.ProjectName}.EXE")}"]
+                );
+
+            pechksumProcess.WaitForExit();
         }
 
         public void CompileMap(string inputFile, string projectDir, string instanceDir, string outputFile)

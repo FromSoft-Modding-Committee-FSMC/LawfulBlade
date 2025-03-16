@@ -1,0 +1,54 @@
+﻿<Window x:Class="Sealed_Sword_Stone.Configuration"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Sealed_Sword_Stone"
+        mc:Ignorable="d"
+        Title="Sealed Sword Stone - Configuration" Height="768" Width="1024" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="0.5*"/>
+            <RowDefinition Height="24px"/>
+        </Grid.RowDefinitions>
+
+        <!-- Tab View Root -->
+        <TabControl Grid.Row="0" Margin="2,2,2,2">
+            <!-- Controls Page -->
+            <TabItem Header="Controls">
+                <ScrollViewer>
+                    <StackPanel x:Name="bindingsList" Orientation="Vertical">
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+        </TabControl>
+        
+        <!-- Misc -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            
+            <!-- First Stack -->
+            <StackPanel Grid.Column="0" Orientation="Vertical">
+                <!-- Use Mouse Look -->
+                <StackPanel Orientation="Horizontal">
+                    <CheckBox x:Name="useMouseLookCB"/>
+                    <TextBlock Text="Use Mouse Look"/>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+
+        <!-- Button Array -->
+        <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="2,2,2,2">
+            <Button Margin="4,0,4,0" Click="OnClickCancel">
+                <TextBlock Text="Cancel" Margin="4,0,4,0"/>
+            </Button>
+            <Button Margin="4,0,4,0" Click="OnClickConfirm">
+                <TextBlock Text="Confirm" Margin="4,0,4,0"/>
+            </Button>
+        </StackPanel>
+    </Grid>
+</Window>

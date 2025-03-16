@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Sealed_Sword_Stone"
              Startup="OnApplicationStartup"
-             StartupUri="Window/MainWindow.xaml">
+             StartupUri="Windows/MainWindow.xaml">
     
     <Application.Resources>
         <ResourceDictionary>
@@ -11,6 +11,7 @@
             <BitmapImage x:Key="128-24-PlayButton" UriSource="LAUNCHER/128-24-PlayButton.png"/>
             <BitmapImage x:Key="128-24-SettingsButton" UriSource="LAUNCHER/128-24-SettingsButton.png"/>
             <BitmapImage x:Key="128-24-ExitButton" UriSource="LAUNCHER/128-24-ExitButton.png"/>
+            <BitmapImage x:Key="96-96-Unplug" UriSource="LAUNCHER/96-96-Unplug.png"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

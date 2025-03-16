@@ -13,6 +13,7 @@
     <ApplicationIcon>LAUNCHER\icon.ico</ApplicationIcon>
     <NoWin32Manifest>true</NoWin32Manifest>
 	<IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+	<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -27,6 +28,7 @@
     <None Remove="LAUNCHER\128-24-ExitButton.png" />
     <None Remove="LAUNCHER\128-24-PlayButton.png" />
     <None Remove="LAUNCHER\128-24-SettingsButton.png" />
+    <None Remove="LAUNCHER\96-96-Unplug.png" />
     <None Remove="LAUNCHER\960-540-Background.png" />
     <None Remove="LAUNCHER\click.wav" />
     <None Remove="LAUNCHER\hover.wav" />
@@ -44,6 +46,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="LAUNCHER\128-24-SettingsButton.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LAUNCHER\96-96-Unplug.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="LAUNCHER\960-540-Background.png">
@@ -67,6 +72,14 @@
     <Content Include="LAUNCHER\the_hush.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Detours.Win32Metadata" Version="4.0.1.16" />
+    <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.183">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>

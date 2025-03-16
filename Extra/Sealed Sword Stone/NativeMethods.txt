@@ -1,0 +1,28 @@
+﻿// Windows
+CreateProcess
+DebugActiveProcessStop
+EnumProcessModulesEx
+GetModuleFileNameEx
+IsWow64Process
+OpenProcess
+ReadProcessMemory
+ResumeThread
+RtlNtStatusToDosError
+VirtualAllocEx
+VirtualFreeEx
+WaitForSingleObject
+WriteProcessMemory
+
+WIN32_ERROR
+NTSTATUS
+IMAGE_EXPORT_DIRECTORY
+DBG_EXCEPTION_NOT_HANDLED
+DBG_CONTINUE
+MAX_PATH
+
+// Detours
+DetourCreateProcessWithDllsW
+
+// constants
+MAX_PATH
+INFINITE

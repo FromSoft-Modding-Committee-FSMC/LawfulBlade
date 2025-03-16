@@ -3,19 +3,35 @@
 
 #include <Windows.h>
 
+// Created Memory
+extern HWND g_somHwnd1;
+extern HDC g_somWindowDC;
 
-// Stolen Memory
+// Proxies and Proxied
+typedef HWND(__stdcall* SomCreateWindowExA)(DWORD, LPCSTR, LPCSTR, DWORD, int, int, int, int, HWND, HMENU, HINSTANCE, LPVOID);
+extern SomCreateWindowExA ProxiedCreateWindowExA;
+extern HWND __stdcall ProxyCreateWindowExA(DWORD dwExStyle, LPCSTR lpClassName, LPCSTR lpWindowName, DWORD dwStyle, int x, int y, int nWidth, int nHeight, HWND hWndParent, HMENU hMenu, HINSTANCE hInstance, LPVOID lpParam);
 
-// Function Types
-typedef ATOM(__stdcall* SomRegisterClassA)(const WNDCLASSA* lpWndClass);
-typedef LRESULT(__stdcall* SomWndProc)(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-
-// Original Functions
+typedef ATOM(__stdcall* SomRegisterClassA)(const WNDCLASSA*);
 extern SomRegisterClassA ProxiedRegisterClassA;
-extern SomWndProc ProxiedSomWndProc;
-
-// Proxy Functions
 extern ATOM __stdcall ProxyRegisterClassA(WNDCLASSA* lpWndClass);
+
+typedef LRESULT(__stdcall* SomWndProc)(HWND, UINT, WPARAM, LPARAM);
+extern SomWndProc ProxiedSomWndProc;
 extern LRESULT __stdcall ProxySomWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+
+typedef BYTE(__cdecl* SomSetDisplayVars)(WORD, WORD, WORD);
+extern SomSetDisplayVars ProxiedSomSetDisplay;
+extern BYTE __cdecl ProxySomSetDisplayVars(WORD width, WORD height, WORD depth);
+
+// Temp
+typedef void(__cdecl* SomDrawHudStuff)();
+extern SomDrawHudStuff ProxiedSomDrawHudStuff;
+extern void __cdecl ProxySomDrawHudStuff();
+
+typedef BOOL(__cdecl* SomSoundCreateBuffer)(DWORD, DWORD, DWORD);
+extern SomSoundCreateBuffer ProxiedSomSoundCreateBuffer;
+extern BOOL __cdecl ProxySomSoundCreateBuffer(DWORD param_1, DWORD sampleRate, DWORD param_2);
+
 
 #endif

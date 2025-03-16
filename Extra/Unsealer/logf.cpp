@@ -1,6 +1,21 @@
+#include <Windows.h>
+
 #include "logf.h"
 
 std::ofstream logFile;
+
+// Original Functions
+SomOutputDebugStringA ProxiedOutputDebugStringA = OutputDebugStringA;
+
+// Proxy Functions
+void __stdcall ProxyOutputDebugStringA(LPCSTR lpOutputString)
+{
+    LogFWrite(lpOutputString, "SomOutputDebugStringA");
+
+    // Call Original
+    // ProxiedOutputDebugStringA(lpOutputString);
+}
+
 
 void LogFInit()
 {

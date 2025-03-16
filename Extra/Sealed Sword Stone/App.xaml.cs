@@ -26,12 +26,24 @@ public partial class App : Application
 
     public static void StartGame()
     {
+        /*
         Process.Start(new ProcessStartInfo
         {
             FileName  = "Unsealer.exe",
             Arguments = $"/D:Unsealer.dll \"{LauncherConfig.GameExecutable}\"",
             CreateNoWindow = true
         });
+        */
+
+        Injector.StartProcessWithDlls(
+            new ProcessStartupConfig(
+                [Path.Combine(ProgramPath, LauncherConfig.GameExecutable)],
+                false,
+                false,
+                false
+                ),
+            [Path.Combine(ProgramPath, LauncherConfig.GamePatch)]
+            );
 
         Current.Shutdown(0);
     }
