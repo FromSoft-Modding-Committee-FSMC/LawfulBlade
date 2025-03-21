@@ -7,7 +7,7 @@ Below are a few of the goals.
 
 * **Multiple Installations**: Lawful Blade allows you to have multiple "instances" of Sword of Moonlight, which you can switch between freely - this effectively disables asset limitations imposed by the original engine, and means you can work on many projects with custom assets at the same time without the risk of overwriting something used for another project.
 
-* **Package Mangement**: Lawful Blade allows the installation (and creation) of packages on to an instance, this is significantly faster than the older installers - and has a substantially smaller 
+* **Package Mangement**: Lawful Blade allows the installation (and creation) of packages on to an instance, this is significantly faster than the older installers.
 
 * **Runtime Generation**: Lawful Blade is capable of creating runtimes for SoM projects, meaning after 25 years we finally have a _legal_ way to distribute SoM games in English. Runtime generation is additionally substantially expanded, and allows the installation of fixes for modern hardware, or totally different runtime enviroments to be exported for.
 
