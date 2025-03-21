@@ -34,6 +34,10 @@ Here's a very loose roadmap for future features which are expected to be include
 - 2028: 
   - Chaosfun Runethyme (Console - PSX)
 
+## Third Party Asset Declaration
+Lawful Blade is using the following third party asset sources.
+* [Icons8](https://icons8.com/) for 48x48_delete, 48x48_execute, 48x48_explorer, 48x48_managePackages, 48x48_runtime, 48x48_shortcut, 96x96_create, 96x96_import, 128x128_packagedefault
+
 ## Third Party Software Declaration
 Lawful Blade is using the following third party software packages to handle some of its features.
 * [Make for Windows](https://gnuwin32.sourceforge.net/packages/make.htm): Included for package creation, as that's all handled on the command line.
@@ -41,7 +45,7 @@ Lawful Blade is using the following third party software packages to handle some
 * [rcedit](https://github.com/electron/rcedit): Included for altering runtime executable properties during runtime generation.
 * [PECHKSUM](https://www.gammadyne.com/pe_checksum.htm): Included to calculate the executable checksum after wrecking it with RC edit...
 
-## Third Party Code
+## Third Party Code Declaration
 Lawful Blade is using the following open source projects for some of its features:
 * [ThemeWPF](https://github.com/Verta-IT/ThemeWPF): Partial use for some dark controls. MIT License.
 * [Magick.NET](https://github.com/dlemstra/Magick.NET): Used to encode/decode project-instance icons. Apache 2.0 License.
