@@ -13,6 +13,9 @@ Below are a few of the goals.
 
 * **What else, oh great Battenberg?**: Project and instance shortcuts, quick explorer navigation... The list honestly goes on and on.
 
+## Documentation
+You can find installation documentation for releases hosted on our [Sword of Moonlight](https://doc.swordofmoonlight.com) webserver.
+
 ## Other Included Projects
 Because of an extreme lack of will to create more repositories at the moment, a few other projects are included inside this one.
 
