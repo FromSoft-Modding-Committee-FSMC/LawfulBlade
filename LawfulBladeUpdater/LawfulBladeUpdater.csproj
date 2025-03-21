@@ -9,6 +9,7 @@
     <PublishTrimmed>True</PublishTrimmed>
     <PublishAot>True</PublishAot>
     <StartupObject>LawfulBladeUpdater.Program</StartupObject>
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

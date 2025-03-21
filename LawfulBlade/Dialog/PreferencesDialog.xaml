@@ -24,6 +24,12 @@
                             <CheckBox x:Name="showDebugConsole" Margin="0,0,2,0" ToolTip="Shows a debug console on start up (requires restart)"/>
                             <TextBlock Text="Show debug console on start up?"/>
                         </StackPanel>
+                        
+                        <!-- Show Debugging Console Switch-->
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
+                            <CheckBox x:Name="hideOpenInstance" Margin="0,0,2,0" ToolTip="Hides Lawful Blade while an instance or project is open"/>
+                            <TextBlock Text="Hide on Instance/Project launch?"/>
+                        </StackPanel>
                     </StackPanel>
                 </GroupBox>
 

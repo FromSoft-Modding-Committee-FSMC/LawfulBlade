@@ -147,6 +147,7 @@
   <ItemGroup>
     <ClInclude Include="logf.h" />
     <ClInclude Include="somconf.h" />
+    <ClInclude Include="somgamedata.h" />
     <ClInclude Include="sominput.h" />
     <ClInclude Include="somsound.h" />
     <ClInclude Include="somwindow.h" />
@@ -155,6 +156,7 @@
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="logf.cpp" />
     <ClCompile Include="somconf.cpp" />
+    <ClCompile Include="somgamedata.cpp" />
     <ClCompile Include="sominput.cpp" />
     <ClCompile Include="somsound.cpp" />
     <ClCompile Include="somwindow.cpp" />

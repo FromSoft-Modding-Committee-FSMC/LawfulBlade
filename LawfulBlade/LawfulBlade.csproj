@@ -28,6 +28,7 @@
     <None Remove="Resource\256x256_projectdefault.png" />
     <None Remove="Resource\48x48_delete.png" />
     <None Remove="Resource\48x48_execute.png" />
+    <None Remove="Resource\48x48_explorer.png" />
     <None Remove="Resource\48x48_managePackages.png" />
     <None Remove="Resource\48x48_runtime.png" />
     <None Remove="Resource\48x48_shortcut.png" />
@@ -52,6 +53,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resource\48x48_execute.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resource\48x48_explorer.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resource\48x48_managePackages.png">

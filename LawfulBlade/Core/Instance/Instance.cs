@@ -2,6 +2,7 @@
 using LawfulBlade.Core.Extensions;
 using LawfulBlade.Core.Package;
 using LawfulBlade.Dialog;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Management;
@@ -424,58 +425,84 @@ namespace LawfulBlade.Core
             }) 
                 ?? throw new Exception("Couldn't start process!");
 
-            // We're using silent for when we're executing this from shortcuts etc... We don't need to listen in then.
             if (!silent)
+                SpawnInstanceWatcherTask(process, project);
+        }
+
+        /// <summary>
+        /// Spawns a task that watches an instance...
+        /// </summary>
+        void SpawnInstanceWatcherTask(Process currentProcess, Project project)
+        {
+            // Wait for this process before exiting...
+            currentProcess.WaitForInputIdle();
+
+            Task.Run(() =>
             {
+                // Hide if requested
+                if (App.Preferences.HideLawfulBladeOnOpenInstance)
+                {
+                    App.Current.Dispatcher.Invoke(() =>
+                    {
+                        App.Current.MainWindow.Hide();
+                    });
+                }
+
+                InstanceManager.CurrentOpenInstance = this;
+                ProjectManager.CurrentOpenProject   = project;
+
                 // The management object will look for child processes (SoM is cunt)
-                ManagementObjectSearcher processWatcher = new($"Select * From Win32_Process Where ParentProcessID={process.Id}");
-
-                // Hide Lawful Blade...
-                App.Current.MainWindow.Hide();
-
-                // Wait for this process before exiting...
-                process.WaitForInputIdle();
+                ManagementObjectSearcher processWatcher = new($"Select * From Win32_Process Where ParentProcessID={currentProcess.Id}");
 
                 do
                 {
-                    while (!process.HasExited)
+                    while (!currentProcess.HasExited)
                     {
                         //
-                        // HERE WE CAN IMPLEMENT SOME WATCHER LOGIC IF WE NEED IT...
+                        // HERE WE CAN IMPLEMENT SOME WATCHER LOGIC WHEN WE NEED IT...
                         //
                     }
 
-                    // Also use this to wait, because our wait loop above isn't very precise...
-                    process.WaitForExit();
+                    currentProcess.WaitForExit();
 
-                    // Update our local process to whatever processes that one creates are...
+                    // Update our current process to whatever processes that one creates are...
                     foreach (ManagementBaseObject mo in processWatcher.Get())
                     {
                         // Get the new process...
-                        process = Process.GetProcessById(Convert.ToInt32(mo["ProcessID"]));
+                        currentProcess = Process.GetProcessById(Convert.ToInt32(mo["ProcessID"]));
 
                         // Dispose old process watcher and create new one in the mean time
                         processWatcher.Dispose();
                         processWatcher = new($"Select * From Win32_Process Where ParentProcessID={mo["ProcessID"]}");
 
                         // Wait for the process to be ready to receive input
-                        process.WaitForInputIdle();
+                        currentProcess.WaitForInputIdle();
 
                         // We'll also GC here because why not?
                         GC.Collect();
 
-                        Debug.Warn($"Changed active process... {process.ProcessName}");
+                        Debug.Warn($"Changed active process... {currentProcess.ProcessName}");
 
                         // We only care about the first process, so we'll exit now...
                         break;
                     }
 
-                    // Waiting for process to exit...
-                } while (!process.HasExited);
+                    // Waiting for process to exit... This really works, not sure why.
+                } while (!currentProcess.HasExited);
 
-                // When the instance is finally fully closed, we can show LB again...
-                App.Current.MainWindow.Show();
-            }
+                // Clear open instance after it has been closed.
+                InstanceManager.CurrentOpenInstance = null;
+                ProjectManager.CurrentOpenProject   = null;
+
+                // Show if it was hidden and requested
+                if (App.Preferences.HideLawfulBladeOnOpenInstance)
+                {
+                    App.Current.Dispatcher.Invoke(() =>
+                    {
+                        App.Current.MainWindow.Show();
+                    });
+                }
+            });
         }
 
         /// <summary>

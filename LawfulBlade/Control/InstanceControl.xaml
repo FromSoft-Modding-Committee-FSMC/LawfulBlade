@@ -35,6 +35,10 @@
                 <Image Source="{StaticResource 48-48Shortcut}"/>
             </Button>
             <Button HorizontalAlignment="Center" VerticalAlignment="Center" Margin="4,0,0,0" BorderThickness="1,1,1,1" Width="24" Height="24"
+                    ToolTip="Open in Explorer..." Click="OnClickOpenExplorer">
+                <Image Source="{StaticResource 48-48Explorer}"/>
+            </Button>
+            <Button HorizontalAlignment="Center" VerticalAlignment="Center" Margin="4,0,0,0" BorderThickness="1,1,1,1" Width="24" Height="24"
                     ToolTip="Delete..." Click="OnClickDelete">
                 <Image Source="{StaticResource 48-48Delete}"/>
             </Button>

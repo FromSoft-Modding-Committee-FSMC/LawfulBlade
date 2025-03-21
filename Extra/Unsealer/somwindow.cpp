@@ -106,30 +106,5 @@ LRESULT __stdcall ProxySomWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lP
 SomSetDisplayVars ProxiedSomSetDisplay = (SomSetDisplayVars)0x00446370;
 BYTE __cdecl ProxySomSetDisplayVars(WORD width, WORD height, WORD depth)
 {
-	std::ostringstream out;
-	out << "{ Width = " << width
-		<< ", Height = " << height
-		<< ", Depth = " << depth
-		<< " }";
-
-	LogFWrite(out.str(), "SomDDRAWSetDisplayMode");
-
 	return ProxiedSomSetDisplay(width, height, depth);
-}
-
-// Temp
-SomDrawHudStuff ProxiedSomDrawHudStuff = (SomDrawHudStuff)0x004256f0;
-void __cdecl ProxySomDrawHudStuff()
-{
-	return;
-}
-
-SomSoundCreateBuffer ProxiedSomSoundCreateBuffer = (SomSoundCreateBuffer)0x0044a3d0;
-BOOL __cdecl ProxySomSoundCreateBuffer(DWORD param_1, DWORD sampleRate, DWORD param_2)
-{
-	// Always provide 44100 as the sample rate
-	sampleRate = 44100;
-
-	// Run original function
-	return ProxiedSomSoundCreateBuffer(param_1, sampleRate, param_2);
 }

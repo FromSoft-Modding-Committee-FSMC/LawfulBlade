@@ -12,6 +12,7 @@
             </ResourceDictionary.MergedDictionaries>
 
             <BitmapImage x:Key="48-48Delete" UriSource="Resource\48x48_delete.png"/>
+            <BitmapImage x:Key="48-48Explorer" UriSource="Resource\48x48_explorer.png"/>
             <BitmapImage x:Key="48-48Execute" UriSource="Resource\48x48_execute.png"/>
             <BitmapImage x:Key="48-48Packages" UriSource="Resource\48x48_managePackages.png"/>
             <BitmapImage x:Key="48-48Shortcut" UriSource="Resource\48x48_shortcut.png"/>

@@ -41,8 +41,10 @@ namespace LawfulBladeUpdater
                 goto UpdateFail;
             }
 
-            Console.WriteLine("Installing Update...".Colourize(0x3498DB));
+            Console.WriteLine("Removing Old Files...");
+            new DirectoryInfo(args[2]).Delete(true);
 
+            Console.WriteLine("Installing Update...".Colourize(0x3498DB));
             using (ZipArchive update = ZipFile.OpenRead(updateFile))
             {
                 // Loop through each entry and extract it...

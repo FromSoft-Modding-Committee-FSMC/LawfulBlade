@@ -14,7 +14,7 @@ namespace LawfulBlade
         /// <summary>
         /// 'Global' Constant Data
         /// </summary>
-        public static readonly string Version           = @"1.00";
+        public static readonly string Version           = @"1.01";
         public static readonly string ProgramPath       = AppDomain.CurrentDomain.BaseDirectory;
         public static readonly string AppDataPath       = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "FSMC", "LawfulBlade");
         public static readonly string ProjectPath       = Path.Combine(AppDataPath, "projects");
@@ -40,6 +40,10 @@ namespace LawfulBlade
         /// </summary>
         void OnApplicationStartup(object sender, StartupEventArgs e)
         {
+            // If there's another instance of this process active, fuck off instantly...
+            if (Message.Warning("Cannot have more than one Lawful Blade application running at a time!", !CheckExclusiveProcess()))
+                Shutdown(0);
+
             // Initialization Stage #1
             Preferences = Preferences.Load();
 
@@ -187,6 +191,9 @@ namespace LawfulBlade
             return true; //needsUpdate;
         }
 
+        /// <summary>
+        /// Performs remote updates
+        /// </summary>
         public void PerformUpdate(UpdateInfo versionInfo)
         {
             // First copy the updater to our temporary path...
@@ -201,6 +208,26 @@ namespace LawfulBlade
                 System.Diagnostics.Process.Start(Path.Combine(TemporaryPath, "LawfulBladeUpdater.exe"), [processID, processName, ProgramPath]);
 
             Current.Shutdown(0);
+        }
+
+        /// <summary>
+        /// Checks if this is the only instance of Lawful Blade running
+        /// </summary>
+        /// <returns></returns>
+        public bool CheckExclusiveProcess()
+        {
+            // Get current process
+            System.Diagnostics.Process currentProcess = System.Diagnostics.Process.GetCurrentProcess();
+
+            foreach (System.Diagnostics.Process process in System.Diagnostics.Process.GetProcessesByName(currentProcess.ProcessName))
+            {
+                if (process.Id == currentProcess.Id)
+                    continue;
+
+                return false;
+            }
+
+            return true;
         }
     }
 }

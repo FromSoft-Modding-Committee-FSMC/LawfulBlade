@@ -26,6 +26,9 @@
     <ClInclude Include="somsound.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="somgamedata.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -44,6 +47,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="somsound.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="somgamedata.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

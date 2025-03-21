@@ -66,3 +66,13 @@ uint32_t GetGameConfigBool(const char* fieldName)
 {
 	return l_gameConfigObject[fieldName].get<bool>() == true ? 1 : 0;
 }
+
+/// <summary>
+/// Gets a integer value from game configuration
+/// </summary>
+/// <param name="fieldName">The name of the field</param>
+/// <returns>The value of the field</returns>
+int32_t GetGameConfigInteger(const char* fieldName)
+{
+	return l_gameConfigObject[fieldName].get<int32_t>();
+}

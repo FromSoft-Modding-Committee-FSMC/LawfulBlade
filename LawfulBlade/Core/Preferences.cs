@@ -31,6 +31,12 @@ namespace LawfulBlade.Core
         public string LocaleEmulatorPath = string.Empty;
 
         /// <summary>
+        /// If Lawful Blade should hide itself while an instance is open
+        /// </summary>
+        [JsonInclude]
+        public bool HideLawfulBladeOnOpenInstance = true;
+
+        /// <summary>
         /// Private Constructor.<br/>
         /// We only want the preferences to be constructed internally.
         /// </summary>

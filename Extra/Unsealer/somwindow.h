@@ -24,14 +24,4 @@ typedef BYTE(__cdecl* SomSetDisplayVars)(WORD, WORD, WORD);
 extern SomSetDisplayVars ProxiedSomSetDisplay;
 extern BYTE __cdecl ProxySomSetDisplayVars(WORD width, WORD height, WORD depth);
 
-// Temp
-typedef void(__cdecl* SomDrawHudStuff)();
-extern SomDrawHudStuff ProxiedSomDrawHudStuff;
-extern void __cdecl ProxySomDrawHudStuff();
-
-typedef BOOL(__cdecl* SomSoundCreateBuffer)(DWORD, DWORD, DWORD);
-extern SomSoundCreateBuffer ProxiedSomSoundCreateBuffer;
-extern BOOL __cdecl ProxySomSoundCreateBuffer(DWORD param_1, DWORD sampleRate, DWORD param_2);
-
-
 #endif

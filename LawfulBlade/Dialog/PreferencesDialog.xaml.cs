@@ -1,16 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+﻿using System.Windows;
 
 namespace LawfulBlade.Dialog
 {
@@ -27,6 +15,7 @@ namespace LawfulBlade.Dialog
             checkForUpdates.IsChecked = App.Preferences.AutoCheckForUpdates;
             showDebugConsole.IsChecked = App.Preferences.ShowDebugConsole;
             useLocaleEmulator.IsChecked = App.Preferences.UseLocaleEmulator;
+            hideOpenInstance.IsChecked = App.Preferences.HideLawfulBladeOnOpenInstance;
             localEmuPath.Text = App.Preferences.LocaleEmulatorPath;
         }
 
@@ -36,6 +25,7 @@ namespace LawfulBlade.Dialog
             App.Preferences.ShowDebugConsole = showDebugConsole.IsChecked ?? false;
             App.Preferences.UseLocaleEmulator = useLocaleEmulator.IsChecked ?? false;
             App.Preferences.LocaleEmulatorPath = localEmuPath.Text ?? string.Empty;
+            App.Preferences.HideLawfulBladeOnOpenInstance = hideOpenInstance.IsChecked ?? true;
             App.Preferences.Save();
 
             Close();

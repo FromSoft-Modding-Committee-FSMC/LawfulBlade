@@ -8,6 +8,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <chrono>
 
 // First party includes
 #include "detours.h"
@@ -20,6 +21,32 @@
 // Include libraries, fuck C++ man. I love C#
 #pragma comment(lib, "sdk\\detours\\lib\\detours.lib")
 #pragma comment(lib, "sdk\\fmod\\lib\\fmod_vc.lib")
+
+// Some globals
+std::chrono::milliseconds l_lastTime;
+std::chrono::milliseconds l_currTime;
+
+// We're going to hook the main loop function in here...
+typedef void(__cdecl* SomMainLoopFunc)(char); SomMainLoopFunc ProxiedSomMainLoopFunc = (SomMainLoopFunc)0x00402410;
+void __cdecl ProxySomMainLoopFunc(char param_1)
+{
+    // Any Updating should go here...
+    SomSoundTick();
+
+    GetRemappedKeyPressed("ActionMagicCast");
+
+    // Track our updates here...
+    // l_currTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
+    
+    // std::ostringstream out;
+    // out << "Tick Time: " << (l_lastTime.count() - l_currTime.count());
+    // LogFWrite(out.str(), "DllMain>SomMainLoopFun");
+
+    // l_lastTime = l_currTime;
+
+    // Call the original main loop function
+    ProxiedSomMainLoopFunc(param_1);
+}
 
 // DLL ENTRY POINT WOOHOO
 EXTFUNC BOOL APIENTRY DllMain(HMODULE module, DWORD  reason, LPVOID reserved)
@@ -41,7 +68,10 @@ EXTFUNC BOOL APIENTRY DllMain(HMODULE module, DWORD  reason, LPVOID reserved)
             DetourUpdateThread(GetCurrentThread());
 
             // Logger
-            DetourAttach(&(PVOID&)ProxiedOutputDebugStringA, ProxyOutputDebugStringA);
+            // DetourAttach(&(PVOID&)ProxiedOutputDebugStringA, ProxyOutputDebugStringA);
+
+            // Main Loop
+            DetourAttach(&(PVOID&)ProxiedSomMainLoopFunc, ProxySomMainLoopFunc);
 
             // SoM Specific
             SomSoundInitDetours();
@@ -59,8 +89,6 @@ EXTFUNC BOOL APIENTRY DllMain(HMODULE module, DWORD  reason, LPVOID reserved)
             DetourAttach(&(PVOID&)ProxiedSomInputKeyboardPoll, ProxySomInputKeyboardPoll);
             DetourAttach(&(PVOID&)ProxiedSomInputKeyCheck, ProxySomInputKeyCheck);
 
-            // TEMP TO MOVE
-            DetourAttach(&(PVOID&)ProxiedSomSoundCreateBuffer, ProxySomSoundCreateBuffer);
 
             DetourTransactionCommit();
 
@@ -73,7 +101,10 @@ EXTFUNC BOOL APIENTRY DllMain(HMODULE module, DWORD  reason, LPVOID reserved)
             DetourUpdateThread(GetCurrentThread());
 
             // Logger
-            DetourDetach(&(PVOID&)ProxiedOutputDebugStringA, ProxyOutputDebugStringA);
+            // DetourDetach(&(PVOID&)ProxiedOutputDebugStringA, ProxyOutputDebugStringA);
+
+            // Main Loop
+            DetourDetach(&(PVOID&)ProxiedSomMainLoopFunc, ProxySomMainLoopFunc);
 
             // SoM Specific
             SomSoundKillDetours();
@@ -90,10 +121,6 @@ EXTFUNC BOOL APIENTRY DllMain(HMODULE module, DWORD  reason, LPVOID reserved)
             DetourDetach(&(PVOID&)ProxiedSomInputSetKeyEnabled, ProxySomInputSetKeyEnabled);
             DetourDetach(&(PVOID&)ProxiedSomInputKeyboardPoll, ProxySomInputKeyboardPoll);
             DetourDetach(&(PVOID&)ProxiedSomInputKeyCheck, ProxySomInputKeyCheck);
-
-
-            // TEMP TO MOVE
-            DetourDetach(&(PVOID&)ProxiedSomSoundCreateBuffer, ProxySomSoundCreateBuffer);
 
             DetourTransactionCommit();
 

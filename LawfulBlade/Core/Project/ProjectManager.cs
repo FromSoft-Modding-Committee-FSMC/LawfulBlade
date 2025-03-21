@@ -25,6 +25,11 @@ namespace LawfulBlade.Core
         public static int Count => Projects.Count;
 
         /// <summary>
+        /// Set to a currently running project
+        /// </summary>
+        public static Project CurrentOpenProject { get; set; } = null;
+
+        /// <summary>
         /// Initializes the project manager, loading all projects in to memory
         /// </summary>
         public static void Initialize()

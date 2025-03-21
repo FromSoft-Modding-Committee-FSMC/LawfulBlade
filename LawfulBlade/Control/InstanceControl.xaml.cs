@@ -2,6 +2,7 @@
 using LawfulBlade.Core;
 using LawfulBlade.Core.Extensions;
 using LawfulBlade.Dialog;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -82,6 +83,10 @@ namespace LawfulBlade.Control
         /// </summary>
         void OnClickDelete(object sender, RoutedEventArgs e)
         {
+            // Don't allow when open
+            if (Message.Warning("This instance (or a project using it) is currently open!", InstanceManager.CurrentOpenInstance == Instance))
+                return;
+
             // Maybe move this UI code somewhere else...
             if (MessageBox.Show("Warning! This will remove the instance from Lawful Blade and the file system! Are you sure you want to continue?", "Lawful Blade", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                 return;
@@ -104,6 +109,10 @@ namespace LawfulBlade.Control
         /// </summary>
         void OnClickManagePackages(object sender, RoutedEventArgs e)
         {
+            // Don't allow when open
+            if (Message.Warning("This instance (or a project using it) is currently open!", InstanceManager.CurrentOpenInstance == Instance))
+                return;
+
             // Show the Package Manager Dialog
             (new PackageManagerDialog(Instance)).ShowDialog();
 
@@ -112,10 +121,23 @@ namespace LawfulBlade.Control
 
         /// <summary>
         /// Event Callback.<br/>
+        /// Opens the instance in the explorer.
+        /// </summary>
+        void OnClickOpenExplorer(object sender, RoutedEventArgs e) =>
+            Process.Start(new ProcessStartInfo { FileName = "explorer.exe", Arguments = $"\"{Instance.Root}\"", UseShellExecute = true });
+
+        /// <summary>
+        /// Event Callback.<br/>
         /// Launches the instance.
         /// </summary>
-        void OnClickLaunch(object sender, RoutedEventArgs e) =>
+        void OnClickLaunch(object sender, RoutedEventArgs e)
+        {
+            // Don't allow if _any_ instance is open.
+            if (Message.Warning("Another instance or project is currently open!", InstanceManager.CurrentOpenInstance != null))
+                return;
+
             Instance.Launch(null, false);
+        }
 
         #region Highlighting
         void OnMouseEnter(object sender, MouseEventArgs e) =>

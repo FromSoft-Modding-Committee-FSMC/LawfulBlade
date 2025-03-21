@@ -20,6 +20,11 @@ namespace LawfulBlade.Core
         public static int Count => Instances.Count;
 
         /// <summary>
+        /// Set to a currently running instance...
+        /// </summary>
+        public static Instance CurrentOpenInstance { get; set; } = null;
+
+        /// <summary>
         /// Initializes the instance manager, loading all instances in to memory
         /// </summary>
         public static void Initialize()
