@@ -32,8 +32,14 @@ Here's a very loose roadmap for future features which are expected to be include
   - Chaosfun Runethyme (Console - PSX)
 
 ## Third Party Software Declaration
-Lawful Blade is using the following third party software packages to handle some of it's features.
+Lawful Blade is using the following third party software packages to handle some of its features.
 * [Make for Windows](https://gnuwin32.sourceforge.net/packages/make.htm): Included for package creation, as that's all handled on the command line.
 * [FFMPEG](https://www.gyan.dev/ffmpeg/builds/): Included for (optionally) transcoding videos into a common codec on Windows (H264) during runtime generation.
 * [rcedit](https://github.com/electron/rcedit): Included for altering runtime executable properties during runtime generation.
 * [PECHKSUM](https://www.gammadyne.com/pe_checksum.htm): Included to calculate the executable checksum after wrecking it with RC edit...
+
+## Third Party Code
+Lawful Blade is using the following open source projects for some of its features:
+* [ThemeWPF](https://github.com/Verta-IT/ThemeWPF): Partial use for some dark controls. MIT License.
+* [Magick.NET](https://github.com/dlemstra/Magick.NET): Used to encode/decode project-instance icons. Apache 2.0 License.
+
