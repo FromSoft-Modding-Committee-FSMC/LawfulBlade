@@ -3,8 +3,8 @@ header("Content-type:application/json");
 
 // Create our response...
 $response = array(
-    'Version' => "0.00",
-    'SourceF' => "https://lawful.swordofmoonlight.com"
+    'Version' => "1.01",
+    'SourceF' => "https://lawful.swordofmoonlight.com/V101_dev.zip"
 );
 
 // Conver to json and echo out
