@@ -42,16 +42,35 @@ namespace LawfulBladeUpdater
             }
 
             Console.WriteLine("Removing Old Files...");
-            new DirectoryInfo(args[2]).Delete(true);
+            DirectoryInfo lawfulRoot = new DirectoryInfo(args[2]);
+
+            foreach (FileInfo file in lawfulRoot.GetFiles())
+                File.Delete(file.FullName);
+
+            foreach (DirectoryInfo dir in lawfulRoot.GetDirectories())
+                dir.Delete(true);
 
             Console.WriteLine("Installing Update...".Colourize(0x3498DB));
             using (ZipArchive update = ZipFile.OpenRead(updateFile))
             {
                 // Loop through each entry and extract it...
-                foreach(ZipArchiveEntry entry in update.Entries)
+                foreach (ZipArchiveEntry entry in update.Entries)
                 {
-                    Console.WriteLine($"\tExtracting '{entry.FullName}'...".Colourize(0x3498DB));
-                    entry.ExtractToFile(Path.Combine(args[2], entry.FullName), true);
+                    // Create the filepath of the entry...
+                    string filePath = Path.GetDirectoryName(Path.Combine(lawfulRoot.FullName, entry.FullName)) ?? throw new Exception("Bad Path");
+
+                    if (!Directory.Exists(filePath))
+                    {
+                        Console.WriteLine($"\tCreating Directory... '{filePath}'...".Colourize(0x34DB98));
+                        Directory.CreateDirectory(filePath);
+                    }
+
+                    // Don't try to extract directories...
+                    if (entry.Name != string.Empty)
+                    {
+                        Console.WriteLine($"\tExtracting '{entry.FullName}'...".Colourize(0x3498DB));
+                        entry.ExtractToFile(Path.Combine(filePath, entry.Name), true);
+                    }
                 }
             }
 
