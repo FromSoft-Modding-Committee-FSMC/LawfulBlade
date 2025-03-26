@@ -3,6 +3,8 @@
 
 #include <stdint.h>
 #include <string>
+#include <fstream>
+
 
 extern void LoadUserConfiguration();
 extern uint32_t GetUserConfigU32(const char* fieldName);

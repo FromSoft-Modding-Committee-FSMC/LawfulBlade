@@ -29,6 +29,12 @@
     <ClInclude Include="somgamedata.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="somgdi.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="hasher.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -50,6 +56,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="somgamedata.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="somgdi.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="hasher.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

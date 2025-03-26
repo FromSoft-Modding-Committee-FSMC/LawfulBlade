@@ -42,13 +42,13 @@ typedef uint32_t(__cdecl* SomSoundUnloadRef)(int16_t);
 extern SomSoundUnloadRef ProxiedSomSoundUnloadRef;
 extern uint32_t __cdecl ProxySomSoundUnloadRef(int16_t soundId);
 
-typedef bool(__cdecl* SomSoundPlay3D)(int32_t, int32_t, float, float, float);
+typedef bool(__cdecl* SomSoundPlay3D)(int32_t, int8_t, float, float, float);
 extern SomSoundPlay3D ProxiedSomSoundPlay3D;
-extern bool __cdecl ProxySomSoundPlay3D(int32_t soundId, int32_t pitch, float param_3, float param_4, float param_5);
+extern bool __cdecl ProxySomSoundPlay3D(int32_t soundId, int8_t pitch, float param_3, float param_4, float param_5);
 
-typedef bool(__cdecl* SomSoundPlay2D)(int32_t, int32_t);
+typedef bool(__cdecl* SomSoundPlay2D)(int32_t, int8_t);
 extern SomSoundPlay2D ProxiedSomSoundPlay2D;
-extern bool __cdecl ProxySomSoundPlay2D(int32_t soundId, int32_t pitch);
+extern bool __cdecl ProxySomSoundPlay2D(int32_t soundId, int8_t pitch);
 
 // Detours
 extern void __cdecl SomSoundInitDetours();

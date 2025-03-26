@@ -51,7 +51,7 @@ void __cdecl ProxySomSoundInit()
 		LogFWrite("Initializing FMOD...", "SomSound>SomSoundInit");
 
 		// Fucking goto man...
-		FMOD_REVERB_PROPERTIES fmReverbProperties = FMOD_PRESET_FOREST;
+		FMOD_REVERB_PROPERTIES fmReverbProperties = FMOD_PRESET_GENERIC;
 
 		// Use this to capture FMOD errors.
 		FMOD_RESULT fmResult = FMOD_OK;
@@ -254,6 +254,7 @@ bool __cdecl ProxySomSoundLoad(int16_t soundId, int8_t dontUnload)
 		uint16_t sndBitsPerSample;
 		uint16_t sndUnkx10;
 		uint32_t sndByteSize;
+		uint16_t sndUnkx14;
 
 		sndFile.read((char*)&sndUnkx00, sizeof(sndUnkx00));
 		sndFile.read((char*)&sndUnkx02, sizeof(sndUnkx02));
@@ -263,6 +264,7 @@ bool __cdecl ProxySomSoundLoad(int16_t soundId, int8_t dontUnload)
 		sndFile.read((char*)&sndBitsPerSample, sizeof(sndBitsPerSample));
 		sndFile.read((char*)&sndUnkx10, sizeof(sndUnkx10));
 		sndFile.read((char*)&sndByteSize, sizeof(sndByteSize));
+		sndFile.read((char*)&sndUnkx14, sizeof(sndUnkx14));
 
 		// Read the buffer from the SND...
 		l_somSounds[soundId].sampleBuffer = new uint8_t[sndByteSize];
@@ -283,7 +285,7 @@ bool __cdecl ProxySomSoundLoad(int16_t soundId, int8_t dontUnload)
 		if (fmResult = FMOD_System_CreateSound(l_fmodSystem, (char*)l_somSounds[soundId].sampleBuffer, FMOD_DEFAULT | FMOD_3D | FMOD_CREATESAMPLE | FMOD_OPENRAW | FMOD_OPENMEMORY_POINT, &exInfo, &l_somSounds[soundId].fmodSound), fmResult != FMOD_OK || l_somSounds[soundId].fmodSound == NULL)
 			goto FmodFail;
 
-		return ProxiedSomSoundLoad(soundId, dontUnload);
+		return NULL;
 
 		// Create the sound using FMOD...
 		FmodFail:
@@ -344,7 +346,7 @@ uint32_t __cdecl ProxySomSoundUnloadRef(int16_t soundId)
 }
 
 SomSoundPlay3D ProxiedSomSoundPlay3D = (SomSoundPlay3D)0x0043e730;
-bool __cdecl ProxySomSoundPlay3D(int32_t soundId, int32_t pitch, float x, float y, float z)
+bool __cdecl ProxySomSoundPlay3D(int32_t soundId, int8_t pitch, float x, float y, float z)
 {
 	// Exit early if the sound ID is outside this range...
 	if (soundId < 0 || soundId >= 2048)
@@ -374,6 +376,11 @@ bool __cdecl ProxySomSoundPlay3D(int32_t soundId, int32_t pitch, float x, float 
 
 	if (fmResult = FMOD_System_PlaySound(l_fmodSystem, l_somSounds[soundId].fmodSound, l_fmodSfxChannelGroup, FALSE, &voice), fmResult != FMOD_OK)
 		return false;
+	
+	// Convert SoM pitch to FMOD Pitch.
+	// SoM gives a range of -2 to +2 octaves to playback sound, or -24 to 24. 0 is regular pitch... -24 needs to be mapped to 0.25, +24 needs to be mapped to 3.00 ?
+	if (pitch != 0 && pitch >= -24 && pitch <= 24)
+		FMOD_Channel_SetPitch(voice, (pitch - -24.0f) * (3.00f - 0.25f) / (24.0f - -24.0f) + 0.25f);
 
 	FMOD_VECTOR position;
 	position.x = x;
@@ -391,7 +398,7 @@ bool __cdecl ProxySomSoundPlay3D(int32_t soundId, int32_t pitch, float x, float 
 }
 
 SomSoundPlay2D ProxiedSomSoundPlay2D = (SomSoundPlay2D)0x0043e6c0;
-bool __cdecl ProxySomSoundPlay2D(int32_t soundId, int32_t pitch)
+bool __cdecl ProxySomSoundPlay2D(int32_t soundId, int8_t pitch)
 {
 	// Exit early if the sound ID is outside this range...
 	if (soundId < 0 || soundId >= 2048)
@@ -423,11 +430,16 @@ bool __cdecl ProxySomSoundPlay2D(int32_t soundId, int32_t pitch)
 	if (fmResult = FMOD_System_PlaySound(l_fmodSystem, l_somSounds[soundId].fmodSound, l_fmodSfxChannelGroup, FALSE, &voice), fmResult != FMOD_OK)
 		return false;
 
+	// Convert SoM pitch to FMOD Pitch.
+	// SoM gives a range of -2 to +2 octaves to playback sound, or -24 to 24. 0 is regular pitch... -24 needs to be mapped to 0.25, +24 needs to be mapped to 3.00 ?
+	if (pitch != 0 && pitch >= -24 && pitch <= 24)
+		FMOD_Channel_SetPitch(voice, (pitch - -24.0f) * (3.00f - 0.25f) / (24.0f - -24.0f) + 0.25f);
+
 	return false;
 }
 
 
-// Hook N Fuck - Init, Deinit Detours
+// Hook N Fuck - Init, Deinit, Tick
 void __cdecl SomSoundInitDetours()
 {
 	DetourAttach(&(PVOID&)ProxiedSomSoundInit, ProxySomSoundInit);
@@ -456,8 +468,6 @@ void __cdecl SomSoundKillDetours()
 	DetourDetach(&(PVOID&)ProxiedSomSoundPlay2D, ProxySomSoundPlay2D);
 }
 
-
-// Hook N Fuck - Tick
 void __cdecl SomSoundTick()
 {
 	// Don't ticket when fmod is null
@@ -502,7 +512,7 @@ void __cdecl SomSoundTick()
 			float playerDLX = *g_somPlayerX - l_lastPlayerX;
 			float playerDLZ = *g_somPlayerZ - l_lastPlayerZ;
 
-			// If the distance between the last and current position is > 0.5m, we play the footstep sound...
+			// If the distance between the last and current position is > 2m, we play the footstep sound...
 			if (sqrt((playerDLX * playerDLX) + (playerDLZ * playerDLZ)) > 2.f)
 			{
 				ProxySomSoundPlay3D(footStepSoundId, 0, *g_somPlayerX, *g_somPlayerY, *g_somPlayerZ);

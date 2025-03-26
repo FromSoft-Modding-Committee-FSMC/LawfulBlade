@@ -16,6 +16,7 @@
 #include "somwindow.h"
 #include "sominput.h"
 #include "somsound.h"
+#include "somgdi.h"
 #include "somconf.h"
 
 // Include libraries, fuck C++ man. I love C#
@@ -75,6 +76,7 @@ EXTFUNC BOOL APIENTRY DllMain(HMODULE module, DWORD  reason, LPVOID reserved)
 
             // SoM Specific
             SomSoundInitDetours();
+            SomGdiInit();
 
             // SoM Specific - Window
             DetourAttach(&(PVOID&)ProxiedCreateWindowExA, ProxyCreateWindowExA);
@@ -108,6 +110,7 @@ EXTFUNC BOOL APIENTRY DllMain(HMODULE module, DWORD  reason, LPVOID reserved)
 
             // SoM Specific
             SomSoundKillDetours();
+            SomGdiKill();
 
             // SoM Specific - Window
             DetourDetach(&(PVOID&)ProxiedCreateWindowExA, ProxyCreateWindowExA);

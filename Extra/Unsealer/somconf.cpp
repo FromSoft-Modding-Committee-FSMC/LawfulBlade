@@ -1,7 +1,7 @@
-#include <fstream>
+#include "somconf.h"
 
 #include "sdk\json.hpp"
-#include "somconf.h"
+
 
 // Locals
 nlohmann::json l_userConfigObject;
