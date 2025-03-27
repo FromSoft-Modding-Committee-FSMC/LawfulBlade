@@ -49,9 +49,9 @@ namespace LawfulBlade.Control
         {
             if (Target.HasPackageByUUID(Package.UUID))
             {
-                // Package is cached put not installed...
-                buttonText.Text     = "Installed!";
-                buttonBG.Background = new SolidColorBrush(Color.FromRgb(48, 96, 160));
+                // Package is installed
+                buttonText.Text     = "Uninstall";
+                buttonBG.Background = new SolidColorBrush(Color.FromRgb(160, 96, 48));
 
                 status = Status.Installed;
             }
@@ -60,7 +60,7 @@ namespace LawfulBlade.Control
                 // Adjust Tag Field
                 if (File.Exists(Path.Combine(App.PackageCachePath, $"{Package.UUID}.IAZ")))
                 {
-                    // Package is cached put not installed...
+                    // Package is cached but not installed...
                     buttonText.Text     = "Install";
                     buttonBG.Background = new SolidColorBrush(Color.FromRgb(96, 160, 48));
 
@@ -69,8 +69,8 @@ namespace LawfulBlade.Control
                 else
                 {
                     // Package is not cached, and not installed
-                    buttonText.Text     = "Download";
-                    buttonBG.Background = new SolidColorBrush(Color.FromRgb(160, 96, 48));
+                    buttonText.Text     = "Download";              
+                    buttonBG.Background = new SolidColorBrush(Color.FromRgb(48, 96, 160));
 
                     status = Status.NotDownloaded;
                 }
@@ -94,26 +94,19 @@ namespace LawfulBlade.Control
             switch (status)
             {
                 case Status.Installed:
-                    break;
-
                     // No = True prompt. Make sure the user wants to do this...
-                    if (MessageBox.Show($"Are you sure you want to uninstall {Package.Name} from this instance?", "Lawful Blade", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
+                    if (MessageBox.Show($"Are you sure you want to uninstall {Package.Name} from this instance? (This could break your instance!!!)", "Lawful Blade", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
                         return;
 
-                    //
-
+                    BusyDialog.ShowBusy();
+                    Target.UninstallPackage(PackageManager.GetPackageByUUID(Package.UUID));
+                    BusyDialog.HideBusy();
                     break;
 
                 case Status.Downloaded:
-                    // No = True prompt. Make sure the user wants to do this...
-                    if (MessageBox.Show($"Are you sure you want to install {Package.Name} to this instance? You will not be able to uninstall it afterwards!", "Lawful Blade", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
-                        return;
-
-                    // 
                     BusyDialog.ShowBusy();
                     Target.InstallPackage(PackageManager.GetPackageByUUID(Package.UUID));
                     BusyDialog.HideBusy();
-
                     break;
 
                 case Status.NotDownloaded:

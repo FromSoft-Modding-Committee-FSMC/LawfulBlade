@@ -1,4 +1,5 @@
 ﻿
+using LawfulBlade.Core.Extensions;
 using System.IO;
 using System.Text.Json;
 using System.Windows.Controls.Primitives;
@@ -106,24 +107,59 @@ namespace LawfulBlade.Core.Package
 
                     parentRepo       = repo;
                     foundRepoPackage = repoPackage;
-                }
 
-                // If foundRepoPackage is set, we found the package and can break...
-                if (foundRepoPackage != null)
-                    break;
+                    // We've found the package, so we can progress...
+                    goto PackageScanSuccess;
+                }
             }
 
-            // If repo package is null now, we have an issue
-            if (foundRepoPackage == null || parentRepo == null)
-                throw new Exception($"Could not find package with UUID: {UUID}");
+            // If we're here, we failed to find the package. This shouldn't happen..
+            throw new Exception($"Could not find package with UUID: {UUID}");
 
-            // We've varified we have the package... Is it in the cache?
+            // When we find a package in the above loop, we break early with a goto
+            PackageScanSuccess:
+
+            // Get the cache location for the package...
             string packageBundlePath = Path.Combine(App.PackageCachePath, $"{UUID}.IAZ");
-            if (!foundRepoPackage.Value.IsCached)
+
+            // Store the loaded package here...
+            Package result;
+
+            // Is the package cached? If it is, it might be old...
+            if (foundRepoPackage.Value.IsCached)
+            {
+                Debug.Info($"Package exists in cache: '{foundRepoPackage.Value.Name}'");
+
+                // We must lite load the cached version to see if we need to update the cache
+                result = Package.Load(packageBundlePath);
+
+                // Get the two versions as decimals
+                decimal oldVersion = decimal.Parse(result.Version.GetDigits());
+                decimal newVersion = decimal.Parse(foundRepoPackage.Value.Version.GetDigits());
+
+                // Compare the two versions
+                if (newVersion > oldVersion)
+                {
+                    // Re download the stale package...
+                    Debug.Warn($"Package is stale. Reacquiring. [New Version = {foundRepoPackage.Value.Version}, Old Version = {result.Version})");
+                    DownloadManager.DownloadSync(new Uri(Path.Combine(parentRepo.URI, foundRepoPackage.Value.Bundle)), packageBundlePath);
+
+                    // Reload the package
+                    result = Package.Load(packageBundlePath);
+                }
+            } 
+            else
+            {
+                Debug.Info($"Downloading Package: '{foundRepoPackage.Value.Name}'");
                 DownloadManager.DownloadSync(new Uri(Path.Combine(parentRepo.URI, foundRepoPackage.Value.Bundle)), packageBundlePath);
 
-            // Load the package into memory...
-            return Package.Load(packageBundlePath, false);
+                // Load the downloaded package...
+                result = Package.Load(packageBundlePath);
+
+            }
+
+            // return the found package.
+            return result;
         }
     }
 }

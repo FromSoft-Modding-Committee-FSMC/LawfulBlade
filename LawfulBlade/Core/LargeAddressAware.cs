@@ -36,7 +36,6 @@ namespace LawfulBlade.Core
             if ((characteristics & 0x0102) != 0x0102)
                 return;
 
-
             // Set the LAA flag...
             characteristics |= 0x0020;
 
