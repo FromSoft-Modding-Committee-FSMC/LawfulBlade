@@ -1,3 +1,4 @@
+#include "somgamedata.h"
 #include "somwindow.h"
 #include "sominput.h"
 #include "somconf.h"
@@ -43,63 +44,12 @@ ATOM __stdcall ProxyRegisterClassA(WNDCLASSA* lpWndClass)
 SomWndProc ProxiedSomWndProc = NULL;
 LRESULT __stdcall ProxySomWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	LPBYTE lpb;
-	RAWINPUT* raw;
-	UINT dwSize;
-
-	// There's a few messages we want to handle instead of SoM
 	switch (uMsg)
 	{
-	case WM_INPUT:
-		GetRawInputData((HRAWINPUT)lParam, RID_INPUT, NULL, &dwSize, sizeof(RAWINPUTHEADER));
-		lpb = (BYTE*)malloc(dwSize);
-
-		if (GetRawInputData((HRAWINPUT)lParam, RID_INPUT, lpb, &dwSize, sizeof(RAWINPUTHEADER)) != dwSize)
-			LogFWrite("GetRawInputData does not return correct size !", "ProxySomWndProc");
-		
-		// This isn't safe?..
-		raw = (RAWINPUT*)lpb;
-
-		if (raw->header.dwType == RIM_TYPEKEYBOARD)
-		{
-			g_somCurrKeyState[raw->data.keyboard.VKey & 0xFF] = ((raw->data.keyboard.Flags & 0x1) == 0);
-		}
-		else
-		if (raw->header.dwType == RIM_TYPEMOUSE)
-		{
-			// THIS CAN 100% BE IMPROVED... THINK MORE ABOUT IT IDIOT.
-			if (((raw->data.mouse.usButtonFlags >> 0) & 0x3) != 0)
-				g_somCurrMouseState[0] = ((raw->data.mouse.usButtonFlags >> 0) & 0x3) == 0x1;	// LEFT     BUTTON
-
-			if (((raw->data.mouse.usButtonFlags >> 2) & 0x3) != 0)
-				g_somCurrMouseState[1] = ((raw->data.mouse.usButtonFlags >> 2) & 0x3) == 0x1;	// RIGHT    BUTTON
-
-			if (((raw->data.mouse.usButtonFlags >> 4) & 0x3) != 0)
-				g_somCurrMouseState[2] = ((raw->data.mouse.usButtonFlags >> 4) & 0x3) == 0x1;	// MIDDLE   BUTTON
-
-			if (((raw->data.mouse.usButtonFlags >> 6) & 0x3) != 0)
-				g_somCurrMouseState[3] = ((raw->data.mouse.usButtonFlags >> 6) & 0x3) == 0x1;	// XBUTTON1 BUTTON
-
-			if (((raw->data.mouse.usButtonFlags >> 8) & 0x3) != 0)
-				g_somCurrMouseState[4] = ((raw->data.mouse.usButtonFlags >> 8) & 0x3) == 0x1;	// XBUTTON2 BUTTON
-
-			// Move the camera with the house
-			if (GetUserConfigBool("UseMouseLook") == 1)
-			{
-				*g_somCameraX = (*g_somCameraX - raw->data.mouse.lLastX / 180.f);
-				*g_somCameraY = (*g_somCameraY - raw->data.mouse.lLastY / 180.f);
-			}
-
-			// Force Hide Cursor
-			ShowCursor(FALSE);
-		}
-		return 0;
-
-		default:
-			return ProxiedSomWndProc(hWnd, uMsg, wParam, lParam);
+		case WM_INPUT: UnsealProcessRawInput((HRAWINPUT)lParam); return 0;
 	}
 
-	return 0;
+	return ProxiedSomWndProc(hWnd, uMsg, wParam, lParam);
 }
 
 // SomSetDisplay sets the width, height and depth of the display?..

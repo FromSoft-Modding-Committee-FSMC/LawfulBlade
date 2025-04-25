@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using Sealed_Sword_Stone.Windows;
+using System.Diagnostics;
 using System.IO;
 using System.Media;
 using System.Windows;
@@ -38,10 +39,20 @@ public partial class MainWindow : Window
         // Load and play launcher music
         if (App.LauncherConfig.LauncherMusic != string.Empty)
         {
-            MediaPlayer mp = new MediaPlayer();
-            mp.Open(new Uri(Path.Combine(App.ProgramPath, "LAUNCHER", App.LauncherConfig.LauncherMusic)));
-            mp.Volume = 0.25f;
-            mp.Play();
+            Thread mediaThread = new Thread(() =>
+            {
+                MediaPlayer mp = new MediaPlayer();
+                mp.Open(new Uri(Path.Combine(App.ProgramPath, "LAUNCHER", App.LauncherConfig.LauncherMusic)));
+                mp.Volume = 0.5;
+                mp.Play();
+
+                // Keep thread alive with a Dispatcher
+                System.Windows.Threading.Dispatcher.Run();
+            });
+
+            mediaThread.SetApartmentState(ApartmentState.STA); // WPF components need STA
+            mediaThread.IsBackground = true;
+            mediaThread.Start();
         }
 
         // Set Window Title
@@ -87,18 +98,8 @@ public partial class MainWindow : Window
 
     void OnClickConf(object sender, MouseButtonEventArgs e)
     {
-        clickSound.Play();
-
-        // Create and open the conf window
-        try
-        {
-            Configuration confWindow = new Configuration();
-            confWindow.ShowDialog();
-
-        } catch (Exception ex)
-        {
-            MessageBox.Show(ex.Message);
-        }
+        clickSound.Play(); 
+        (new ConfigurationDialog()).ShowDialog();
     }
 
     /// <summary>

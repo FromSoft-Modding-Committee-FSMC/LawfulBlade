@@ -35,6 +35,30 @@
     <ClInclude Include="hasher.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="somscreeneffect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="somdraw.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sommemory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="somgold.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sommath.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="somplayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sommessagequeue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="somobject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -62,6 +86,27 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="hasher.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="somscreeneffect.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="somdraw.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sommemory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="somgold.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sommath.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="somplayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sommessagequeue.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

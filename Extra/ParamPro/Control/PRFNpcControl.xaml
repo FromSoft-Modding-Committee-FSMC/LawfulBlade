@@ -1,0 +1,250 @@
+﻿<UserControl x:Class="ParamPro.Control.PRFNpcControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ParamPro.Control"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800" Focusable="True">
+    <DockPanel>
+
+        <!-- Main Content Area -->
+        <ScrollViewer VerticalScrollBarVisibility="Auto" DockPanel.Dock="Top">
+            <StackPanel Orientation="Vertical">
+                <!-- Meta Data -->
+                <GroupBox Header="Metadata" Margin="4,4,4,4">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="2*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="24"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Model Name -->
+                        <TextBlock Text="Name: " Grid.Column="0" Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="4,2,4,2" FontWeight="Bold" 
+                           ToolTip="The name of the NPC PRF"/>
+                        <TextBox x:Name="npcNameField" Grid.Column="1" Grid.Row="0" Margin="2,2,2,2" LostFocus="OnEndEditName"/>
+
+                        <!-- Turn Speed -->
+                        <TextBlock Text="Turn Speed: " Grid.Column="2" Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="4,2,4,2" FontWeight="Bold" 
+                           ToolTip="The name of the NPC PRF"/>
+                        <local:FractionalBox x:Name="npcTurnSpeedField" Grid.Column="3" Grid.Row="0" Margin="2,2,2,2" LostFocus="OnEndEditTurnSpeed"/>
+                    </Grid>
+                </GroupBox>
+
+                <!-- Model and Texture -->
+                <GroupBox Header="Visual" Margin="4,4,4,4">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="24"/>
+                            <RowDefinition Height="24"/>
+                            <RowDefinition Height="24"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Model File -->
+                        <TextBlock Text="Model: " Grid.Column="0" Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="4,2,4,2" FontWeight="Bold" 
+                           ToolTip="The model file used by the NPC"/>
+                        <ComboBox x:Name="npcModelField" Margin="2,2,2,2" Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2" SelectionChanged="OnModelChanged"/>
+                        <Button Padding="8,0,8,0" Margin="2,2,2,2" Grid.Column="3" Grid.Row="0">
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">Import MDL</TextBlock>
+                        </Button>
+
+                        <!-- Texture File -->
+                        <TextBlock Text="Texture: " Grid.Column="0" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="4,2,4,2" FontWeight="Bold" 
+                           ToolTip="The texture used by the NPC"/>
+                        <ComboBox x:Name="npcTextureField" Margin="2,2,2,2" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2" SelectionChanged="OnTextureSelected"/>
+                        <Button Padding="8,0,8,0" Margin="2,2,2,2" Grid.Column="3" Grid.Row="1">
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">Import TXR</TextBlock>
+                        </Button>
+
+                        <!-- Shadow -->
+                        <TextBlock Text="Shadow Radius: " Grid.Column="0" Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="4,2,4,2" FontWeight="Bold" 
+                           ToolTip="The radius of the blob shadow"/>
+                        <local:FractionalBox x:Name="npcShadowRadius" Grid.Column="1" Grid.Row="2" Margin="2,2,2,2" LostFocus="OnEditEndShadowRad"/>
+                    </Grid>
+                </GroupBox>
+
+                <!-- Collider -->
+                <GroupBox Header="Collider" Margin="4,4,4,4">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="2*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="24"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Radius -->
+                        <TextBlock Text="Radius: " Grid.Column="0" Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="4,2,4,2" FontWeight="Bold" 
+                           ToolTip="Radius of the cylinder collider"/>
+                        <local:FractionalBox x:Name="npcColliderRadius" Grid.Column="1" Grid.Row="0" Margin="2,2,2,2" LostFocus="OnEditEndCollRad"/>
+
+                        <!-- Height -->
+                        <TextBlock Text="Height: " Grid.Column="2" Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="4,2,4,2" FontWeight="Bold" 
+                           ToolTip="Height of the cylinder collider"/>
+                        <local:FractionalBox x:Name="npcColliderHeight" Grid.Column="3" Grid.Row="0" Margin="2,2,2,2" LostFocus="OnEditEndCollHeight"/>
+                    </Grid>
+                </GroupBox>
+
+                <!-- Talk Delay -->
+                <GroupBox Header="Interaction Delay" Margin="4,4,4,4">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="2*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="24"/>
+                            <RowDefinition Height="24"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Stand Forward -->
+                        <TextBlock Text="Stand Forward: " Grid.Column="0" Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="4,2,4,2" FontWeight="Bold" 
+                           ToolTip="Delay of forward interaction while the NPC is standing"/>
+                        <local:FractionalBox x:Name="npcIntrStandFwd" MaxValue="255" Unsigned="True" AllowFractions="False" Grid.Column="1" Grid.Row="0" Margin="2,2,2,2" LostFocus="OnEditEndStandFwdFrames"/>
+
+                        <!-- Stand Side -->
+                        <TextBlock Text="Stand Side: " Grid.Column="2" Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="4,2,4,2" FontWeight="Bold" 
+                           ToolTip="Delay of left and right interaction while the NPC is standing"/>
+                        <local:FractionalBox x:Name="npcIntrStandLR" MaxValue="255" Unsigned="True" AllowFractions="False" Grid.Column="3" Grid.Row="0" Margin="2,2,2,2" LostFocus="OnEditEndStandLR"/>
+
+                        <!-- Sit Forward -->
+                        <TextBlock Text="Sitting Forward: " Grid.Column="0" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="4,2,4,2" FontWeight="Bold" 
+                           ToolTip="Delay of forward interaction while the NPC is sitting"/>
+                        <local:FractionalBox x:Name="npcIntrSitFwd" MaxValue="255" Unsigned="True" AllowFractions="False" Grid.Column="1" Grid.Row="2" Margin="2,2,2,2" LostFocus="OnEditEndSitFwdFrames"/>
+
+                        <!-- Sit Side -->
+                        <TextBlock Text="Sitting Side: " Grid.Column="2" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="4,2,4,2" FontWeight="Bold" 
+                           ToolTip="Delay of left and right interaction while the NPC is sitting"/>
+                        <local:FractionalBox x:Name="npcIntrSitLR" MaxValue="255" Unsigned="True" AllowFractions="False" Grid.Column="3" Grid.Row="2" Margin="2,2,2,2" LostFocus="OnEndEditSitSideFrames"/>
+                    </Grid>
+                </GroupBox>
+
+                <!-- FX Setting -->
+                <GroupBox Header="2D FX" Margin="4,4,4,4">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="2*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="24"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- FX TYPE -->
+                        <TextBlock Text="Type: " Grid.Column="0" Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="4,2,4,2" FontWeight="Bold" 
+                           ToolTip="The type of FX"/>
+                        <ComboBox x:Name="npcFXTypeField" Margin="2,2,2,2" Grid.Column="1" Grid.Row="0" SelectionChanged="OnFX2DChange"/>
+
+                        <!-- FX Origin CP -->
+                        <TextBlock Text="CP ID: " Grid.Column="2" Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="4,2,4,2" FontWeight="Bold" 
+                           ToolTip="The ID of the origin CP for the FX"/>
+                        <local:FractionalBox x:Name="npcFXcpid" MaxValue="255" Unsigned="True" AllowFractions="False" Grid.Column="3" Grid.Row="0" Margin="2,2,2,2" LostFocus="OnEndEditFxCp"/>
+
+                        <!-- FX Frames -->
+                        <TextBlock Text="Length: " Grid.Column="4" Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="4,2,4,2" FontWeight="Bold" 
+                           ToolTip="The amount of FX frames before looping"/>
+                        <local:FractionalBox x:Name="npcFXframes" MaxValue="255" Unsigned="True" AllowFractions="False" Grid.Column="5" Grid.Row="0" Margin="2,2,2,2" LostFocus="OnEndEditFxLength"/>
+                    </Grid>
+                </GroupBox>
+
+                <!-- Animation Sound + Effects -->
+                <GroupBox Header="Animation Sounds and Effects" Margin="4,4,4,4">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1.25*"/>
+                            <ColumnDefinition Width="1.25*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="24"/>
+                            <RowDefinition Height="104"/>
+                            <RowDefinition Height="24"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Animation Selector -->
+                        <ComboBox x:Name="animationSelector" Margin="2,2,2,2" Grid.Column="0" Grid.Row="0" SelectionChanged="OnAnimationTypeChange"/>
+
+                        <!-- Sound List -->
+                        <Grid Grid.Column="1" Grid.Row="0" Margin="2,2,2,2" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="1*"/>
+                                <ColumnDefinition Width="1*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Column="0" Margin="2,2,2,2" HorizontalAlignment="Center" Text="Sound ID"/>
+                            <TextBlock Grid.Column="1" Margin="2,2,2,2" HorizontalAlignment="Center" Text="Delay"/>
+                            <TextBlock Grid.Column="2" Margin="2,2,2,2" HorizontalAlignment="Center" Text="Pitch"/>
+                        </Grid>
+                        <ListBox x:Name="soundList" Grid.Column="1" Grid.Row="1" Margin="2,2,2,2" HorizontalContentAlignment="Stretch"/>
+                        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="2">
+                            <Button Padding="8,0,8,0" Margin="2,2,2,2" HorizontalAlignment="Center" Click="OnClickAddSound">
+                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="Add Sound..." />
+                            </Button>
+                            <Button Padding="8,0,8,0" Margin="2,2,2,2" HorizontalAlignment="Center" Click="OnClickRemoveSound">
+                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="Remove Sound..."/>
+                            </Button>
+                        </StackPanel>
+
+                        <!-- Effect List -->
+                        <Grid Grid.Column="2" Grid.Row="0" Margin="2,2,2,2" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="1*"/>
+                                <ColumnDefinition Width="1*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Column="0" Margin="2,2,2,2" HorizontalAlignment="Center" Text="Effect ID"/>
+                            <TextBlock Grid.Column="1" Margin="2,2,2,2" HorizontalAlignment="Center" Text="Delay"/>
+                            <TextBlock Grid.Column="2" Margin="2,2,2,2" HorizontalAlignment="Center" Text="Point"/>
+                        </Grid>
+                        <ListBox x:Name="effectList" Grid.Column="2" Grid.Row="1" Margin="2,2,2,2" HorizontalContentAlignment="Stretch"/>
+                        <StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="2">
+                            <Button Padding="8,0,8,0" Margin="2,2,2,2" HorizontalAlignment="Center" Click="OnClickAddEffect">
+                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="Add Effect..."/>
+                            </Button>
+                            <Button Padding="8,0,8,0" Margin="2,2,2,2" HorizontalAlignment="Center" Click="OnClickRemoveEffect">
+                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="Remove Effect..."/>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                </GroupBox>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Button Array Area -->
+        <StackPanel Margin="2,4,2,4" Orientation="Horizontal" DockPanel.Dock="Bottom" Height="20" HorizontalAlignment="Center" VerticalAlignment="Bottom">
+            <Button Background="#FF308FA0" Click="OnClickSave">
+                <TextBlock Margin="4,0,4,0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    Save
+                </TextBlock>
+            </Button>
+        </StackPanel>
+    </DockPanel>
+</UserControl>

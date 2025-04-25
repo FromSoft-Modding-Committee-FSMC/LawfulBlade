@@ -6,7 +6,7 @@
 #include "hasher.h"
 
 #include "sdk/json.hpp"
-#include "detours.h"
+#include "sdk/detours/inc/detours.h"
 
 // Store loaded fonts
 std::map<uint32_t, SomFontConfiguration> l_textFontData;
@@ -49,6 +49,7 @@ BOOL __stdcall ProxySomTextOutA(HDC hdc, int x, int y, LPCSTR lpString, int c)
 	return ProxiedTextOutA(hdc, x, y, lpString, c);
 }
 
+
 // Hook N Fuck - Init, Deinit, Tick
 void __cdecl SomGdiInit()
 {
@@ -62,7 +63,6 @@ void __cdecl SomGdiInit()
 
 void __cdecl SomGdiKill()
 {
-
 	// Undetouring
 	DetourDetach(&(PVOID&)ProxiedCreateFontA, ProxyCreateFontA);
 	// DetourDetach(&(PVOID&)ProxiedTextOutA, ProxySomTextOutA);

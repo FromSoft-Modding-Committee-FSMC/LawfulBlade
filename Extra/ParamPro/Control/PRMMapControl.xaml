@@ -1,0 +1,136 @@
+﻿<UserControl x:Class="ParamPro.Control.PRMMapControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ParamPro.Control"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+
+    <DockPanel>
+        <!-- Main Content -->
+        <StackPanel Orientation="Vertical" DockPanel.Dock="Top">
+
+            <!-- Meta Data -->
+            <GroupBox Header="Metadata" Margin="4,4,4,4" Grid.Column="0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="2*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="28"/>
+                        <RowDefinition Height="28"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Piece ID -->
+                    <TextBlock Text="Piece ID: " Grid.Column="0" Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="4,2,4,2" FontWeight="Bold" 
+                           ToolTip="This is the ID of the piece. It will be used as the filename, and must be greater than 0 and less than 1024"/>
+                    <TextBox x:Name="pieceIdField" Margin="2,2,2,2" Grid.Column="1" Grid.Row="0"/>
+
+                    <!-- Piece Name -->
+                    <TextBlock Text="Piece Name: " Grid.Column="0" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="4,2,4,2" FontWeight="Bold"
+                           ToolTip="This is the name of the piece, as displayed in the map editor view."/>
+                    <TextBox x:Name="pieceNameField" Margin="2,2,2,2" Grid.Column="1" Grid.Row="1" MaxLength="30" MaxLines="1"/>
+
+                    <!-- Cardinal Occlusion -->
+                    <TextBlock Text="Cardinal Occlusion: " Grid.Column="2" Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="4,2,4,2" FontWeight="Bold"
+                           ToolTip="Cardinal occlusion is occlusion in a direction (relative to the rotation of the tile), it is used during map optimization to occlude tiles."/>
+                    <StackPanel Orientation="Horizontal" Grid.Column="3" Grid.Row="0" VerticalAlignment="Center" Background="#FF101010">
+                        <TextBlock Margin="2,2,2,2" Text="N: "/>
+                        <CheckBox x:Name="northOcclusionField" Margin="2,2,2,2"/>
+                        <TextBlock Margin="2,2,2,2" Text="E: "/>
+                        <CheckBox x:Name="eastOcclusionField" Margin="2,2,2,2"/>
+                        <TextBlock Margin="2,2,2,2" Text="S: "/>
+                        <CheckBox x:Name="southOcclusionField" Margin="2,2,2,2"/>
+                        <TextBlock Margin="2,2,2,2" Text="W: "/>
+                        <CheckBox x:Name="westOcclusionField" Margin="2,2,2,2"/>
+                    </StackPanel>
+
+                    <!-- Trap Settings -->
+                    <TextBlock Text="Trapped: " Grid.Column="2" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="4,2,4,2" FontWeight="Bold"
+                           ToolTip="Trap settings for the tile. Effect the player only."/>
+                    <StackPanel Orientation="Horizontal" Grid.Column="3" Grid.Row="1" VerticalAlignment="Center" Background="#FF101010">
+                        <TextBlock Margin="2,2,2,2" Text="Damage: "/>
+                        <CheckBox x:Name="trapDamageField" Margin="2,2,2,2"/>
+                        <TextBlock Margin="2,2,2,2" Text="Poison: "/>
+                        <CheckBox x:Name="trapPoisonField" Margin="2,2,2,2"/>
+                    </StackPanel>
+                </Grid>
+            </GroupBox>
+
+            <!-- Model Data -->
+            <GroupBox Header="Model Files" Margin="4,4,4,4">
+                <Grid>
+                    <!-- Grid Configuration -->
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="4*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="28"/>
+                        <RowDefinition Height="28"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- MSM File Content -->
+                    <TextBlock Text="MSM File: " Grid.Column="0" Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="4,2,4,2" FontWeight="Bold"
+                           ToolTip="The MSM model file is used when rendering the tile."/>
+                    <ComboBox x:Name="msmFileField" Margin="2,2,2,2" Grid.Column="1" Grid.Row="0" />
+                    <Button Padding="8,0,8,0" Margin="2,2,2,2" Grid.Column="2" Grid.Row="0">
+                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">Import MSM</TextBlock>
+                    </Button>
+
+                    <!-- MHM File Content -->
+                    <TextBlock Text="MHM File: " Grid.Column="0" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="4,2,4,2" FontWeight="Bold"
+                           ToolTip="The MHM model file is used to resolve collisions with the tile."/>
+                    <ComboBox x:Name="mhmFileField" Margin="2,2,2,2" Grid.Column="1" Grid.Row="1" />
+                    <Button Padding="8,0,8,0" Margin="2,2,2,2" Grid.Column="2" Grid.Row="1" Click="OnClickImportMHM">
+                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">Import MHM</TextBlock>
+                    </Button>
+                </Grid>
+            </GroupBox>
+
+            <!-- Icon Data -->
+            <GroupBox Header="Icons" Margin="4,4,4,4">
+                <Grid>
+                    <!-- Grid Configuration -->
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="4*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="28"/>
+                        <RowDefinition Height="28"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Editor Icon -->
+                    <TextBlock Text="Editor Icon File: " Grid.Column="0" Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="4,2,4,2" FontWeight="Bold"
+                           ToolTip="The editor icon file is used for the tile icon in the map editor screen."/>
+                    <ComboBox x:Name="bmpFileField" Margin="2,2,2,2" Grid.Column="1" Grid.Row="0" />
+                    <Button Padding="8,0,8,0" Margin="2,2,2,2" Grid.Column="2" Grid.Row="0" Click="OnClickImportBMP">
+                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" >Import BMP</TextBlock>
+                    </Button>
+                    
+                    <!-- Automap Icon -->
+                    <TextBlock Text="Automap Icon ID: " Grid.Column="0" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="4,2,4,2" FontWeight="Bold"
+                           ToolTip="The automap icon ID is used for the automapping feature."/>
+                    <TextBox x:Name="automapIconField" Margin="2,2,2,2" Grid.Column="1" Grid.Row="1"/>
+                </Grid>
+            </GroupBox>
+        </StackPanel>
+        
+        <!-- Button Array -->
+        <StackPanel Margin="2,4,2,4" Orientation="Horizontal" DockPanel.Dock="Bottom" Height="20" HorizontalAlignment="Center" VerticalAlignment="Bottom">
+            <Button Background="#FF308FA0">
+                <TextBlock Margin="4,0,4,0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    Save
+                </TextBlock>
+            </Button>
+        </StackPanel>
+    </DockPanel>
+</UserControl>

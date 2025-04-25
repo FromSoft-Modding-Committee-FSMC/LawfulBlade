@@ -8,8 +8,7 @@
 #include "sominput.h"
 #include "somgamedata.h"
 
-#include "detours.h"
-#include "fmod_errors.h"
+#include "sdk/detours/inc/detours.h"
 
 // Local Globals
 char l_bgmRoot[] = "DATA/SOUND/BGM/";
@@ -25,12 +24,12 @@ FMOD_CHANNELGROUP* l_fmodSfxChannelGroup;
 FMOD_DSP* l_fmodDspReverb;
 
 // Background Music
-FMOD_SOUND*   l_fmodBgmSound;	// The Audio File Buffer for BGM
-FMOD_CHANNEL* l_fmodBgmVoice;	// The currently playing BGM channel
+FMOD_SOUND*   l_fmodBgmSound;		// FMOD sound for the current bgm
+FMOD_SOUND*   l_fmodBgmSoundNext;	// FMOD sound for the queued bgm
+FMOD_CHANNEL* l_fmodBgmVoice;		// The currently playing BGM channel
 
 // Listener
 FMOD_VECTOR l_fmodListenerPosition;
-FMOD_VECTOR l_fmodListenerVelocity;
 FMOD_VECTOR l_fmodListenerUp;
 FMOD_VECTOR l_fmodListenerForward;
 
@@ -41,7 +40,44 @@ float l_lastPlayerZ = 0;
 // Sound Effects
 std::map<int16_t, SomSoundSource> l_somSounds;
 
-// Capture N Wrap - Init, Deinit
+// Capture N Wrap - Function Type Defs
+typedef bool(__cdecl* SomSoundSetVolume)(uint8_t);
+
+// Capture N Wrap - Proxied
+SomSoundSetVolume ProxiedSomSoundSetVolumeSFX = (SomSoundSetVolume)0x0043e7d0;
+SomSoundSetVolume ProxiedSomSoundSetVolumeBGM = (SomSoundSetVolume)0x0043eb60;
+
+// Capture N Wrap - Proxies
+bool __cdecl ProxySomSoundSetVolumeSFX(uint8_t newVolume)
+{
+	*g_somSoundVolumeSFX = newVolume;
+
+	// Log it (this should be under a 'verbose logging' if at some point...
+	std::ostringstream out;
+	out << "Set SFX Volume = " << (int)*g_somSoundVolumeSFX;
+	LogFWrite(out.str(), "SomSound>SomSoundSetVolumeSFX");
+
+	if (l_fmodSfxChannelGroup != NULL)
+		FMOD_ChannelGroup_SetVolume(l_fmodSfxChannelGroup, (float)*g_somSoundVolumeSFX / 255.f);	// Normalize volume: [0 - 255] -> [0f - 1f]
+
+	return true;
+}
+
+bool __cdecl ProxySomSoundSetVolumeBGM(uint8_t newVolume)
+{
+	*g_somSoundVolumeBGM = newVolume;
+
+	// LOGITMMM
+	std::ostringstream out;
+	out << "Set BGM Volume = " << (int)*g_somSoundVolumeBGM;
+	LogFWrite(out.str(), "SomSound>SomSoundSetVolumeBGM");
+
+	if (l_fmodBgmChannelGroup != NULL)
+		FMOD_ChannelGroup_SetVolume(l_fmodBgmChannelGroup, (float)*g_somSoundVolumeBGM / 255.f);	// Normalize volume: [0 - 255] -> [0f - 1f]
+
+	return true;
+}
+
 SomSoundInit ProxiedSomSoundInit = (SomSoundInit)0x0043e470;
 void __cdecl ProxySomSoundInit()
 {
@@ -113,6 +149,10 @@ void __cdecl ProxySomSoundInit()
 		if (GetGameConfigInteger("SoundFootStepID") >= 0)
 			ProxySomSoundLoad(GetGameConfigInteger("SoundFootStepID"), TRUE);
 
+		// Set Sound Volumes
+		ProxySomSoundSetVolumeSFX(*g_somConfVolumeSFX);
+		ProxySomSoundSetVolumeBGM(*g_somConfVolumeBGM);
+
 		return;
 
 		// When FMOD is bad dog - fallback to original sound engine.
@@ -138,15 +178,19 @@ void __cdecl ProxySomSoundInit()
 	return;
 }
 
-
-// Capture N Wrap - BGM
 SomSoundBGMPlay ProxiedSomSoundBGMPlay = (SomSoundBGMPlay)0x0043e850;
 uint32_t __cdecl ProxySomSoundBGMPlay(const char* filename, int32_t loopMode)
 {
-	LogFWrite("Playing BGM...", "SomSound>SomSoundBGMPlay");
+	std::ostringstream out;
+	out << "Playing BGM! { track = " << filename << ", loop? = " << (loopMode != 0) << " }";
+
+	LogFWrite(out.str(), "SomSound>BGMPlay");
 
 	if (l_fmodSystem != NULL)
 	{
+		// Copy the BGM file name into a location for saving into mapmemory later...
+		memcpy_s(g_somSoundCurrentBGMFile, 0x20, filename, 0x20);
+
 		// Get the full path of the BGM file...
 		std::string filepath(l_bgmRoot);
 		filepath.append(filename);
@@ -162,13 +206,38 @@ uint32_t __cdecl ProxySomSoundBGMPlay(const char* filename, int32_t loopMode)
 		// Figure out what flags we need...
 		FMOD_MODE bgmPlayMode = FMOD_2D | FMOD_CREATESTREAM;				// Background music should always be 2D, and a stream.
 		bgmPlayMode |= FMOD_IGNORETAGS | FMOD_LOWMEM;						// We don't need tags or most of this functionality for a game lol.
-		bgmPlayMode |= (loopMode == 1 ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF);	// Do we want looping?
+		bgmPlayMode |= (loopMode != 1 ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF);	// Do we want looping?
+
+		// If the current sound is not null, we might need to fade - or free it if it is not playing
+		if (l_fmodBgmSound != NULL)
+		{
+			FMOD_BOOL voiceIsPlaying;
+			fmResult = FMOD_Channel_IsPlaying(l_fmodBgmVoice, &voiceIsPlaying);
+
+			// If the voice is playing, queue this up as the next sound... Free the next sound if it is already there.
+			if (voiceIsPlaying == TRUE)
+			{
+				if (l_fmodBgmSoundNext != NULL)
+					FMOD_Sound_Release(l_fmodBgmSoundNext);
+
+				if (fmResult = FMOD_System_CreateSound(l_fmodSystem, filepath.c_str(), bgmPlayMode, NULL, &l_fmodBgmSoundNext), fmResult != FMOD_OK || l_fmodBgmSound == NULL)
+					goto FmodFail;
+				
+				// return null after wards as to not process the rest of this function...
+				return NULL;
+			}
+			else 
+				ProxySomSoundBGMStop();
+		}
 
 		if (fmResult = FMOD_System_CreateSound(l_fmodSystem, filepath.c_str(), bgmPlayMode, NULL, &l_fmodBgmSound), fmResult != FMOD_OK || l_fmodBgmSound == NULL)
 			goto FmodFail;
 
 		if (fmResult = FMOD_System_PlaySound(l_fmodSystem, l_fmodBgmSound, l_fmodBgmChannelGroup, FALSE, &l_fmodBgmVoice), fmResult != FMOD_OK || l_fmodBgmVoice == NULL)
 			goto FmodFail;
+
+		// There appears to be FMOD weirdness here...
+		FMOD_Channel_SetVolume(l_fmodBgmVoice, (*g_somSoundVolumeBGM / 255.0f));
 
 		// Success
 		return NULL;
@@ -200,6 +269,15 @@ uint32_t __cdecl ProxySomSoundBGMStop()
 			l_fmodBgmVoice = NULL;
 		}
 
+		// If the next sound is not null, clear that out too
+		if (l_fmodBgmSoundNext != NULL)
+		{
+			if (fmResult = FMOD_Sound_Release(l_fmodBgmSoundNext), fmResult != FMOD_OK)
+				goto FmodFail;
+
+			l_fmodBgmSoundNext = NULL;
+		}
+
 		// Free the sound
 		if (l_fmodBgmSound != NULL)
 		{
@@ -219,18 +297,12 @@ uint32_t __cdecl ProxySomSoundBGMStop()
 	}
 
 	// Run the original function when not using FMOD
-	return NULL; //ProxiedSomSoundBGMStop();
+	return NULL;
 }
 
-
-// Capture N Wrap - SFX
 SomSoundLoad ProxiedSomSoundLoad = (SomSoundLoad)0x0043e5a0;
 bool __cdecl ProxySomSoundLoad(int16_t soundId, int8_t dontUnload)
 {
-	// Don't bother processing invalid indices.
-	if (soundId < 0 || soundId >= 2048)
-		return false;
-
 	// If this sound doesn't exist in our map, we need to load it...
 	if (!l_somSounds.count(soundId))
 	{
@@ -304,10 +376,6 @@ bool __cdecl ProxySomSoundLoad(int16_t soundId, int8_t dontUnload)
 SomSoundUnload ProxiedSomSoundUnload = (SomSoundUnload)0x0044a4f0;
 uint32_t __cdecl ProxySomSoundUnload(int16_t soundId) 
 {
-	// Don't bother processing invalid indices.
-	if (soundId < 0 || soundId >= 2048)
-		return NULL;
-
 	// If the sound isn't loaded, exit early.
 	if (!l_somSounds.count(soundId))
 		return NULL;
@@ -323,10 +391,6 @@ uint32_t __cdecl ProxySomSoundUnload(int16_t soundId)
 SomSoundUnloadRef ProxiedSomSoundUnloadRef = (SomSoundUnloadRef)0x0043e670;
 uint32_t __cdecl ProxySomSoundUnloadRef(int16_t soundId)
 {
-	// Don't bother processing invalid indices.
-	if (soundId < 0 || soundId >= 2048)
-		return NULL;
-
 	// If the sound isn't loaded, exit early.
 	if (!l_somSounds.count(soundId))
 		return NULL;
@@ -348,10 +412,6 @@ uint32_t __cdecl ProxySomSoundUnloadRef(int16_t soundId)
 SomSoundPlay3D ProxiedSomSoundPlay3D = (SomSoundPlay3D)0x0043e730;
 bool __cdecl ProxySomSoundPlay3D(int32_t soundId, int8_t pitch, float x, float y, float z)
 {
-	// Exit early if the sound ID is outside this range...
-	if (soundId < 0 || soundId >= 2048)
-		return false;
-
 	// Does this sound even exist?
 	if (!l_somSounds.count(soundId))
 		return false;
@@ -369,30 +429,33 @@ bool __cdecl ProxySomSoundPlay3D(int32_t soundId, int8_t pitch, float x, float y
 	FMOD_Sound_GetMode(l_somSounds[soundId].fmodSound, &fmMode);
 
 	// Disable 2D Flag (if set), and set 3D flag.
-	fmMode &= ~FMOD_2D;
-	fmMode |=  FMOD_3D;
+	fmMode &= ~(FMOD_2D);
+	fmMode |=  (FMOD_3D | FMOD_3D_LINEARROLLOFF);
 
 	FMOD_Sound_SetMode(l_somSounds[soundId].fmodSound, fmMode);
 
 	if (fmResult = FMOD_System_PlaySound(l_fmodSystem, l_somSounds[soundId].fmodSound, l_fmodSfxChannelGroup, FALSE, &voice), fmResult != FMOD_OK)
 		return false;
 	
+	if (soundId == GetGameConfigInteger("SoundFootStepID"))
+		FMOD_Channel_SetVolume(voice, 0.35f);
+
 	// Convert SoM pitch to FMOD Pitch.
 	// SoM gives a range of -2 to +2 octaves to playback sound, or -24 to 24. 0 is regular pitch... -24 needs to be mapped to 0.25, +24 needs to be mapped to 3.00 ?
-	if (pitch != 0 && pitch >= -24 && pitch <= 24)
-		FMOD_Channel_SetPitch(voice, (pitch - -24.0f) * (3.00f - 0.25f) / (24.0f - -24.0f) + 0.25f);
+	if (pitch < 0)
+		FMOD_Channel_SetPitch(voice, 1.0f + ((0.75f / 24.f) * pitch));
+	else
+	if (pitch > 0)
+		FMOD_Channel_SetPitch(voice, 1.0f + (2.0f / 24.f) * pitch);
 
 	FMOD_VECTOR position;
 	position.x = x;
 	position.y = y;
 	position.z = z;
 
-	FMOD_VECTOR velocity;
-	velocity.x = 0.f;
-	velocity.y = 0.f;
-	velocity.z = 0.f;
+	FMOD_Channel_Set3DAttributes(voice, &position, NULL);
 
-	FMOD_Channel_Set3DAttributes(voice, &position, &velocity);
+	FMOD_Channel_Set3DMinMaxDistance(voice, 2.5f, 15.0f);
 
 	return true;
 }
@@ -421,8 +484,8 @@ bool __cdecl ProxySomSoundPlay2D(int32_t soundId, int8_t pitch)
 	FMOD_Sound_GetMode(l_somSounds[soundId].fmodSound, &fmMode);
 
 	// Disable 3D Flag (if set), and set 2D flag.
-	fmMode &= ~FMOD_3D;
-	fmMode |=  FMOD_2D;
+	fmMode &= ~(FMOD_3D | FMOD_3D_LINEARROLLOFF);
+	fmMode |=  (FMOD_2D);
 
 	FMOD_Sound_SetMode(l_somSounds[soundId].fmodSound, fmMode);
 
@@ -438,34 +501,33 @@ bool __cdecl ProxySomSoundPlay2D(int32_t soundId, int8_t pitch)
 	return false;
 }
 
-
 // Hook N Fuck - Init, Deinit, Tick
 void __cdecl SomSoundInitDetours()
 {
 	DetourAttach(&(PVOID&)ProxiedSomSoundInit, ProxySomSoundInit);
-
 	DetourAttach(&(PVOID&)ProxiedSomSoundBGMPlay, ProxySomSoundBGMPlay);
 	DetourAttach(&(PVOID&)ProxiedSomSoundBGMStop, ProxySomSoundBGMStop);
-
 	DetourAttach(&(PVOID&)ProxiedSomSoundLoad, ProxySomSoundLoad);
 	DetourAttach(&(PVOID&)ProxiedSomSoundUnload, ProxySomSoundUnload);
 	DetourAttach(&(PVOID&)ProxiedSomSoundUnloadRef, ProxySomSoundUnloadRef);
 	DetourAttach(&(PVOID&)ProxiedSomSoundPlay3D, ProxySomSoundPlay3D);
 	DetourAttach(&(PVOID&)ProxiedSomSoundPlay2D, ProxySomSoundPlay2D);
+	DetourAttach(&(PVOID&)ProxiedSomSoundSetVolumeSFX, ProxySomSoundSetVolumeSFX);
+	DetourAttach(&(PVOID&)ProxiedSomSoundSetVolumeBGM, ProxySomSoundSetVolumeBGM);
 }
 
 void __cdecl SomSoundKillDetours()
 {
 	DetourDetach(&(PVOID&)ProxiedSomSoundInit, ProxySomSoundInit);
-
 	DetourDetach(&(PVOID&)ProxiedSomSoundBGMPlay, ProxySomSoundBGMPlay);
 	DetourDetach(&(PVOID&)ProxiedSomSoundBGMStop, ProxySomSoundBGMStop);
-
 	DetourDetach(&(PVOID&)ProxiedSomSoundLoad, ProxySomSoundLoad);
 	DetourDetach(&(PVOID&)ProxiedSomSoundUnload, ProxySomSoundUnload);
 	DetourDetach(&(PVOID&)ProxiedSomSoundUnloadRef, ProxySomSoundUnloadRef);
 	DetourDetach(&(PVOID&)ProxiedSomSoundPlay3D, ProxySomSoundPlay3D);
 	DetourDetach(&(PVOID&)ProxiedSomSoundPlay2D, ProxySomSoundPlay2D);
+	DetourDetach(&(PVOID&)ProxiedSomSoundSetVolumeSFX, ProxySomSoundSetVolumeSFX);
+	DetourDetach(&(PVOID&)ProxiedSomSoundSetVolumeBGM, ProxySomSoundSetVolumeBGM);
 }
 
 void __cdecl SomSoundTick()
@@ -476,11 +538,8 @@ void __cdecl SomSoundTick()
 
 	// Caclculate Listener Vectors...
 	l_fmodListenerPosition.x = *g_somPlayerX;
-	l_fmodListenerPosition.y = *g_somPlayerY;
+	l_fmodListenerPosition.y = *g_somPlayerY + 1.76f;
 	l_fmodListenerPosition.z = *g_somPlayerZ;
-	l_fmodListenerVelocity.x = 0.f;
-	l_fmodListenerVelocity.y = 0.f;
-	l_fmodListenerVelocity.z = 0.f;
 
 	l_fmodListenerForward.x = -sin(*g_somCameraX);	// This is wrong but I've spent a few hours fiddling with it and don't want to do it anymore.
 	l_fmodListenerForward.y =  0.f;
@@ -491,7 +550,44 @@ void __cdecl SomSoundTick()
 	l_fmodListenerUp.z = 0.f;
 
 	// Set listener configuration before updating...
-	FMOD_System_Set3DListenerAttributes(l_fmodSystem, 0, &l_fmodListenerPosition, &l_fmodListenerVelocity, &l_fmodListenerForward, &l_fmodListenerUp);
+	FMOD_System_Set3DListenerAttributes(l_fmodSystem, 0, &l_fmodListenerPosition, NULL, &l_fmodListenerForward, &l_fmodListenerUp);
+
+	//
+	// QUEUED SOUND FEATURE
+	//
+	if (l_fmodBgmSoundNext != NULL)
+	{
+		// When our next sound is not null, we must fade out the current one...
+		float currentVolume;
+		FMOD_Channel_GetVolume(l_fmodBgmVoice, &currentVolume);
+
+		// Modify the volume...
+		currentVolume -= ((*g_somSoundVolumeBGM / 255.0f) / 120.f);	// Fade out over two seconds ?..
+
+		if (currentVolume > 0.f)
+		{
+			// Set the faded volume if it's still greater than 0
+			FMOD_Channel_SetVolume(l_fmodBgmVoice, currentVolume);
+		}
+		else 
+		{
+			// Free current...
+			FMOD_Channel_Stop(l_fmodBgmVoice);
+			FMOD_Sound_Release(l_fmodBgmSound);
+
+			// When volume goes below zero, we start up our new sound.
+			FMOD_System_PlaySound(l_fmodSystem, l_fmodBgmSoundNext, l_fmodBgmChannelGroup, 0, &l_fmodBgmVoice);
+			
+			// Reapply true volume
+			FMOD_Channel_SetVolume(l_fmodBgmVoice, (*g_somSoundVolumeBGM / 255.0f));
+
+			LogFWrite("PlayNextSound", "SomSound>Tick");
+
+			// Put next into current.
+			l_fmodBgmSound = l_fmodBgmSoundNext;
+			l_fmodBgmSoundNext = NULL;
+		}
+	}
 
 	//
 	// FOOT STEP SOUND FEATURE
@@ -500,7 +596,7 @@ void __cdecl SomSoundTick()
 	if (footStepSoundId >= 0)
 	{
 		// While the player isn't holding any of the movement keys, update their last position
-		if (!GetRemappedKeyHeld("MovePlayerForward") && !GetRemappedKeyHeld("MovePlayerBack") && !GetRemappedKeyHeld("MovePlayerRight") && !GetRemappedKeyHeld("MovePlayerLeft"))
+		if (((m_somInputState >> 4) & 0xF) == 0)
 		{
 			l_lastPlayerX = *g_somPlayerX;
 			l_lastPlayerZ = *g_somPlayerZ;
@@ -515,7 +611,8 @@ void __cdecl SomSoundTick()
 			// If the distance between the last and current position is > 2m, we play the footstep sound...
 			if (sqrt((playerDLX * playerDLX) + (playerDLZ * playerDLZ)) > 2.f)
 			{
-				ProxySomSoundPlay3D(footStepSoundId, 0, *g_somPlayerX, *g_somPlayerY, *g_somPlayerZ);
+				//ProxySomSoundPlay3D(footStepSoundId, 0, *g_somPlayerX, *g_somPlayerY, *g_somPlayerZ);
+				ProxySomSoundPlay2D(footStepSoundId, 0);	// Better to play these in 2D, since we don't want them to appear to lag behind the player?..
 
 				l_lastPlayerX = *g_somPlayerX;
 				l_lastPlayerZ = *g_somPlayerZ;

@@ -148,9 +148,17 @@
     <ClInclude Include="hasher.h" />
     <ClInclude Include="logf.h" />
     <ClInclude Include="somconf.h" />
+    <ClInclude Include="somdraw.h" />
     <ClInclude Include="somgamedata.h" />
     <ClInclude Include="somgdi.h" />
+    <ClInclude Include="somgold.h" />
     <ClInclude Include="sominput.h" />
+    <ClInclude Include="sommath.h" />
+    <ClInclude Include="sommemory.h" />
+    <ClInclude Include="sommessagequeue.h" />
+    <ClInclude Include="somobject.h" />
+    <ClInclude Include="somplayer.h" />
+    <ClInclude Include="somscreeneffect.h" />
     <ClInclude Include="somsound.h" />
     <ClInclude Include="somwindow.h" />
   </ItemGroup>
@@ -159,9 +167,16 @@
     <ClCompile Include="hasher.cpp" />
     <ClCompile Include="logf.cpp" />
     <ClCompile Include="somconf.cpp" />
+    <ClCompile Include="somdraw.cpp" />
     <ClCompile Include="somgamedata.cpp" />
     <ClCompile Include="somgdi.cpp" />
+    <ClCompile Include="somgold.cpp" />
     <ClCompile Include="sominput.cpp" />
+    <ClCompile Include="sommath.cpp" />
+    <ClCompile Include="sommemory.cpp" />
+    <ClCompile Include="sommessagequeue.cpp" />
+    <ClCompile Include="somplayer.cpp" />
+    <ClCompile Include="somscreeneffect.cpp" />
     <ClCompile Include="somsound.cpp" />
     <ClCompile Include="somwindow.cpp" />
   </ItemGroup>

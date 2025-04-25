@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using Sealed_Sword_Stone.Core;
+using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
 using System.Windows;
@@ -11,8 +12,9 @@ namespace Sealed_Sword_Stone;
 public partial class App : Application
 {
     public static LaunchConfig LauncherConfig { get; private set; }
-
+    public static UserConfig UserConfig { get; private set; }
     public static string ProgramPath = Path.GetDirectoryName(Environment.ProcessPath);
+    public static ControllerState ControllerState { get; private set; } = new ControllerState();
 
     void OnApplicationStartup(object sender, StartupEventArgs e)
     {
@@ -22,18 +24,14 @@ public partial class App : Application
                 Path.Combine(App.ProgramPath, "LAUNCHER", "launcher_config.json")
                 )
             );
+
+        UserConfig = UserConfig.Load();
     }
 
     public static void StartGame()
     {
-        /*
-        Process.Start(new ProcessStartInfo
-        {
-            FileName  = "Unsealer.exe",
-            Arguments = $"/D:Unsealer.dll \"{LauncherConfig.GameExecutable}\"",
-            CreateNoWindow = true
-        });
-        */
+        // Temp OooOooOoo
+        UserConfig.Save();
 
         Injector.StartProcessWithDlls(
             new ProcessStartupConfig(

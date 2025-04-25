@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using Sealed_Sword_Stone.Core;
+using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -12,63 +13,86 @@ namespace Sealed_Sword_Stone
 
         // KEYBOARD-MOUSE-GAMEPAD MAPPING
         // ----------------------------------
-        // | 0x01xxxxxx   = Keyboard Device |
-        // | 0x02xxxxxx   = Mouse Device    |
+        // | 0xg1xxxxxx   = Keyboard Device |
+        // | 0xg2xxxxxx   = Mouse Device    |
+        // | 0x1dxxxxxx   = Gamepad Button  |
+        // | 0x2dxxxxxx   = Gamepad Axis    |
+        // | 0x3dxxxxxx   = Gamepad Hat     |
         // | 0x00ffffff   = Unbound         |
         // ----------------------------------
         // | 0xDDxxPDKM   = Form.           |
         // |   ^^ = Device Flags            |
-        // |        Lower4 = Game Pad ID    |
-        // |        Upper4 = Keyboard/Mouse |
-        // |     ^^ = Reserved              |
-        // |       ^^ = Game Pad Binding    |
+        // |        Upper4  = Gamepad       |
+        // |        Lowest2 = Keyboard/Mouse|
+        // |        Lower   = Alt           |
+        // |     ^^ = Game Pad Binding      |
+        // |       ^^ = Alt Binding         |
         // |         ^^ = Key/Mouse Binding |
         // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
         [JsonInclude]
-        public uint MovePlayerForward { get; set; } = 0x01000057;       // Keyboard, W
-        
-        [JsonInclude]
-        public uint MovePlayerBack    { get; set; } = 0x01000053;       // Keyboard, S
+        public uint PlayerMoveForward  { get; set; } = ControlBinding.Pack(3, 1, 0, 0x00, 0x57, 0);       // Default: Keyboard = W, Gamepad = Hat 0
 
         [JsonInclude]
-        public uint MovePlayerRight   { get; set; } = 0x01000044;       // Keyboard, D
+        public uint PlayerMoveBackward { get; set; } = ControlBinding.Pack(3, 1, 0, 0x04, 0x53, 0);       // Default: Keyboard = S, Gamepad = Hat 4
 
         [JsonInclude]
-        public uint MovePlayerLeft    { get; set; } = 0x01000041;       // Keyboard, A
+        public uint PlayerStrafeLeft   { get; set; } = ControlBinding.Pack(1, 1, 0, 0x04, 0x41, 0);       // Default: Keyboard = A, Gamepad = Button 4
 
         [JsonInclude]
-        public uint TurnPlayerRight   { get; set; } = 0x01000045;       // Keyboard, E
+        public uint PlayerStrafeRight  { get; set; } = ControlBinding.Pack(1, 1, 0, 0x05, 0x44, 0);       // Default: Keyboard = D, Gamepad = Button 5
 
         [JsonInclude]
-        public uint TurnPlayerLeft    { get; set; } = 0x01000051;       // Keyboard, Q
+        public uint PlayerTurnLeft     { get; set; } = ControlBinding.Pack(3, 0, 0, 0x06, 0xFF, 0xFF);    // Default: Gamepad = Hat 6
 
         [JsonInclude]
-        public uint LookPlayerUp      { get; set; } = 0x01000052;       // Keyboard, R
+        public uint PlayerTurnRight    { get; set; } = ControlBinding.Pack(3, 0, 0, 0x02, 0xFF, 0xFF);    // Default: Gamepad = Hat 2
 
         [JsonInclude]
-        public uint LookPlayerDown    { get; set; } = 0x01000046;       // Keyboard, F
+        public uint PlayerLookUp       { get; set; } = ControlBinding.Pack(1, 0, 0, 0x07, 0xFF, 0xFF);    // Default: Gamepad = Button 7
 
         [JsonInclude]
-        public uint ActionAttack      { get; set; } = 0x010000A0;       // Keyboard, L Shift
+        public uint PlayerLookDown     { get; set; } = ControlBinding.Pack(1, 0, 0, 0x06, 0xFF, 0xFF);    // Default: Gamepad = Button 6
 
         [JsonInclude]
-        public uint ActionMagicCast   { get; set; } = 0x010000A2;       // Keyboard, L Control
+        public uint ActionAttack       { get; set; } = ControlBinding.Pack(1, 2, 0, 0x03, 0x00, 0x00);    // Default: Mouse = Left, Gamepad = Button 3
 
         [JsonInclude]
-        public uint ActionInspect     { get; set; } = 0x01000020;       // Keyboard, Space
+        public uint ActionCast         { get; set; } = ControlBinding.Pack(1, 2, 0, 0x00, 0x02, 0x00);    // Default: Mouse = Right, Gamepad = Button 0
 
         [JsonInclude]
-        public uint ActionOpenMenu    { get; set; } = 0x01000009;       // Keyboard, Tab
+        public uint ActionInspect      { get; set; } = ControlBinding.Pack(1, 1, 0, 0x01, 0x45, 0x00);    // Default: Keyboard = E, Gamepad = Button 1
 
         [JsonInclude]
-        public uint ActionAcceptMenu  { get; set; } = 0x01000020;       // Keyboard, Space
+        public uint ActionSprint       { get; set; } = ControlBinding.Pack(1, 1, 0, 0x01, 0x10, 0x00);    // Default: Keyboard = Shift, Gamepad = Button 1
 
         [JsonInclude]
-        public uint ActionCloseMenu   { get; set; } = 0x0100001B;       // Keyboard, Escape
+        public uint MenuOpen           { get; set; } = ControlBinding.Pack(1, 1, 0, 0x02, 0x09, 0x00);    // Default: Keyboard = Tab, Gamepad = Button 2
+
+        [JsonInclude]
+        public uint MenuConfirm        { get; set; } = ControlBinding.Pack(1, 1, 0, 0x01, 0x20, 0x00);    // Default: Keyboard = Space, Gamepad = Button 1 
+
+        [JsonInclude]
+        public uint MenuCancel         { get; set; } = ControlBinding.Pack(1, 1, 0, 0x02, 0x1B, 0x00);    // Default: Keyboard = Escape, Gamepad = Button 2
+
+        [JsonInclude]
+        public uint MenuUp             { get; set; } = ControlBinding.Pack(3, 1, 1, 0x00, 0x57, 0x26);    // Default: Keyboard = W & Up Arrow, Gamepad = Hat 0
+
+        [JsonInclude]
+        public uint MenuDown           { get; set; } = ControlBinding.Pack(3, 1, 1, 0x04, 0x53, 0x28);    // Default: Keyboard = S & Down Arrow, Gamepad = Hat 4
+
+        [JsonInclude]
+        public uint MenuLeft           { get; set; } = ControlBinding.Pack(3, 1, 1, 0x06, 0x41, 0x25);    // Default: Keyboard = A & Left Arrow, Gamepad = Hat 6
+
+        [JsonInclude]
+        public uint MenuRight          { get; set; } = ControlBinding.Pack(3, 1, 1, 0x02, 0x44, 0x27);    // Default: Keyboard = D & Right Arrow, Gamepad = Hat 2
 
         // Control Settings
-        public bool UseMouseLook      { get; set; } = false;
+        public bool UseMouseLook { get; set; } = false;
+
+        public float MouseSensitivity { get; set; } = 0.5f;
+
+        public float MouseSmoothing { get; set; } = 0.5f;
 
         /// <summary>
         /// Loads User Config from file

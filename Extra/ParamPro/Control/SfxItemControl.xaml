@@ -1,0 +1,26 @@
+﻿<UserControl x:Class="ParamPro.Control.SfxItemControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ParamPro.Control"
+             mc:Ignorable="d" 
+             d:DesignHeight="24" d:DesignWidth="256">
+    <Grid Background="#FF101010">
+        <!-- Use a grid for organization -->
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Input for Effect ID -->
+        <local:FractionalBox x:Name="effectField" Unsigned="true" AllowFractions="false" MinValue="0" MaxValue="1023" Grid.Column="0" Margin="2,2,2,2" LostFocus="OnEditEndEffectID"/>
+
+        <!-- Input for Delay -->
+        <local:FractionalBox x:Name="delayField" Unsigned="true" AllowFractions="false" MinValue="0" MaxValue="255" Grid.Column="1" Margin="2,2,2,2" LostFocus="OnEditEndDelay"/>
+
+        <!-- Input for CP -->
+        <local:FractionalBox x:Name="cpField" Unsigned="true" AllowFractions="false" MinValue="0" MaxValue="255" Grid.Column="2" Margin="2,2,2,2" LostFocus="OnEditEndCP"/>
+    </Grid>
+</UserControl>

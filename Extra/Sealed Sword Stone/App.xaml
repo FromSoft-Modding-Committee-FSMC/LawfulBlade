@@ -7,6 +7,10 @@
     
     <Application.Resources>
         <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Theme\Dark.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            
             <BitmapImage x:Key="960-540-Background" UriSource="LAUNCHER/960-540-Background.png"/>
             <BitmapImage x:Key="128-24-PlayButton" UriSource="LAUNCHER/128-24-PlayButton.png"/>
             <BitmapImage x:Key="128-24-SettingsButton" UriSource="LAUNCHER/128-24-SettingsButton.png"/>
