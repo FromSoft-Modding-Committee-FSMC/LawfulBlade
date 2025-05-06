@@ -1,27 +1,17 @@
 name: Lawful Blade Manager
-
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]  
+'on':
   workflow_dispatch:
-    branches: [ "main" ]
-    
+    branches:
+      - main
 jobs:
   build:
     runs-on: windows-latest
-    
   steps:
-  # Repository checkout on agent
-  - name: Checkout
-    uses: actions/checkout@v4
-    with:
-      fetch-depth: 0
-      
-  # .NET Setup
-  - name: Install .NET 9.0.X
-    uses: actions/setup-dotnet@v4
-    with:
-      dotnet-version: 9.0.x
-      
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    - name: Install .NET 9.0.X
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 9.0.x
