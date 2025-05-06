@@ -326,7 +326,7 @@ bool __cdecl ProxySomSoundLoad(int16_t soundId, int8_t dontUnload)
 		uint16_t sndBitsPerSample;
 		uint16_t sndUnkx10;
 		uint32_t sndByteSize;
-		uint16_t sndUnkx14;
+		// uint16_t sndUnkx14;
 
 		sndFile.read((char*)&sndUnkx00, sizeof(sndUnkx00));
 		sndFile.read((char*)&sndUnkx02, sizeof(sndUnkx02));
@@ -336,7 +336,7 @@ bool __cdecl ProxySomSoundLoad(int16_t soundId, int8_t dontUnload)
 		sndFile.read((char*)&sndBitsPerSample, sizeof(sndBitsPerSample));
 		sndFile.read((char*)&sndUnkx10, sizeof(sndUnkx10));
 		sndFile.read((char*)&sndByteSize, sizeof(sndByteSize));
-		sndFile.read((char*)&sndUnkx14, sizeof(sndUnkx14));
+		// sndFile.read((char*)&sndUnkx14, sizeof(sndUnkx14));
 
 		// Read the buffer from the SND...
 		l_somSounds[soundId].sampleBuffer = new uint8_t[sndByteSize];

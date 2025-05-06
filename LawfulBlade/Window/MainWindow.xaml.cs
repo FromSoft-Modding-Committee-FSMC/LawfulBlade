@@ -166,6 +166,8 @@ namespace LawfulBlade
                 return;
 
             new DirectoryInfo(App.PackageCachePath).Delete(true);
+
+            MessageBox.Show("Package cache has been cleared successfully!", "Lawful Blade", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         #endregion

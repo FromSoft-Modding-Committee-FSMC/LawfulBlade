@@ -75,28 +75,44 @@ namespace LawfulBlade.Core
             return repository;
         }
 
-        public static Repository Load(string sourceUri)
+        public static bool Load(string sourceUri, out Repository repository)
         {
-            // First we must download the REP file... (do it sync)
-            DownloadManager.DownloadSync(new Uri($"{sourceUri}.REP"), Path.Combine(App.TemporaryPath, "temp.rep"));
- 
-            Repository repository = JsonSerializer.Deserialize<Repository>(File.ReadAllText(Path.Combine(App.TemporaryPath, "temp.rep")));
+            // Create uri object from the uri string
+            Uri repositoryUri = new Uri($"{sourceUri}.REP");
+            string repositoryPath;
+
+            // Default repository to null...
+            repository = null;
+
+            // Depending on if the Uri is a local file or a internet path we want different actions...
+            if (repositoryUri.IsFile)
+                repositoryPath = $"{repositoryUri.LocalPath}";      
+            else
+            {
+                DownloadManager.DownloadSync(new Uri($"{sourceUri}.REP"), Path.Combine(App.TemporaryPath, "TEMP.REP"));
+                DownloadManager.DownloadSync(new Uri($"{sourceUri}.LIB"), Path.Combine(App.TemporaryPath, "TEMP.LIB"));
+                repositoryPath = Path.Combine(App.TemporaryPath, "TEMP");
+            }
+
+            if (!File.Exists($"{repositoryPath}.REP") || !File.Exists($"{repositoryPath}.LIB"))
+                return false;
+
+            // Load the repository into memory
+            repository     = JsonSerializer.Deserialize<Repository>(File.ReadAllText($"{repositoryPath}.REP"));
             repository.URI = sourceUri;
 
-            // Download the lib file
-            DownloadManager.DownloadSync(new Uri($"{sourceUri}.LIB"), Path.Combine(App.TemporaryPath, "temp.lib"));
+            // decompress the library file
+            using MemoryStream memoryStream = new (File.ReadAllBytes($"{repositoryPath}.LIB"));
+            using BrotliStream brotliStream = new (memoryStream, CompressionMode.Decompress);
+            using MemoryStream decompStream = new ();
 
-            // Now we must uncompress it...
-            using MemoryStream memoryStream = new MemoryStream(File.ReadAllBytes(Path.Combine(App.TemporaryPath, "temp.lib")));
-            using BrotliStream brotliStream = new BrotliStream(memoryStream, CompressionMode.Decompress);
-            using MemoryStream decompStream = new MemoryStream();
-
+            // Copy from Brotli to the decomp stream
             brotliStream.CopyTo(decompStream);
 
             // Turn it back into valid text and read it...
             repository.PackageLibrary = JsonSerializer.Deserialize<List<RepositoryPackage>>(Encoding.UTF8.GetString(decompStream.ToArray()));
 
-            return repository;
+            return true;
         }
 
         /// <summary>

@@ -87,6 +87,7 @@ void UnsealProcessRawInput(HRAWINPUT rawInput)
 
         // Generic - in our case, joystick or gamepad
         case RIM_TYPEHID:
+            /*
             // Check the size of the preparsed data chunk
             GetRawInputDeviceInfoW(rawBuffer->header.hDevice, RIDI_PREPARSEDDATA, NULL, &dwSize);
             if (dwSize == 0)
@@ -131,6 +132,7 @@ void UnsealProcessRawInput(HRAWINPUT rawInput)
             // Get Value Caps
 
             free(parsedBuffer);
+            */
         break;
     }
 

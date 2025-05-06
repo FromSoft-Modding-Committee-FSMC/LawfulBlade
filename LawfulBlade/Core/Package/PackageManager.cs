@@ -47,9 +47,10 @@ namespace LawfulBlade.Core.Package
 
             foreach (string repositoryUrl in repositoryUrls)
             {
-                Repository repo = Repository.Load(repositoryUrl);
-                PackageCount += repo.PackageCount;
+                if (!Repository.Load(repositoryUrl, out Repository repo))
+                    continue;
 
+                PackageCount += repo.PackageCount;
                 Repositories.Add(repo);
             }
         }
