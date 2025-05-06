@@ -35,7 +35,7 @@ namespace LawfulBlade.Dialog
         /// </summary>
         void OnLoaded(object sender, RoutedEventArgs e)
         {
-            if (Message.Warning("No core packages were avaliable! An instance cannot be created!", (InstanceManager.Count == 0)))
+            if (Message.Warning("No instances have been created! You must create an instance before you create a project!", (InstanceManager.Count == 0)))
                 OnCancelButton(null, null);
         }
 
