@@ -36,6 +36,20 @@ namespace Sealed_Sword_Stone.Controls
             mappingBox.Children.Add(new KeyboardMouseBinding(tab.MenuDown, "Cursor Down"));
             mappingBox.Children.Add(new KeyboardMouseBinding(tab.MenuLeft, "Cursor Left"));
             mappingBox.Children.Add(new KeyboardMouseBinding(tab.MenuRight, "Cursor Right"));
+
+            useMouseLookCB.IsChecked = confDialog.UseMouseLook;
+            useMouseLookCB.Checked   += useMouseLookCB_Checked;
+            useMouseLookCB.Unchecked += useMouseLookCB_Unchecked;
+        }
+
+        private void useMouseLookCB_Unchecked(object sender, System.Windows.RoutedEventArgs e)
+        {
+            tab.UseMouseLook = false;
+        }
+
+        private void useMouseLookCB_Checked(object sender, System.Windows.RoutedEventArgs e)
+        {
+            tab.UseMouseLook = true;
         }
     }
 }

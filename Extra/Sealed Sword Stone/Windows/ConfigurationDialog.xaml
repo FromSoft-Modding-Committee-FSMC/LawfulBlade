@@ -18,10 +18,10 @@
             <TabItem x:Name="kbmControlTab" Header="Keyboard &amp; Mouse">
             </TabItem>
 
-            <!-- Gamepad Controls -->
+            <!-- Gamepad Controls 
             <TabItem x:Name="padControlTab" Header="Controller">
             </TabItem>
-
+            -->
 
         </TabControl>
         

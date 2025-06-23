@@ -1,5 +1,4 @@
 ﻿using Sealed_Sword_Stone.Core;
-using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
 using System.Windows;
@@ -33,9 +32,14 @@ public partial class App : Application
         // Temp OooOooOoo
         UserConfig.Save();
 
+        // Get the executable location
+        string somRuntimeLocation = Path.Combine(ProgramPath, LauncherConfig.GameExecutable);
+
+        Directory.SetCurrentDirectory(Path.GetDirectoryName(somRuntimeLocation));
+
         Injector.StartProcessWithDlls(
             new ProcessStartupConfig(
-                [Path.Combine(ProgramPath, LauncherConfig.GameExecutable)],
+                [somRuntimeLocation],
                 false,
                 false,
                 false

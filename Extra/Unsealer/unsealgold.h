@@ -1,12 +1,9 @@
-#ifndef _SOMGOLD_H
-#define _SOMGOLD_H
+#ifndef _UNSEALGOLD_H
+#define _UNSEALGOLD_H
 
 #include <stdint.h>
-#include "sommath.h"
+#include "unsealmath.h"
 
-//
-// Type Def
-//
 typedef struct
 {
 	int8_t state;
@@ -19,11 +16,7 @@ typedef struct
 	int32_t s32x1c;
 } SomGoldInstance;
 
-//
-// Unsealer
-//
 extern void __cdecl UnsealGoldInit();
 extern void __cdecl UnsealGoldKill();
-extern void __cdecl UnsealGoldTick();
 
 #endif

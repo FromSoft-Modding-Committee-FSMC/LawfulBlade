@@ -79,7 +79,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(MSBuildProjectDirectory)\sdk\detours\inc;$(MSBuildProjectDirectory)\sdk\fmod\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(MSBuildProjectDirectory)\sdk\inc;$(MSBuildProjectDirectory)\sdk\detours\inc;$(MSBuildProjectDirectory)\sdk\fmod\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -98,7 +98,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(MSBuildProjectDirectory)\sdk\detours\inc;$(MSBuildProjectDirectory)\sdk\fmod\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(MSBuildProjectDirectory)\sdk\inc;$(MSBuildProjectDirectory)\sdk\detours\inc;$(MSBuildProjectDirectory)\sdk\fmod\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -145,40 +145,39 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="hasher.h" />
-    <ClInclude Include="logf.h" />
-    <ClInclude Include="somconf.h" />
-    <ClInclude Include="somdraw.h" />
-    <ClInclude Include="somgamedata.h" />
+    <ClInclude Include="unsealhash.h" />
+    <ClInclude Include="unseallog.h" />
+    <ClInclude Include="unsealconf.h" />
+    <ClInclude Include="unsealdraw.h" />
+    <ClInclude Include="unsealfilesystem.h" />
+    <ClInclude Include="unsealdata.h" />
     <ClInclude Include="somgdi.h" />
-    <ClInclude Include="somgold.h" />
+    <ClInclude Include="unsealgold.h" />
     <ClInclude Include="sominput.h" />
-    <ClInclude Include="sommath.h" />
-    <ClInclude Include="sommemory.h" />
-    <ClInclude Include="sommessagequeue.h" />
-    <ClInclude Include="somobject.h" />
-    <ClInclude Include="somplayer.h" />
-    <ClInclude Include="somscreeneffect.h" />
+    <ClInclude Include="unsealmath.h" />
+    <ClInclude Include="unsealmemory.h" />
+    <ClInclude Include="unsealplayer.h" />
     <ClInclude Include="somsound.h" />
-    <ClInclude Include="somwindow.h" />
+    <ClInclude Include="unsealtime.h" />
+    <ClInclude Include="unsealwindow.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="hasher.cpp" />
-    <ClCompile Include="logf.cpp" />
-    <ClCompile Include="somconf.cpp" />
-    <ClCompile Include="somdraw.cpp" />
-    <ClCompile Include="somgamedata.cpp" />
+    <ClCompile Include="unsealhash.cpp" />
+    <ClCompile Include="unseallog.cpp" />
+    <ClCompile Include="unsealconf.cpp" />
+    <ClCompile Include="unsealdraw.cpp" />
+    <ClCompile Include="unsealfilesystem.cpp" />
+    <ClCompile Include="unsealdata.cpp" />
     <ClCompile Include="somgdi.cpp" />
-    <ClCompile Include="somgold.cpp" />
+    <ClCompile Include="unsealgold.cpp" />
     <ClCompile Include="sominput.cpp" />
-    <ClCompile Include="sommath.cpp" />
-    <ClCompile Include="sommemory.cpp" />
-    <ClCompile Include="sommessagequeue.cpp" />
-    <ClCompile Include="somplayer.cpp" />
-    <ClCompile Include="somscreeneffect.cpp" />
+    <ClCompile Include="unsealmath.cpp" />
+    <ClCompile Include="unsealmemory.cpp" />
+    <ClCompile Include="unsealplayer.cpp" />
     <ClCompile Include="somsound.cpp" />
-    <ClCompile Include="somwindow.cpp" />
+    <ClCompile Include="unsealtime.cpp" />
+    <ClCompile Include="unsealwindow.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -11,52 +11,49 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="logf.h">
+    <ClInclude Include="unseallog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="sominput.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="somwindow.h">
+    <ClInclude Include="unsealwindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="somconf.h">
+    <ClInclude Include="unsealconf.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="somsound.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="somgamedata.h">
+    <ClInclude Include="unsealdata.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="somgdi.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="hasher.h">
+    <ClInclude Include="unsealhash.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="somscreeneffect.h">
+    <ClInclude Include="unsealdraw.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="somdraw.h">
+    <ClInclude Include="unsealmemory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="sommemory.h">
+    <ClInclude Include="unsealgold.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="somgold.h">
+    <ClInclude Include="unsealmath.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="sommath.h">
+    <ClInclude Include="unsealplayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="somplayer.h">
+    <ClInclude Include="unsealfilesystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="sommessagequeue.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="somobject.h">
+    <ClInclude Include="unsealtime.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -64,49 +61,49 @@
     <ClCompile Include="dllmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="logf.cpp">
+    <ClCompile Include="unseallog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="sominput.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="somwindow.cpp">
+    <ClCompile Include="unsealwindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="somconf.cpp">
+    <ClCompile Include="unsealconf.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="somsound.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="somgamedata.cpp">
+    <ClCompile Include="unsealdata.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="somgdi.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="hasher.cpp">
+    <ClCompile Include="unsealhash.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="somscreeneffect.cpp">
+    <ClCompile Include="unsealdraw.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="somdraw.cpp">
+    <ClCompile Include="unsealmemory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="sommemory.cpp">
+    <ClCompile Include="unsealgold.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="somgold.cpp">
+    <ClCompile Include="unsealmath.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="sommath.cpp">
+    <ClCompile Include="unsealplayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="somplayer.cpp">
+    <ClCompile Include="unsealfilesystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="sommessagequeue.cpp">
+    <ClCompile Include="unsealtime.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

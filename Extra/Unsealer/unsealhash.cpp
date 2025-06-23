@@ -1,4 +1,4 @@
-#include "hasher.h"
+#include "unsealhash.h"
 
 #define FNV_32_BASIS 0x811c9dc5
 #define FNV_32_PRIME 0x01000193

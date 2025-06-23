@@ -1,15 +1,13 @@
-#include "somgold.h"
-
-#include "sommemory.h"
-#include "sommessagequeue.h"
-#include "somplayer.h"
-
-#include "somconf.h"
-#include "logf.h"
-
 #include <Windows.h>
 #include <ostream>
 #include <detours.h>
+
+#include "unsealconf.h"
+#include "unseallog.h"
+#include "unsealmemory.h"
+#include "unsealplayer.h"
+
+#include "unsealgold.h"
 
 //
 // Defines
@@ -18,29 +16,28 @@
 #define GOLD_DROP_ACTIVE 0x02
 #define GOLD_DROP_PICKED 0x03
 
-//
-// Variables
-//
+/**
+ * Data
+**/
 int32_t m_somMaxGoldInstanceCount = 32;		// The maximum number of gold drops which can be present.
-
 SomGoldInstance* m_goldDropInstances = (SomGoldInstance*)0x004c1228;
 uint32_t** m_goldMeshInstances = (uint32_t**)0x004c162c;
 
-//
-// Func Types
-//
+/**
+ * Function Type Definition
+**/
 typedef uint32_t(__cdecl* SomGoldSpawnCoin)(float*, short);
 typedef void(__cdecl* SomGoldTryPickup)();
 
-//
-// Proxied
-//
+/**
+ * Function Hooking
+**/
 SomGoldSpawnCoin ProxiedSomGoldSpawnCoin = (SomGoldSpawnCoin)0x00403cf0;
 SomGoldTryPickup ProxiedSomGoldTryPickup = (SomGoldTryPickup)0x00403ee0;
 
-//
-// Proxies
-//
+/**
+ * Function Proxies
+**/
 uint32_t __cdecl ProxySomGoldSpawnCoin(float* position, short value)
 {
 	SomGoldInstance* foundGoldInst = &m_goldDropInstances[0];
@@ -89,6 +86,7 @@ uint32_t __cdecl ProxySomGoldSpawnCoin(float* position, short value)
 
 	return 0;
 }
+
 void __cdecl ProxySomGoldTryPickup()
 {
 	// Loop Over every single gold instance...
@@ -102,15 +100,8 @@ void __cdecl ProxySomGoldTryPickup()
 			continue;
 
 		// Skip the gold if we're too far from it.
-		if (VectorDistance3f(&current->position, &g_somPlayerPosition) > GetGameConfigFloat("GoldPickupRange"))
+		if (VectorDistance3f(&current->position, &g_somPlayerPosition) > g_gameConfigCurrency.pickupRange)
 			continue;
-		
-		std::ostringstream out1;
-		out1 << std::endl;
-		out1 << "Gold Position: { x = " << current->position.x << ", y = " << current->position.y << ", z = " << current->position.z << " }" << std::endl;
-		out1 << "Play Position: { x = " << g_somPlayerPosition.x << ", y = " << g_somPlayerPosition.y << ", z = " << current->position.z << " }" << std::endl;
-		out1 << "Distance = " << VectorDistance3f(&current->position, &g_somPlayerPosition) << std::endl;
-		LogFWrite(out1.str(), "Gold Get Nib");
 
 		// Add Gold to the player
 		g_somPlayerGold += current->value;
@@ -121,19 +112,19 @@ void __cdecl ProxySomGoldTryPickup()
 		current->state = GOLD_DROP_PICKED;
 
 		// Queue up a message
-		std::ostringstream out;
-		out << current->value << " " << GetGameConfigString("GoldMessagePost");
+		// std::ostringstream out;
+		// out << current->value << "COIN OBTAINED";
 
-		ProxiedSomMessageQueuePush(out.str().c_str(), 0);
+		//ProxiedSomMessageQueuePush(out.str().c_str(), 0);
 
-		if (GetGameConfigBool("GoldPickupMulti") == 0)
+		if (g_gameConfigCurrency.pickupMultiple == false)
 			break;
 	}
 }
 
-//
-// Unsealer
-//
+/**
+ * Unsealer
+**/
 void __cdecl UnsealGoldInit()
 {
 	DetourAttach(&(PVOID&)ProxiedSomGoldSpawnCoin, ProxySomGoldSpawnCoin);
@@ -144,9 +135,4 @@ void __cdecl UnsealGoldKill()
 {
 	DetourDetach(&(PVOID&)ProxiedSomGoldSpawnCoin, ProxySomGoldSpawnCoin);
 	DetourDetach(&(PVOID&)ProxiedSomGoldTryPickup, ProxySomGoldTryPickup);
-}
-
-void __cdecl UnsealGoldTick()
-{
-
 }

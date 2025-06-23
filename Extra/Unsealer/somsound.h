@@ -55,5 +55,7 @@ extern bool __cdecl ProxySomSoundPlay2D(int32_t soundId, int8_t pitch);
 extern void __cdecl SomSoundInitDetours();
 extern void __cdecl SomSoundKillDetours();
 extern void __cdecl SomSoundTick();
+extern void __cdecl UnsealSoundOnSuspend();
+extern void __cdecl UnsealSoundOnResume();
 
 #endif

@@ -9,7 +9,7 @@ namespace Sealed_Sword_Stone
     {
         // Non Json Properties
         [JsonIgnore]
-        static string confPath = Path.Combine(App.ProgramPath, "USER.CONF.SEAL");
+        static string confPath = Path.Combine(App.ProgramPath, "BIN", "USER.CONF.SEAL");
 
         // KEYBOARD-MOUSE-GAMEPAD MAPPING
         // ----------------------------------

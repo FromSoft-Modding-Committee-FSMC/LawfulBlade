@@ -1,5 +1,5 @@
-#ifndef _HASHER_H_
-#define _HASHER_H_
+#ifndef _UNSEALHASH_H_
+#define _UNSEALHASH_H_
 
 #include <stdint.h>
 

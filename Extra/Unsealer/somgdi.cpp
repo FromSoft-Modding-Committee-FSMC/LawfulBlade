@@ -1,12 +1,14 @@
 #include <map>
 
 #include "somgdi.h"
+
 #include "somconf.h"
-#include "logf.h"
+#include "somlog.h"
+
 #include "hasher.h"
 
 #include "sdk/json.hpp"
-#include "sdk/detours/inc/detours.h"
+#include "detours.h"
 
 // Store loaded fonts
 std::map<uint32_t, SomFontConfiguration> l_textFontData;
@@ -28,9 +30,9 @@ HFONT __stdcall ProxyCreateFontA(int cHeight, int cWidth, int cEscapement, int c
 	else 
 	{
 		// We will log the font so we can add a configuration for it...
-		std::ostringstream out;
-		out << "Font Info: { Width = " << cWidth << ", Height = " << cHeight << ", Face Hash = " << faceNameHash << " }";
-		LogFWrite(out.str(), "DllMain>SomMainLoopFun");
+		// std::ostringstream out;
+		// out << "Font Info: { Width = " << cWidth << ", Height = " << cHeight << ", Face Hash = " << faceNameHash << " }";
+		// LogFWrite(out.str(), "DllMain>SomMainLoopFun");
 	}
 
 	// Return the created font.
@@ -41,11 +43,22 @@ HFONT __stdcall ProxyCreateFontA(int cHeight, int cWidth, int cEscapement, int c
 SomTextOutA ProxiedTextOutA = TextOutA;
 BOOL __stdcall ProxySomTextOutA(HDC hdc, int x, int y, LPCSTR lpString, int c)
 {
-	// We will log the font so we can add a configuration for it...
-	std::ostringstream out;
-	out << "TextOutA: { Value = " << lpString << " }";
-	LogFWrite(out.str(), "somgdi>ProxySomTextOutA");
+	/*
+	if (GetGameConfigBool("DumpLanguageData"))
+	{
+		// First we need to Back Trace to get the origin...
+		uint32_t* stackTrace[4];
+		RtlCaptureStackBackTrace(1, 4, (void**)stackTrace, NULL);
 
+		// Get a hash of the text...
+		uint32_t fnvHash = HashAsFNV32(lpString, c);
+
+		// Build the line...
+		std::ostringstream out;
+		out << "Text Dump = { caller = 0x" << stackTrace[0] << ", hash = 0x" << (void*)fnvHash << ", text = " << lpString << " }";
+		LogFWrite(out.str(), "SomGdi>TextOutA");
+	}
+	*/
 	return ProxiedTextOutA(hdc, x, y, lpString, c);
 }
 
@@ -53,17 +66,22 @@ BOOL __stdcall ProxySomTextOutA(HDC hdc, int x, int y, LPCSTR lpString, int c)
 // Hook N Fuck - Init, Deinit, Tick
 void __cdecl SomGdiInit()
 {
-	// Load our font configurations...
-	l_textFontData[4085079925] = { GetGameConfigString("TextMenuFontFace"), GetGameConfigInteger("TextMenuFontWeight") };	// SoM1 Font
+	// Font Hacks
+	// std::ostringstream out;
+	// out << "FONT\\" << GetGameConfigString("TextMenuFontFace") << ".ttf";
+	// AddFontResourceExA(out.str().c_str(), FR_PRIVATE, nullptr);
+	// l_textFontData[4085079925] = { GetGameConfigString("TextMenuFontFace"), GetGameConfigInteger("TextMenuFontWeight") };	// SoM1 Font
+
+	// Language Hacks
 
 	// Detouring
-	DetourAttach(&(PVOID&)ProxiedCreateFontA, ProxyCreateFontA);
-	// DetourAttach(&(PVOID&)ProxiedTextOutA, ProxySomTextOutA);	- Disabled for now, but we could potentially use this for localization?
+	// DetourAttach(&(PVOID&)ProxiedCreateFontA, ProxyCreateFontA);
+	// DetourAttach(&(PVOID&)ProxiedTextOutA, ProxySomTextOutA);
 }
 
 void __cdecl SomGdiKill()
 {
 	// Undetouring
-	DetourDetach(&(PVOID&)ProxiedCreateFontA, ProxyCreateFontA);
+	// DetourDetach(&(PVOID&)ProxiedCreateFontA, ProxyCreateFontA);
 	// DetourDetach(&(PVOID&)ProxiedTextOutA, ProxySomTextOutA);
 }

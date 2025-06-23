@@ -127,7 +127,7 @@ namespace Som2kRuntime
                         // Copy Model
                         File.Copy(
                             Path.Combine(EdtEnemy, "MODEL", item.modelName),
-                            Path.Combine(PubEnemy, "MODEL", item.modelName),
+                            Path.Combine(PubEnemy, "MODEL", item.modelName).ToUpperInvariant(),
                             true);
                         
                         // Copy Control Points (if they exist, they should...)
@@ -183,7 +183,7 @@ namespace Som2kRuntime
                         // Copy Model
                         File.Copy(
                             Path.Combine(EdtItem, "MODEL", item.modelFile),
-                            Path.Combine(PubItem, "MODEL", item.modelFile),
+                            Path.Combine(PubItem, "MODEL", item.modelFile).ToUpperInvariant(),
                             true);
 
                         // Copy Model #2... These are used for swing animations, so swords mostly
@@ -193,7 +193,7 @@ namespace Som2kRuntime
                             // Copy Model
                             File.Copy(
                                 Path.Combine(EdtItem, "MODEL", swingModel),
-                                Path.Combine(PubItem, "MODEL", swingModel),
+                                Path.Combine(PubItem, "MODEL", swingModel).ToUpperInvariant(),
                                 true);
                         }
 
@@ -208,7 +208,7 @@ namespace Som2kRuntime
                         {
                             File.Copy(
                                 Path.Combine(EdtItem, "MODEL", textureFile),
-                                Path.Combine(PubItem, "MODEL", textureFile),
+                                Path.Combine(PubItem, "MODEL", textureFile).ToUpperInvariant(),
                                 true);
                         }
                     }
@@ -336,7 +336,7 @@ namespace Som2kRuntime
                         // Copy Model
                         File.Copy(
                             Path.Combine(EdtNPC, "MODEL", item.modelName),
-                            Path.Combine(PubNPC, "MODEL", item.modelName),
+                            Path.Combine(PubNPC, "MODEL", item.modelName).ToUpperInvariant(),
                             true);
 
                         // Copy Control Points
@@ -385,8 +385,17 @@ namespace Som2kRuntime
                         // Copy Model
                         File.Copy(
                             Path.Combine(EdtObject, "MODEL", item.modelFile),
-                            Path.Combine(PubObject, "MODEL", item.modelFile),
+                            Path.Combine(PubObject, "MODEL", item.modelFile).ToUpperInvariant(),
                             true);
+
+                        // Copy Control Points
+                        if (File.Exists(Path.Combine(EdtObject, "MODEL", Path.ChangeExtension(item.modelFile, "cp").ToUpperInvariant())))
+                        {
+                            File.Copy(
+                                Path.Combine(EdtObject, "MODEL", Path.ChangeExtension(item.modelFile, "cp")),
+                                Path.Combine(PubObject, "MODEL", Path.ChangeExtension(item.modelFile, "cp").ToUpperInvariant()),
+                                true);
+                        }
 
                         // Copy Textures - Objects don't support external textures!!! :D
                         string[] textureFiles = Path.GetExtension(item.modelFile).ToUpperInvariant() switch
@@ -399,7 +408,7 @@ namespace Som2kRuntime
                         {
                             File.Copy(
                                 Path.Combine(EdtObject, "MODEL", textureFile),
-                                Path.Combine(PubObject, "MODEL", textureFile),
+                                Path.Combine(PubObject, "MODEL", textureFile).ToUpperInvariant(),
                                 true);
                         }
                     }
@@ -477,7 +486,8 @@ namespace Som2kRuntime
                 [
                     "-y", "-loglevel", "warning", "-stats", // Force overwrite, warnings + errors + encoding status
                     "-i", $"{inputFile}",                   // Input
-                    "-c:v", "libx264",                      // Use H264 codec for video
+                    "-c:v", "wmv2",                         // Use Microsoft MPEG4 (wmv) codec for video
+                    "-b:v", "2048k",                        // High Bit Rate because FUck, man
                     "-c:a", "pcm_s16le",                    // Use PCM 16-Bit signed for audio
                     $"{outputFile}"                         // Output
                 ]);

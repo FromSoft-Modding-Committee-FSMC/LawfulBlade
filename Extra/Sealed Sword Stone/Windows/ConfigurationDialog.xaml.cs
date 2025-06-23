@@ -41,6 +41,7 @@ namespace Sealed_Sword_Stone.Windows
         public ControlBinding MenuDown = new ControlBinding(App.UserConfig.MenuDown);
         public ControlBinding MenuLeft = new ControlBinding(App.UserConfig.MenuLeft);
         public ControlBinding MenuRight = new ControlBinding(App.UserConfig.MenuRight);
+        public bool UseMouseLook = App.UserConfig.UseMouseLook;
 
         public ConfigurationDialog()
         {
@@ -48,7 +49,33 @@ namespace Sealed_Sword_Stone.Windows
 
             // Set content for tabs..
             kbmControlTab.Content = new KeyboardMouseTab(this);
-            padControlTab.Content = new ControllerTab(this);
+
+            Closing += configurationDialog_Closing;
+        }
+
+        void configurationDialog_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            App.UserConfig.PlayerMoveForward  = PlayerMoveForward.PackedBinding;
+            App.UserConfig.PlayerMoveBackward = PlayerMoveBackward.PackedBinding;
+            App.UserConfig.PlayerStrafeLeft = PlayerStrafeLeft.PackedBinding;
+            App.UserConfig.PlayerStrafeRight = PlayerStrafeRight.PackedBinding;
+            App.UserConfig.PlayerTurnLeft = PlayerTurnLeft.PackedBinding;
+            App.UserConfig.PlayerTurnRight = PlayerTurnRight.PackedBinding;
+            App.UserConfig.PlayerLookUp = PlayerLookUp.PackedBinding;
+            App.UserConfig.PlayerLookDown = PlayerLookDown.PackedBinding;
+            App.UserConfig.ActionAttack = PlayerAttack.PackedBinding;
+            App.UserConfig.ActionCast = PlayerCast.PackedBinding;
+            App.UserConfig.ActionInspect = PlayerInspect.PackedBinding;
+            App.UserConfig.ActionSprint = PlayerSprint.PackedBinding;
+            App.UserConfig.MenuOpen = MenuOpen.PackedBinding;
+            App.UserConfig.MenuConfirm = MenuConfirm.PackedBinding;
+            App.UserConfig.MenuCancel = MenuCancel.PackedBinding;
+            App.UserConfig.MenuUp = MenuUp.PackedBinding;
+            App.UserConfig.MenuDown = MenuDown.PackedBinding;
+            App.UserConfig.MenuLeft = MenuLeft.PackedBinding;
+            App.UserConfig.MenuRight = MenuRight.PackedBinding;
+
+            App.UserConfig.UseMouseLook = UseMouseLook;
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <TargetFramework>net9.0-windows</TargetFramework>
     <RootNamespace>Sealed_Sword_Stone</RootNamespace>
     <Nullable>disable</Nullable>

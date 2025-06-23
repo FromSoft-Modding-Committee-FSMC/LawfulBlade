@@ -3,12 +3,12 @@
 #include <hidsdi.h>
 #include <map>
 
-#include "logf.h"
+#include "somconf.h"
+#include "somlog.h"
 
 #include "somgamedata.h"
 #include "sominput.h"
 #include "somwindow.h"
-#include "somconf.h"
 
 #include "detours.h"
 
@@ -33,6 +33,17 @@ int32_t g_somSmoothedMouseX, g_somSmoothedMouseY, g_somSmoothedMousePrevX = 0, g
 float   g_somSmoothingVal = 0.5f;
 
 std::map<std::string, uint32_t> m_controlMap;
+
+bool UnsealWrangleShittyRawInput(USHORT mouseFlags, bool originalValue)
+{
+    if ((mouseFlags & 1) != 0)
+        return true;
+
+    if ((mouseFlags & 2) != 0)
+        return false;
+
+    return originalValue;
+}
 
 void UnsealProcessRawInput(HRAWINPUT rawInput)
 {
@@ -64,21 +75,19 @@ void UnsealProcessRawInput(HRAWINPUT rawInput)
     {
         // Keyboard Type Device
         case RIM_TYPEKEYBOARD:
-            // Keys
             g_somCurrKeyState[rawBuffer->data.keyboard.VKey & 0xFF] = ((rawBuffer->data.keyboard.Flags & 0x1) == 0);
         break;
 
         // Mouse Type Device
         case RIM_TYPEMOUSE:
-            // Buttons
-            g_somCurrMouseState[0] = (((rawBuffer->data.mouse.usButtonFlags >>  0) & 0x3) != 0);
-            g_somCurrMouseState[1] = (((rawBuffer->data.mouse.usButtonFlags >>  2) & 0x3) != 0);
-            g_somCurrMouseState[2] = (((rawBuffer->data.mouse.usButtonFlags >>  4) & 0x3) != 0);
-            g_somCurrMouseState[3] = (((rawBuffer->data.mouse.usButtonFlags >>  6) & 0x3) != 0);
-            g_somCurrMouseState[4] = (((rawBuffer->data.mouse.usButtonFlags >>  8) & 0x3) != 0);
-            g_somCurrMouseState[5] = (((rawBuffer->data.mouse.usButtonFlags >> 10) & 0x3) != 0);
-            g_somCurrMouseState[6] = (((rawBuffer->data.mouse.usButtonFlags >> 12) & 0x3) != 0);
-            g_somCurrMouseState[7] = (((rawBuffer->data.mouse.usButtonFlags >> 14) & 0x3) != 0);
+            g_somCurrMouseState[0] = UnsealWrangleShittyRawInput(rawBuffer->data.mouse.usButtonFlags >>  0, g_somCurrMouseState[0]);
+            g_somCurrMouseState[1] = UnsealWrangleShittyRawInput(rawBuffer->data.mouse.usButtonFlags >>  4, g_somCurrMouseState[1]);    // Intentionally flipping middle mouse and right mouse to align with VK mouse
+            g_somCurrMouseState[2] = UnsealWrangleShittyRawInput(rawBuffer->data.mouse.usButtonFlags >>  2, g_somCurrMouseState[2]);
+            g_somCurrMouseState[3] = UnsealWrangleShittyRawInput(rawBuffer->data.mouse.usButtonFlags >>  6, g_somCurrMouseState[3]);
+            g_somCurrMouseState[4] = UnsealWrangleShittyRawInput(rawBuffer->data.mouse.usButtonFlags >>  8, g_somCurrMouseState[4]);
+            g_somCurrMouseState[5] = UnsealWrangleShittyRawInput(rawBuffer->data.mouse.usButtonFlags >> 10, g_somCurrMouseState[5]);
+            g_somCurrMouseState[6] = UnsealWrangleShittyRawInput(rawBuffer->data.mouse.usButtonFlags >> 12, g_somCurrMouseState[6]);
+            g_somCurrMouseState[7] = UnsealWrangleShittyRawInput(rawBuffer->data.mouse.usButtonFlags >> 14, g_somCurrMouseState[7]);
 
             // Motion
             g_somMouseAccumulatorX += rawBuffer->data.mouse.lLastX;
@@ -329,33 +338,37 @@ bool __cdecl ProxySomInputInit()
     LogFWrite("Initializing Input System...", "SomInput>ProxySomInputInit");
 
     // Register our raw input devices...
-    RAWINPUTDEVICE rawDevices[4];
+    RAWINPUTDEVICE rawDevices[2];
 
     // Keyboard
     rawDevices[0].usUsagePage = HID_USAGE_PAGE_GENERIC;
     rawDevices[0].usUsage = HID_USAGE_GENERIC_KEYBOARD;
     rawDevices[0].dwFlags = RIDEV_NOLEGACY;
-    rawDevices[0].hwndTarget = g_somHwnd1;
+    rawDevices[0].hwndTarget = g_somWindowHandle;
 
     // Mouse
     rawDevices[1].usUsagePage = HID_USAGE_PAGE_GENERIC;
     rawDevices[1].usUsage = HID_USAGE_GENERIC_MOUSE;
     rawDevices[1].dwFlags = RIDEV_NOLEGACY;
-    rawDevices[1].hwndTarget = g_somHwnd1;
+    rawDevices[1].hwndTarget = g_somWindowHandle;
 
     // DINPUT Controller
+    /*
     rawDevices[2].usUsagePage = HID_USAGE_PAGE_GENERIC;
     rawDevices[2].usUsage = HID_USAGE_GENERIC_JOYSTICK;
     rawDevices[2].dwFlags = RIDEV_INPUTSINK;
-    rawDevices[2].hwndTarget = g_somHwnd1;
+    rawDevices[2].hwndTarget = g_somWindowHandle;
+    */
 
     // XINPUT Controller
+    /*
     rawDevices[3].usUsagePage = HID_USAGE_PAGE_GENERIC;
     rawDevices[3].usUsage = HID_USAGE_GENERIC_GAMEPAD;
     rawDevices[3].dwFlags = RIDEV_INPUTSINK;
-    rawDevices[3].hwndTarget = g_somHwnd1;
+    rawDevices[3].hwndTarget = g_somWindowHandle;
+    */
 
-    if (!RegisterRawInputDevices(rawDevices, 4, sizeof(rawDevices[0])))
+    if (!RegisterRawInputDevices(rawDevices, 2, sizeof(rawDevices[0])))
     {
         std::ostringstream out;
         out << "Failed to register RawInput devices! { error = " << GetLastError() << " }";
@@ -421,34 +434,34 @@ SomInputBufferBuild ProxiedSomInputBufferBuild = (SomInputBufferBuild)0x0040e680
 void __cdecl ProxySomInputBufferBuild()
 {
     // Clear Input State...
-    m_somInputState  = 0x00000000;
-    
+    m_somInputState = 0x00000000;
+
     // MOVEMENT
-    m_somInputState |= (UnsealGetInputHeld("PlayerMoveForward") ?  0x00000010 : 0x00000000);    // Move Forwards
+    m_somInputState |= (UnsealGetInputHeld("PlayerMoveForward") ? 0x00000010 : 0x00000000);    // Move Forwards
     m_somInputState |= (UnsealGetInputHeld("PlayerMoveBackward") ? 0x00000020 : 0x00000000);    // Move Backwards
-    m_somInputState |= (UnsealGetInputHeld("PlayerStrafeLeft") ?   0x00000040 : 0x00000000);    // Strafe Left
-    m_somInputState |= (UnsealGetInputHeld("PlayerStrafeRight") ?  0x00000080 : 0x00000000);    // Strafe Right
+    m_somInputState |= (UnsealGetInputHeld("PlayerStrafeLeft") ? 0x00000040 : 0x00000000);    // Strafe Left
+    m_somInputState |= (UnsealGetInputHeld("PlayerStrafeRight") ? 0x00000080 : 0x00000000);    // Strafe Right
 
     // LOOK
-    m_somInputState |= (UnsealGetInputHeld("PlayerTurnLeft")  ? 0x00000100 : 0x00000000);
+    m_somInputState |= (UnsealGetInputHeld("PlayerTurnLeft") ? 0x00000100 : 0x00000000);
     m_somInputState |= (UnsealGetInputHeld("PlayerTurnRight") ? 0x00000200 : 0x00000000);
-    m_somInputState |= (UnsealGetInputHeld("PlayerLookUp")    ? 0x00000400 : 0x00000000);
-    m_somInputState |= (UnsealGetInputHeld("PlayerLookDown")  ? 0x00000800 : 0x00000000);
+    m_somInputState |= (UnsealGetInputHeld("PlayerLookUp") ? 0x00000400 : 0x00000000);
+    m_somInputState |= (UnsealGetInputHeld("PlayerLookDown") ? 0x00000800 : 0x00000000);
 
     // ACTION
-    m_somInputState |= (UnsealGetInputPressed("ActionAttack")  ? 0x00000001 : 0x00000000);
-    m_somInputState |= (UnsealGetInputPressed("ActionCast")    ? 0x00000002 : 0x00000000);
+    m_somInputState |= (UnsealGetInputPressed("ActionAttack") ? 0x00000001 : 0x00000000);
+    m_somInputState |= (UnsealGetInputPressed("ActionCast") ? 0x00000002 : 0x00000000);
     m_somInputState |= (UnsealGetInputPressed("ActionInspect") ? 0x00000008 : 0x00000000);
-    m_somInputState |= (UnsealGetInputHeld("ActionSprint")     ? 0x00002000 : 0x00000000);  // Sprinting
+    m_somInputState |= (UnsealGetInputHeld("ActionSprint") ? 0x00002000 : 0x00000000);  // Sprinting
 
     // MENU
-    m_somInputState |= (UnsealGetInputPressed("MenuOpen") ?    0x00000004 : 0x00000000);    // Menu Open?
+    m_somInputState |= (UnsealGetInputPressed("MenuOpen") ? 0x00000004 : 0x00000000);    // Menu Open?
     m_somInputState |= (UnsealGetInputPressed("MenuConfirm") ? 0x01000000 : 0x00000000);    // Menu Accept
-    m_somInputState |= (UnsealGetInputPressed("MenuCancel") ?  0x02000000 : 0x00000000);    // Menu Back - Close... ?
-    m_somInputState |= (UnsealGetInputHeld("MenuUp") ?         0x10000000 : 0x00000000);    // Menu Up
-    m_somInputState |= (UnsealGetInputHeld("MenuDown") ?       0x20000000 : 0x00000000);    // Menu Down
-    m_somInputState |= (UnsealGetInputHeld("MenuLeft") ?       0x40000000 : 0x00000000);    // Menu Left
-    m_somInputState |= (UnsealGetInputHeld("MenuRight") ?      0x80000000 : 0x00000000);    // Menu Right
+    m_somInputState |= (UnsealGetInputPressed("MenuCancel") ? 0x02000000 : 0x00000000);    // Menu Back - Close... ?
+    m_somInputState |= (UnsealGetInputHeld("MenuUp") ? 0x10000000 : 0x00000000);    // Menu Up
+    m_somInputState |= (UnsealGetInputHeld("MenuDown") ? 0x20000000 : 0x00000000);    // Menu Down
+    m_somInputState |= (UnsealGetInputHeld("MenuLeft") ? 0x40000000 : 0x00000000);    // Menu Left
+    m_somInputState |= (UnsealGetInputHeld("MenuRight") ? 0x80000000 : 0x00000000);    // Menu Right
 
     // Process mouse movement.
     if (GetUserConfigBool("UseMouseLook"))
@@ -456,8 +469,8 @@ void __cdecl ProxySomInputBufferBuild()
         float mouseSmooth = max(min(GetUserConfigFloat("MouseSmoothing"), 1.F), 0.F);
 
         // First apply smoothing.
-        g_somSmoothedMouseX     = (int32_t) (mouseSmooth * g_somMouseAccumulatorX + (1.0f - mouseSmooth) * g_somSmoothedMousePrevX);
-        g_somSmoothedMouseY     = (int32_t) (mouseSmooth * g_somMouseAccumulatorY + (1.0f - mouseSmooth) * g_somSmoothedMousePrevY);
+        g_somSmoothedMouseX = (int32_t)(mouseSmooth * g_somMouseAccumulatorX + (1.0f - mouseSmooth) * g_somSmoothedMousePrevX);
+        g_somSmoothedMouseY = (int32_t)(mouseSmooth * g_somMouseAccumulatorY + (1.0f - mouseSmooth) * g_somSmoothedMousePrevY);
         g_somSmoothedMousePrevX = g_somSmoothedMouseX;
         g_somSmoothedMousePrevY = g_somSmoothedMouseY;
 
@@ -474,10 +487,10 @@ void __cdecl ProxySomInputBufferBuild()
     g_somMouseAccumulatorY = 0;
 
     // Copy the current key,mouse and pad states to a history buffer
-    memcpy_s(g_somLastKeyState,   sizeof(g_somLastKeyState),   g_somCurrKeyState,   sizeof(g_somLastKeyState));
+    memcpy_s(g_somLastKeyState, sizeof(g_somLastKeyState), g_somCurrKeyState, sizeof(g_somLastKeyState));
     memcpy_s(g_somLastMouseState, sizeof(g_somLastMouseState), g_somCurrMouseState, sizeof(g_somLastMouseState));
-    memcpy_s(g_somLastPadState,   sizeof(g_somLastPadState),   g_somCurrPadState,   sizeof(g_somLastMouseState));
-    memcpy_s(g_somLastPadValue,   sizeof(g_somLastPadValue),   g_somCurrPadValue,   sizeof(g_somLastPadValue));
+    memcpy_s(g_somLastPadState, sizeof(g_somLastPadState), g_somCurrPadState, sizeof(g_somLastMouseState));
+    memcpy_s(g_somLastPadValue, sizeof(g_somLastPadValue), g_somCurrPadValue, sizeof(g_somLastPadValue));
 
     // Disable the cursor here because we can?..
     ShowCursor(FALSE);
@@ -486,6 +499,9 @@ void __cdecl ProxySomInputBufferBuild()
 // Hook N Fuck - Init, Deinit, Tick
 void __cdecl SomInputInitDetours()
 {
+    if (g_gameConfigInput.useNewEngine == false)
+        return;
+
     DetourAttach(&(PVOID&)ProxiedSomInputInit, ProxySomInputInit);
     DetourAttach(&(PVOID&)ProxiedSomInputSetKeyEnabled, ProxySomInputSetKeyEnabled);
     DetourAttach(&(PVOID&)ProxiedSomInputKeyboardPoll, ProxySomInputKeyboardPoll);
@@ -495,6 +511,9 @@ void __cdecl SomInputInitDetours()
 
 void __cdecl SomInputKillDetours()
 {
+    if (g_gameConfigInput.useNewEngine == false)
+        return;
+
     DetourDetach(&(PVOID&)ProxiedSomInputInit, ProxySomInputInit);
     DetourDetach(&(PVOID&)ProxiedSomInputSetKeyEnabled, ProxySomInputSetKeyEnabled);
     DetourDetach(&(PVOID&)ProxiedSomInputKeyboardPoll, ProxySomInputKeyboardPoll);

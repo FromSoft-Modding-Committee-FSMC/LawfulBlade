@@ -1,5 +1,5 @@
-#ifndef _SOMMATH_H
-#define _SOMMATH_H
+#ifndef _UNSEALMATH_H
+#define _UNSEALMATH_H
 
 #include <math.h>
 

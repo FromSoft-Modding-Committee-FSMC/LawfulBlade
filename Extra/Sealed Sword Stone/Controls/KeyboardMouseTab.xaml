@@ -35,7 +35,10 @@
 
                 <!-- Input Options -->
                 <GroupBox Header="Options" Margin="2,2,2,2">
-
+                    <StackPanel Orientation="Horizontal">
+                        <CheckBox x:Name="useMouseLookCB"/>
+                        <TextBlock Text="Use Mouse Look?"/>
+                    </StackPanel>
                 </GroupBox>
             </StackPanel>
         </ScrollViewer>
