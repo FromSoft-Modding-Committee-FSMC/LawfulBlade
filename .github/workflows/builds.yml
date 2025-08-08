@@ -1,0 +1,68 @@
+name: CI builds
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  gather-projects:
+    name: Gather project files
+    outputs:
+      projects: ${{ steps.projects.outputs.projects }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Gather projects
+        id: projects
+        run: |
+          export PROJECTS=$(find . -name *.*proj | jq -R '{"name": match(".*\/(.*)\\..*").captures[0].string, "type": split(".")[-1], "file": .}' | jq -nc "[inputs]")
+          echo "::group::Project files"
+          echo $PROJECTS | jq
+          echo "::endgroup::"
+          echo "PROJECTS=$PROJECTS" >> "$GITHUB_OUTPUT"
+
+  build:
+    name: ${{ matrix.project.name }} ${{ matrix.buildtype }}
+    runs-on: windows-latest
+    needs: gather-projects
+
+    strategy:
+      fail-fast: false
+      matrix:
+        project: ${{ fromJson(needs.gather-projects.outputs.projects) }}
+        buildtype:
+          - Release
+          - Debug
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install .NET
+        if: matrix.project.type == 'csproj'
+        uses: actions/setup-dotnet@v4
+      - name: Install msbuild
+        if: matrix.project.type == 'vcxproj'
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Build
+        run: |
+          echo "::group::Build"
+          if ("${{ matrix.project.file }}" -Like "*.csproj") {
+            dotnet publish -o .\bld -p:Configuration=${{ matrix.buildtype }} "${{ matrix.project.file }}"
+          }
+          else {
+            msbuild "${{ matrix.project.file }}" /p:OutputPath=.\bld /p:configuration=${{ matrix.buildtype }}
+          }
+          echo "::endgroup::"
+          echo "::group::Build output"
+          dir bld
+          echo "::endgroup::"
+
+      - name: Store build output
+        uses: actions/upload-artifact@v4
+        with:
+          path: bld
+          name: ${{ matrix.project.name }}-${{ matrix.buildtype }}
