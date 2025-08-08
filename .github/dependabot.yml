@@ -1,0 +1,16 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: daily
+    labels:
+      - github
+      - dependencies
+  - package-ecosystem: dotnet-sdk
+    directory: /
+    schedule:
+      interval: daily
+    labels:
+      - dotnet
+      - dependencies
