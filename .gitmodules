@@ -1,0 +1,9 @@
+[submodule "Extra/Unsealer/sdk/detours"]
+	path = Extra/Unsealer/sdk/detours
+	url = https://github.com/microsoft/detours
+[submodule "Extra/Unsealer/sdk/json"]
+	path = Extra/Unsealer/sdk/json
+	url = https://github.com/nlohmann/json
+[submodule "Extra/Unsealer/sdk/fmod"]
+	path = Extra/Unsealer/sdk/fmod
+	url = https://github.com/fmod/fmod-for-unreal/

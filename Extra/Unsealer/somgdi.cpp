@@ -7,7 +7,7 @@
 
 #include "hasher.h"
 
-#include "sdk/json.hpp"
+#include "json.hpp"
 #include "detours.h"
 
 // Store loaded fonts
