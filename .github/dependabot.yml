@@ -4,13 +4,23 @@ updates:
     directory: /
     schedule:
       interval: daily
-    labels:
-      - github
-      - dependencies
+    commit-message:
+      prefix: "[deps][gha] "
   - package-ecosystem: dotnet-sdk
     directory: /
     schedule:
       interval: daily
-    labels:
-      - dotnet
-      - dependencies
+    commit-message:
+      prefix: "[deps][dotnet] "
+  - package-ecosystem: gitsubmodule
+    directory: /
+    schedule:
+      interval: daily
+    commit-message:
+      prefix: "[deps][ext] "
+    cooldown:
+      # set the json submodule on a 30-day cooldown as it's still fairly active
+      # while fmod and detours don't update their default branches very often.
+      default-days: 30
+      include:
+        - "*json*"
