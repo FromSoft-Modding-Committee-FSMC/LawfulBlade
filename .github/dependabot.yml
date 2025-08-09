@@ -4,13 +4,21 @@ updates:
     directory: /
     schedule:
       interval: daily
-    labels:
-      - github
-      - dependencies
+    commit-message:
+      prefix: "[deps][gha] "
   - package-ecosystem: dotnet-sdk
     directory: /
     schedule:
       interval: daily
-    labels:
-      - dotnet
-      - dependencies
+    commit-message:
+      prefix: "[deps][dotnet] "
+  - package-ecosystem: gitsubmodule
+    directory: /
+    schedule:
+      interval: daily
+    commit-message:
+      prefix: "[deps][ext] "
+    cooldown:
+      default-days: 30
+      include:
+        - "*json*"
