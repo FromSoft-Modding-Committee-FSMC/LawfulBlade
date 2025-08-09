@@ -76,7 +76,7 @@ void GameConfigurationLoad()
 /*************/
 /* START OLD */
 /*************/
-#include "sdk\json.hpp"
+#include "json.hpp"
 
 // Locals
 nlohmann::json l_userConfigObject;

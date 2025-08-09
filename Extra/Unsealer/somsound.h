@@ -3,8 +3,8 @@
 
 #include <stdint.h>
 
-#include "sdk/fmod/inc/fmod.h"
-#include "sdk/fmod/inc/fmod_errors.h"
+#include "fmod.h"
+#include "fmod_errors.h"
 
 // Structures
 typedef struct 
