@@ -158,13 +158,13 @@
     <ClInclude Include="unsealdraw.h" />
     <ClInclude Include="unsealfilesystem.h" />
     <ClInclude Include="unsealdata.h" />
-    <ClInclude Include="somgdi.h" />
+    <ClInclude Include="unsealgdi.h" />
     <ClInclude Include="unsealgold.h" />
-    <ClInclude Include="sominput.h" />
+    <ClInclude Include="unsealinput.h" />
     <ClInclude Include="unsealmath.h" />
     <ClInclude Include="unsealmemory.h" />
     <ClInclude Include="unsealplayer.h" />
-    <ClInclude Include="somsound.h" />
+    <ClInclude Include="unsealsound.h" />
     <ClInclude Include="unsealtime.h" />
     <ClInclude Include="unsealwindow.h" />
   </ItemGroup>
@@ -176,13 +176,13 @@
     <ClCompile Include="unsealdraw.cpp" />
     <ClCompile Include="unsealfilesystem.cpp" />
     <ClCompile Include="unsealdata.cpp" />
-    <ClCompile Include="somgdi.cpp" />
+    <ClCompile Include="unsealgdi.cpp" />
     <ClCompile Include="unsealgold.cpp" />
-    <ClCompile Include="sominput.cpp" />
+    <ClCompile Include="unsealinput.cpp" />
     <ClCompile Include="unsealmath.cpp" />
     <ClCompile Include="unsealmemory.cpp" />
     <ClCompile Include="unsealplayer.cpp" />
-    <ClCompile Include="somsound.cpp" />
+    <ClCompile Include="unsealsound.cpp" />
     <ClCompile Include="unsealtime.cpp" />
     <ClCompile Include="unsealwindow.cpp" />
   </ItemGroup>

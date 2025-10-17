@@ -14,7 +14,7 @@
     <ClInclude Include="unseallog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="sominput.h">
+    <ClInclude Include="unsealinput.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="unsealwindow.h">
@@ -23,13 +23,13 @@
     <ClInclude Include="unsealconf.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="somsound.h">
+    <ClInclude Include="unsealsound.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="unsealdata.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="somgdi.h">
+    <ClInclude Include="unsealgdi.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="unsealhash.h">
@@ -64,7 +64,7 @@
     <ClCompile Include="unseallog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="sominput.cpp">
+    <ClCompile Include="unsealinput.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="unsealwindow.cpp">
@@ -73,13 +73,13 @@
     <ClCompile Include="unsealconf.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="somsound.cpp">
+    <ClCompile Include="unsealsound.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="unsealdata.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="somgdi.cpp">
+    <ClCompile Include="unsealgdi.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="unsealhash.cpp">

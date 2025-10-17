@@ -30,8 +30,10 @@ SomFileOpen ProxiedSomFileOpen = (SomFileOpen)0x0044e5ae;
 **/
 BOOL __stdcall ProxyCreateDirectoryA(LPCSTR lpPathName, LPSECURITY_ATTRIBUTES lpSecurityAttributes)
 {
-	// Make sure SoM doesn't create it's default save directory...
-	if (strncmp(lpPathName, "save", 4) == 0)
+	/* Feature: Non Root Save 
+	 * We don't want SoM to create the default save directory when using this feature
+	**/
+	if (g_gameConfigFeatures.nonRootSave && strncmp(lpPathName, "save", 4) == 0)
 		return TRUE;
 
 	return ProxiedCreateDirectoryA(lpPathName, lpSecurityAttributes);
@@ -39,23 +41,22 @@ BOOL __stdcall ProxyCreateDirectoryA(LPCSTR lpPathName, LPSECURITY_ATTRIBUTES lp
 
 FILE* __cdecl ProxySomFileOpen(char* filename, char* mode)
 {
-	// non root save feature
-	if (g_gameConfigFeatures.nonRootSave)
+	/* Feature: Non Root Save 
+	 * When SoM is trying to write to the default project directory (which is next to the program)
+	 * we intercept, and replace the target filepath with our own.
+	**/
+	if (g_gameConfigFeatures.nonRootSave && *((uint32_t*)filename) == 0x65766173)
 	{
-		// Implement our injected replacements...
-		if (*((uint32_t*)filename) == 0x65766173)	// SAVE OVERRIDE
-		{
-			// We must create a new path for the file name...
-			char targetFilePath[MAX_PATH];
+		// We must create a new path for the file name...
+		char targetFilePath[MAX_PATH];
 
-			strncpy_s(targetFilePath, m_saveFileRoot, MAX_PATH);
-			targetFilePath[MAX_PATH - 1] = '\0';
+		strncpy_s(targetFilePath, m_saveFileRoot, MAX_PATH);
+		targetFilePath[MAX_PATH - 1] = '\0';
 
-			strncat_s(targetFilePath, &filename[4], MAX_PATH);	// fuck you, it is zero terminated...
-			targetFilePath[MAX_PATH - 1] = '\0';
+		strncat_s(targetFilePath, &filename[4], MAX_PATH);	// fuck you, it is zero terminated...
+		targetFilePath[MAX_PATH - 1] = '\0';
 
-			filename = (char*)targetFilePath;
-		}
+		filename = (char*)targetFilePath;
 	}
 
 	return ProxiedSomFileOpen(filename, mode);
@@ -99,19 +100,14 @@ void __cdecl UnsealFileSystemInit()
 			UnsealLog("Failed to get new save data location...", "FileSystem>Init", UNSEAL_LOG_LEVEL_SHIT);
 
 		CoTaskMemFree(appDataDir);
-
-		DetourAttach(&(PVOID&)ProxiedCreateDirectoryA, ProxyCreateDirectoryA);
 	}
 
+	DetourAttach(&(PVOID&)ProxiedCreateDirectoryA, ProxyCreateDirectoryA);
 	DetourAttach(&(PVOID&)ProxiedSomFileOpen, ProxySomFileOpen);
 }
 
 void __cdecl UnsealFileSystemKill()
 {
-	if (g_gameConfigFeatures.nonRootSave)
-	{
-		DetourDetach(&(PVOID&)ProxiedCreateDirectoryA, ProxyCreateDirectoryA);
-	}
-
+	DetourDetach(&(PVOID&)ProxiedCreateDirectoryA, ProxyCreateDirectoryA);
 	DetourDetach(&(PVOID&)ProxiedSomFileOpen, ProxySomFileOpen);
 }
