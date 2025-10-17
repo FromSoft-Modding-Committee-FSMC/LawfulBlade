@@ -6,6 +6,7 @@ using LawfulBlade.Core.Extensions;
 using System.ComponentModel;
 using LawfulBlade.Core.Package;
 using System.Text.Json;
+using System.Globalization;
 
 namespace LawfulBlade
 {
@@ -174,8 +175,8 @@ namespace LawfulBlade
             if (DownloadManager.RequestVersion(new Uri(RemoteVersionURL), out versionInfo))
             {
                 // We must parse the versions as integers to do comparisons...
-                int currentVersion = int.Parse(Version.Strip('.'));
-                int newVersion     = int.Parse(versionInfo.Version.Strip('.'));
+                int currentVersion = int.Parse(Version.Strip('.'), CultureInfo.InvariantCulture);
+                int newVersion     = int.Parse(versionInfo.Version.Strip('.'), CultureInfo.InvariantCulture);
 
                 needsUpdate = currentVersion < newVersion;
 
