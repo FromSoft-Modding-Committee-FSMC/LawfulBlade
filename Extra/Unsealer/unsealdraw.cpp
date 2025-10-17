@@ -26,6 +26,7 @@ uint32_t ProxySomTitleLogoDisplay(void* param_1)
 {
 	return 1;
 }
+
 /*
 int32_t __cdecl ProxyProxiedSomDrawRenderFunc1(uint32_t* renderObject)
 {

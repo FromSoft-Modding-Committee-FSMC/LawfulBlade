@@ -1,16 +1,15 @@
 #include <Windows.h>
 #include <hidusage.h>
 #include <hidsdi.h>
+#include <detours.h>
 #include <map>
 
-#include "somconf.h"
-#include "somlog.h"
+#include "unsealconf.h"
+#include "unseallog.h"
+#include "unsealdata.h"
+#include "unsealwindow.h"
 
-#include "somgamedata.h"
-#include "sominput.h"
-#include "somwindow.h"
-
-#include "detours.h"
+#include "unsealinput.h"
 
 
 #define UNSEAL_SYSDEV_KEYBOARD 0x1
@@ -59,13 +58,13 @@ void UnsealProcessRawInput(HRAWINPUT rawInput)
     RAWINPUT* rawBuffer = new RAWINPUT;
     if (rawBuffer == NULL)
     {
-        LogFWrite("Raw Input Buffer is NULL!", "SomInput>UnsealProcessRawInput");
+        UnsealLog("Raw Input Buffer is NULL!", "SomInput>UnsealProcessRawInput", UNSEAL_LOG_LEVEL_SHIT);
         return;
     }
 
     if (GetRawInputData(rawInput, RID_INPUT, rawBuffer, &dwSize, sizeof(RAWINPUTHEADER)) != dwSize)
     {
-        LogFWrite("GetRawInputData does not return correct size !", "SomInput>UnsealProcessRawInput");
+        UnsealLog("GetRawInputData does not return correct size !", "SomInput>UnsealProcessRawInput", UNSEAL_LOG_LEVEL_SHIT);
         delete rawBuffer;
         return;
     }
@@ -329,13 +328,30 @@ bool UnsealGetInputHeld(const char* inputName)
     return inputHeld;
 }
 
-/// <summary>
-/// Initializes the input system.
-/// </summary>
+/**
+ * Function Type Definition
+**/
+typedef bool(__cdecl* SomInputInit)();
+typedef bool(__cdecl* SomInputSetKeyEnabled)(unsigned char, bool);
+typedef bool(__cdecl* SomInputKeyboardPoll)();
+typedef bool(__cdecl* SomInputKeyCheck)(unsigned char, bool);
+typedef void(__cdecl* SomInputBufferBuild)();
+
+/**
+ * Function Hooking
+**/
 SomInputInit ProxiedSomInputInit = (SomInputInit)0x0040e590;
+SomInputSetKeyEnabled ProxiedSomInputSetKeyEnabled = (SomInputSetKeyEnabled)0x004499e0;
+SomInputKeyboardPoll ProxiedSomInputKeyboardPoll = (SomInputKeyboardPoll)0x00449940;
+SomInputKeyCheck ProxiedSomInputKeyCheck = (SomInputKeyCheck)0x00449990;
+SomInputBufferBuild ProxiedSomInputBufferBuild = (SomInputBufferBuild)0x0040e680;
+
+/**
+ * Function Proxies
+**/
 bool __cdecl ProxySomInputInit()
 {
-    LogFWrite("Initializing Input System...", "SomInput>ProxySomInputInit");
+    UnsealLog("Initializing Input System...", "SomInput>ProxySomInputInit", UNSEAL_LOG_LEVEL_INFO);
 
     // Register our raw input devices...
     RAWINPUTDEVICE rawDevices[2];
@@ -369,11 +385,7 @@ bool __cdecl ProxySomInputInit()
     */
 
     if (!RegisterRawInputDevices(rawDevices, 2, sizeof(rawDevices[0])))
-    {
-        std::ostringstream out;
-        out << "Failed to register RawInput devices! { error = " << GetLastError() << " }";
-        LogFWrite(out.str(), "SomInput>ProxySomInputInit");
-    }
+        UnsealLog("Failed to register RawInput devices!", "UnsealInput>ProxySomInputInit", UNSEAL_LOG_LEVEL_SHIT);
 
     // Now load the control configuration to our mappings
     m_controlMap["PlayerMoveForward"] = GetUserConfigU32("PlayerMoveForward");
@@ -399,38 +411,18 @@ bool __cdecl ProxySomInputInit()
     // SoM wants true or 1.
     return true;
 }
-
-/// <summary>
-/// This would appear to disable a key, or set repeat for the key?.. Not sure.
-/// </summary>
-SomInputSetKeyEnabled ProxiedSomInputSetKeyEnabled = (SomInputSetKeyEnabled)0x004499e0;
 bool __cdecl ProxySomInputSetKeyEnabled(unsigned char keyID, bool isEnabled)
 {
     return true;
 }
-
-/// <summary>
-/// Pushes the current keyboard state to last, and aquires a new current state.
-/// </summary>
-SomInputKeyboardPoll ProxiedSomInputKeyboardPoll = (SomInputKeyboardPoll)0x00449940;
 bool __cdecl ProxySomInputKeyboardPoll()
 {
     return true;
 }
-
-/// <summary>
-/// Called by SoM to check if a key is pressed...
-/// </summary>
-SomInputKeyCheck ProxiedSomInputKeyCheck = (SomInputKeyCheck)0x00449990;
 bool __cdecl ProxySomInputKeyCheck(unsigned char keyID, bool param_2)
 {
     return true;
 }
-
-/// <summary>
-/// Called by SoM to build the input buffer
-/// </summary>
-SomInputBufferBuild ProxiedSomInputBufferBuild = (SomInputBufferBuild)0x0040e680;
 void __cdecl ProxySomInputBufferBuild()
 {
     // Clear Input State...
@@ -478,8 +470,8 @@ void __cdecl ProxySomInputBufferBuild()
         float mouseSense = GetUserConfigFloat("MouseSensitivity");
 
         // Now Adjust camera by the smoothed vector
-        *g_somCameraX -= (g_somSmoothedMouseX / 1024.f) * mouseSense;
-        *g_somCameraY -= (g_somSmoothedMouseY / 1024.f) * mouseSense;
+        g_somCameraYaw   -= (g_somSmoothedMouseX / 1024.f) * mouseSense;
+        g_somCameraPitch -= (g_somSmoothedMouseY / 1024.f) * mouseSense;
     }
 
     // Clear the mouse movement accumulator now we've processed it
@@ -496,8 +488,10 @@ void __cdecl ProxySomInputBufferBuild()
     ShowCursor(FALSE);
 }
 
-// Hook N Fuck - Init, Deinit, Tick
-void __cdecl SomInputInitDetours()
+/**
+ * Unsealer
+**/
+void __cdecl UnsealInputInit()
 {
     if (g_gameConfigInput.useNewEngine == false)
         return;
@@ -509,7 +503,7 @@ void __cdecl SomInputInitDetours()
     DetourAttach(&(PVOID&)ProxiedSomInputBufferBuild, ProxySomInputBufferBuild);
 }
 
-void __cdecl SomInputKillDetours()
+void __cdecl UnsealInputKill()
 {
     if (g_gameConfigInput.useNewEngine == false)
         return;
@@ -520,8 +514,3 @@ void __cdecl SomInputKillDetours()
     DetourDetach(&(PVOID&)ProxiedSomInputKeyCheck, ProxySomInputKeyCheck);
     DetourDetach(&(PVOID&)ProxiedSomInputBufferBuild, ProxySomInputBufferBuild);
 }
-
-void __cdecl SomInputTick()
-{
-
-}   
