@@ -4,29 +4,45 @@ namespace LawfulBladeSDK.IO
 {
     public partial class FileInputStream
     {
+        /// <summary>
+        /// Reads a null terminated (c style) ascii string.
+        /// </summary>
         public string ReadTerminatedString() =>
             ReadTerminatedString(Encoding.ASCII);
 
+        /// <summary>
+        /// Reads a null terminated (c style) string in a specific encoding.
+        /// </summary>
+        /// <param name="encoding">The encoding of the string</param>
         public string ReadTerminatedString(Encoding encoding)
         {
-            byte[] charBuffer = new byte[256];
-            int charCounter = 0;
+            int c = 0;
 
             do
             {
-                charBuffer[charCounter] = ReadU8();
-            } while (charBuffer[charCounter++] != 0x00);
+                buffer[c] = ReadU8(); 
 
-            string terminatedString = encoding.GetString(charBuffer, 0, charCounter);
+                // Bounds check. If a string is longer than the max buffer size, something is very wrong.
+                if (c >= BYTEBUFFER_SIZE)
+                    throw new Exception($"Tried to read a null-terminated string longer than {BYTEBUFFER_SIZE} characters.");
 
-            return terminatedString[..terminatedString.IndexOf('\0')];
+            } while (buffer[c++] != 0x00);
+
+            string terminatedString = encoding.GetString(buffer, 0, c - 1);
+
+            // We don't want to include the null terminator in the C# string, so find the index of it - and then only return what is before.
+            int nullTerminatorPosition = terminatedString.IndexOf('\0');
+
+            if (nullTerminatorPosition == -1)
+                throw new Exception("Tried to read a null terminated string which does not contain a null terminator.");
+
+            return terminatedString[..nullTerminatorPosition];
         }
 
         /// <summary>
         /// Reads a fixed length ascii string. Everything after a null terminator (\0) is removed.
         /// </summary>
         /// <param name="length">The length of the string to read</param>
-        /// <returns>duh? The string dumbass</returns>
         public string ReadFixedString(int length) =>
             ReadFixedString(length, Encoding.ASCII);
 
@@ -35,7 +51,6 @@ namespace LawfulBladeSDK.IO
         /// </summary>
         /// <param name="length">The length of the string to read</param>
         /// <param name="encoding">The encoding of the string</param>
-        /// <returns>The string</returns>
         public string ReadFixedString(int length, Encoding encoding)
         {
             fstream.ReadExactly(buffer, 0, length);
