@@ -45,7 +45,7 @@ jobs:
 
       - name: Install .NET
         if: matrix.project.type == 'csproj'
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
       - name: Install msbuild
         if: matrix.project.type == 'vcxproj'
         uses: microsoft/setup-msbuild@v2
