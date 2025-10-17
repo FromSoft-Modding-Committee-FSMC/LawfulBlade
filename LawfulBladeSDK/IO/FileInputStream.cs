@@ -4,10 +4,14 @@ using System.Collections.Generic;
 
 namespace LawfulBladeSDK.IO 
 {
+    /// <summary>
+    /// Advanced file reading implementation.
+    /// </summary>
     public partial class FileInputStream : IDisposable
     {
         // Constants
-        private const int defaultBufferSize = 1024;
+        private const int BYTEBUFFER_SIZE = 1024;
+        private const int JUMPSTACK_SIZE  = 32;
 
         // Data
         readonly Stack<long> jumpStack;
@@ -39,9 +43,9 @@ namespace LawfulBladeSDK.IO
         /// <exception cref="ArgumentNullException">When stream is null.</exception>
         public FileInputStream(Stream stream)
         {
-            jumpStack = new Stack<long>(16);
+            jumpStack = new Stack<long>(JUMPSTACK_SIZE);
             fstream = stream ?? throw new ArgumentNullException(nameof(stream));
-            buffer = new byte[defaultBufferSize];
+            buffer = new byte[BYTEBUFFER_SIZE];
         }
     }
 }
