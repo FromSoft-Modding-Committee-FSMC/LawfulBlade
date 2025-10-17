@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Globalization;
+using System.Text.Json.Serialization;
 
 namespace LawfulBlade.Core
 {
@@ -23,7 +24,7 @@ namespace LawfulBlade.Core
         {
             return Type switch 
             {
-                InstanceVariableType.Integer => long.Parse(Value),
+                InstanceVariableType.Integer => long.Parse(Value, CultureInfo.InvariantCulture),
                 InstanceVariableType.String  => Value,
                 InstanceVariableType.Binary  => Convert.FromBase64String(Value),
 

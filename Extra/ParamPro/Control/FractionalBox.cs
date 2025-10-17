@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -68,7 +69,7 @@ namespace ParamPro.Control
             Text = Text.TrimEnd('.');
 
             // Now attempt to parse the text as a decimal, and immediately shove it back in
-            if (decimal.TryParse(Text, out decimal result))
+            if (decimal.TryParse(Text, CultureInfo.InvariantCulture, out decimal result))
             {
                 // Clamp the result to the required range
                 result = Math.Clamp(result, MinValue, MaxValue);

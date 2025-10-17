@@ -1,5 +1,6 @@
 ﻿
 using LawfulBlade.Core.Extensions;
+using System.Globalization;
 using System.IO;
 using System.Text.Json;
 using System.Windows.Controls.Primitives;
@@ -135,8 +136,8 @@ namespace LawfulBlade.Core.Package
                 result = Package.Load(packageBundlePath);
 
                 // Get the two versions as decimals
-                decimal oldVersion = decimal.Parse(result.Version.GetDigits());
-                decimal newVersion = decimal.Parse(foundRepoPackage.Value.Version.GetDigits());
+                decimal oldVersion = decimal.Parse(result.Version.GetDigits(), CultureInfo.InvariantCulture);
+                decimal newVersion = decimal.Parse(foundRepoPackage.Value.Version.GetDigits(), CultureInfo.InvariantCulture);
 
                 // Compare the two versions
                 if (newVersion > oldVersion)
