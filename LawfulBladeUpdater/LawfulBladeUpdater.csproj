@@ -20,4 +20,8 @@
     <DebugType>none</DebugType>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\LawfulBladeSDK\LawfulBladeSDK.csproj" />
+  </ItemGroup>
+
 </Project>
