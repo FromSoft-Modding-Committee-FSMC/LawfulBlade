@@ -3,17 +3,53 @@ namespace LawfulBladeSDK.IO
     public partial class FileInputStream
     {
         /// <summary>
-        /// Reads an array of U8 values
+        /// Reads an array of unsigned 8-bit values
         /// </summary>
-        /// <param name="count">The number of U8 values to read</param>
+        /// <param name="count">The number of values to read</param>
         public byte[] ReadU8Array(int count)
         {
-            byte[] bytes = new byte[count];
-            fstream.ReadExactly(bytes, 0, count);
+            byte[] u8s = new byte[count];
 
-            return bytes;
+            for (int i = 0; i < count; ++i)
+                u8s[i] = ReadU8();
+
+            return u8s;
         }
 
+        /// <summary>
+        /// Reads an array of unsigned 16-bit values
+        /// </summary>
+        /// <param name="count">The number of values to read</param>
+        /// <param name="endianness">Endianness to read as</param>
+        public ushort[] ReadU16Array(int count, Endianness endianness = Endianness.Little)
+        {
+            ushort[] u16s = new ushort[count];
+
+            for (int i = 0; i < count; ++i)
+                u16s[i] = ReadU16(endianness);
+
+            return u16s;
+        }
+
+        /// <summary>
+        /// Reads an array of unsigned 32-bit values
+        /// </summary>
+        /// <param name="count">The number of values to read</param>
+        /// <param name="endianness">Endianness to read as</param>
+        public uint[] ReadU32Array(int count, Endianness endianness = Endianness.Little)
+        {
+            uint[] u32s = new uint[count];
+
+            for (int i = 0; i < count; ++i)
+                u32s[i] = ReadU32(endianness);
+
+            return u32s;
+        }
+
+        /// <summary>
+        /// Reads an array of signed 8-bit values
+        /// </summary>
+        /// <param name="count">The number of values to read</param>
         public sbyte[] ReadS8Array(int count)
         {
             sbyte[] s8s = new sbyte[count];
@@ -25,18 +61,33 @@ namespace LawfulBladeSDK.IO
         }
 
         /// <summary>
-        /// Reads an array of U16 values
+        /// Reads an array of signed 16-bit values
         /// </summary>
-        /// <param name="count">The number of u16 values to read</param>
-        /// <param name="endianess">Endianness to read the u16s as</param>
-        public ushort[] ReadU16Array(int count, Endianness endianess = Endianness.Little)
+        /// <param name="count">The number of values to read</param>
+        /// <param name="endianness">Endianness to read as</param>
+        public short[] ReadS16Array(int count, Endianness endianness = Endianness.Little)
         {
-            ushort[] u16s = new ushort[count];
+            short[] s16s = new short[count];
 
             for (int i = 0; i < count; ++i)
-                u16s[i] = ReadU16(endianess);
+                s16s[i] = ReadS16(endianness);
 
-            return u16s;
+            return s16s;
+        }
+
+        /// <summary>
+        /// Reads an array of unsigned 32-bit values
+        /// </summary>
+        /// <param name="count">The number of values to read</param>
+        /// <param name="endianness">Endianness to read as</param>
+        public int[] ReadS32Array(int count, Endianness endianness = Endianness.Little)
+        {
+            int[] s32s = new int[count];
+
+            for (int i = 0; i < count; ++i)
+                s32s[i] = ReadS32(endianness);
+
+            return s32s;
         }
     }
 }
