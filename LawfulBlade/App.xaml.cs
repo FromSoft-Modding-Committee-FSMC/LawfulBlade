@@ -15,7 +15,7 @@ namespace LawfulBlade
         /// <summary>
         /// 'Global' Constant Data
         /// </summary>
-        public static readonly string Version           = @"1.01";
+        public static readonly string Version           = @"1.03";
         public static readonly string ProgramPath       = AppDomain.CurrentDomain.BaseDirectory;
         public static readonly string AppDataPath       = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "FSMC", "LawfulBlade");
         public static readonly string ProjectPath       = Path.Combine(AppDataPath, "projects");
