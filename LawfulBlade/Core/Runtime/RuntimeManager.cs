@@ -6,11 +6,10 @@ namespace LawfulBlade.Core
 {
     public static class RuntimeManager
     {
-        /// <summary>
-        /// List of generator implementations
-        /// </summary>
+        /// <summary>List of generator implementations</summary>
         public static List<IRuntimeGenerator> Generators { get; private set; }
 
+        /// <summary>The number of runtime generators loaded</summary>
         public static int Count => Generators.Count;
 
         public static void Initialize()
