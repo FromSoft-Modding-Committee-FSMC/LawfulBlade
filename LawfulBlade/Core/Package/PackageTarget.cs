@@ -1,86 +1,52 @@
-﻿using System.IO;
+﻿using LawfulBlade.Core.Extensions;
+using System.IO;
 using System.IO.Compression;
 using System.Text.Json.Serialization;
-using System.Windows;
 
 namespace LawfulBlade.Core.Package
 {
     public abstract class PackageTarget
     {
-        /// <summary>
-        /// The root data location of the package target
-        /// </summary>
+        /// <summary>The root data location of the package target</summary>
         [JsonIgnore]
         public string Root { get; protected set; }
 
-        /// <summary>
-        /// If the target is dirty, and needs to be saved.
-        /// </summary>
+        /// <summary>If the target is dirty, and needs to be saved.</summary>
         [JsonIgnore]
         public bool Dirty { get; set; } = false;
 
-        /// <summary>
-        /// Any package references currently in the instance...
-        /// </summary>
+        /// <summary>Any package references currently in the instance...</summary>
         [JsonIgnore]
         public List<PackageReference> Packages { get; protected set; }
 
-        /// <summary>
-        /// The file tree of the target
-        /// </summary>
+        /// <summary>The file tree of the target</summary>
         [JsonIgnore]
-        public Dictionary<string, ulong> Tree { get; protected set; }
+        public Dictionary<string, string[]> Tree { get; protected set; }
+
 
         /// <summary>
         /// Installs a package to the target
         /// </summary>
         public virtual void InstallPackage(Package package)
         {
-            // We need to open up the bundle...
+            // Open up the package bundle
             using ZipArchive bundle = ZipFile.Open(package.Bundle, ZipArchiveMode.Read);
 
-            // Pass 1: Check for any conflicts with the current target...
-            bool hasConflict = false;
+            // Install package files
+            bool packageHadConflict = false;
 
-            foreach (PackageFile file in package.Contents)
+            foreach (PackageFile packageFile in package.Contents)
             {
-                // Check if the tree contains this file...
-                if (Tree.ContainsKey(file.Path))
+                // Check for install conflicts
+                if (PackageFileConflicting(packageFile))
                 {
-                    Debug.Warn($"Conflicting Bundle File: '{file.Path}'");
-                    hasConflict |= true;
-                }
-            }
-
-            // In the case of a conflict, ask the user if they would like to continue...
-            if (!Message.WarningYesNo("This package has conflicts with the target! Are you sure you want to install it?", hasConflict))
-                return;
-
-            // Pass 2: Now actually install the package.
-            foreach (PackageFile file in package.Contents)
-            {
-                // Get the zip entry from the bundle. If it's missing, skip it.
-                ZipArchiveEntry bundleEntry = bundle.GetEntry(file.Path);
-
-                if (bundleEntry == null)
-                {
-                    Debug.Critical($"Missing Bundle File: '{file.Path}'!");
-                    continue;
+                    Debug.Warn($"Package file conflict {{ Package = {package.Name}, File = {packageFile.Path} }}");
+                    packageHadConflict = true;
                 }
 
-                // Get the target absolute path
-                string targetFile = Path.Combine(Root, file.Path);
-                string targetPath = Path.GetDirectoryName(targetFile);
-
-                // If the directory does not exist, it must be created...
-                if (!Directory.Exists(targetPath))
-                    Directory.CreateDirectory(targetPath);
-
-                // Add the file to the tree, overwritting if needed...
-                Tree[file.Path] = file.FNV64;
-
-                // Extract the file to the target file
-                bundleEntry.ExtractToFile(targetFile, true);
+                // Try to install the file.
+                if (!PackageFileInstall(bundle, packageFile))
+                    Debug.Error($"Package file not installed {{ Package = {package.Name}, File = {packageFile.Path} }}");
             }
 
             // Add a package reference
@@ -90,7 +56,7 @@ namespace LawfulBlade.Core.Package
                     UUID                   = package.UUID,
                     Version                = package.Version,
                     Files                  = package.Contents,
-                    InstalledWithConflicts = hasConflict
+                    InstalledWithConflicts = packageHadConflict
                 }
             );
 
@@ -103,43 +69,161 @@ namespace LawfulBlade.Core.Package
         /// </summary>
         public virtual void UninstallPackage(Package package)
         {
-            // Probably dangerous...
-            PackageReference installedPackage = Packages.Where(x => (x.UUID == package.UUID)).ToArray()[0];
+            // First, we want to find the package by its UUID
+            PackageReference[] matchingPackages = Packages.Where(x => (x.UUID == package.UUID)).ToArray();
 
-            // Now we need to compare each file of the installed package, with the files installed to the target
-            // and remove them if the checksums are equal...
-            foreach (PackageFile file in installedPackage.Files)
+            if (matchingPackages.Length != 1)
             {
-                if (!Tree.ContainsKey(file.Path))
-                    continue;
+                if (matchingPackages.Length == 0)
+                    Debug.Critical("Could not uninstall the package! It is not registered as installed! (REPORT THIS!!)");
+                else
+                if (matchingPackages.Length >= 2)
+                    Debug.Critical("Could not uninstall the package! Multiple packages with the same UUID exist!");
 
-                // Check the FNV of the tree file against the package file...
-                // If the checksums don't match, we can assume this file is now owned by another package.
-                if (file.FNV64 == Tree[file.Path])
-                {
-                    string targetFile = Path.Combine(Root, file.Path);
-                    string targetPath = Path.GetDirectoryName(targetFile);
+                return;
+            }
 
-                    // Remove the file...
-                    File.Delete(targetFile);
-
-                    // Check the folder - if it is now empty we can remove that too!
-                    if (Directory.GetFileSystemEntries(targetPath).Length == 0)
-                        Directory.Delete(targetPath);
-
-                    // Remove the tree reference...
-                    Tree.Remove(file.Path);
-                }
+            // Now we remove each file owned by the package, so long as it still belongs to the package
+            foreach (PackageFile file in matchingPackages[0].Files)
+            {
+                if (!PackageFileUninstall(file))
+                    Debug.Critical($"Error uninstalling the package! {{ File = {file.Path} }}");
             }
 
             // Now all owned files have been removed, strip the package reference...
-            Packages.Remove(installedPackage);
+            Packages.Remove(matchingPackages[0]);
 
             // Mark as dirty..
             Dirty = true;
         }
 
+        /// <summary>
+        /// Checks if a package has been installed on to the target
+        /// </summary>
         public virtual bool HasPackageByUUID(string uuid) =>
             Packages.Select(x => x.UUID).Contains(uuid);
+
+        /// <summary>
+        /// Checks if a file within a package has conflicts with the target
+        /// </summary>
+        bool PackageFileConflicting(PackageFile file)
+        {
+            // If the file doesn't exist in the tree at all, that's an immediate no.
+            if (!Tree.TryGetValue(file.Path, out string[] leafNodes))
+                return false;
+
+            // If there is only one file in the tree, the file must be from the core.
+            // there for, it's not a conflict ??
+            if (leafNodes.Length == 1)
+                return false;
+
+            // Now check if the FNV64 of head matches with the current file
+            // This shouldn't happen, but it's not a conflict either.
+            if ($"{file.FNV64}" == leafNodes.Back())
+                return false;
+
+            // If we're here - it's a conflicting file.
+            return true;
+        }
+
+        /// <summary>
+        /// Installs a package file to the target
+        /// </summary>
+        bool PackageFileInstall(ZipArchive bundle, PackageFile file)
+        {
+            // Get the entry, make sure it exists.
+            ZipArchiveEntry bundleEntry = bundle.GetEntry(file.Path);
+
+            if (bundleEntry == null)
+                return false;
+
+            // Get the target absolute path, and directory path
+            string targetFile = Path.Combine(Root, file.Path);
+            string targetPath = Path.GetDirectoryName(targetFile);
+
+            // Make sure the target path exists... If it doesn't, create it.
+            if (!Directory.Exists(targetPath))
+                Directory.CreateDirectory(targetPath);
+
+            // Tree magic
+            if (Tree.TryGetValue(file.Path, out string[] leafNodes))
+            {
+                // Get the history absolute path, and directory path
+                string historyFile = Path.Combine(Root, ".history", file.Path);
+                historyFile = historyFile.Replace(Path.GetFileName(historyFile), $"{leafNodes.Back()}_{Path.GetFileName(historyFile)}");
+                string historyPath = Path.GetDirectoryName(historyFile);
+
+                // Create the history directory if it does not exist...
+                if (!Directory.Exists(historyPath))
+                    Directory.CreateDirectory(historyPath);
+
+                // Move the old file into history...
+                File.Move(targetFile, historyFile, true);
+
+                // Add this file to the tree on the current leaf.
+                Tree[file.Path] = Tree[file.Path].Merge($"{file.FNV64:X16}");
+            }
+            else
+                // Create a new leaf for this file.
+                Tree[file.Path] = [$"{file.FNV64:X16}"];
+
+            // Extract the package file from the bundle
+            bundleEntry.ExtractToFile(targetFile, true);
+
+            return true;
+        }
+
+        /// <summary>
+        /// Uninstalls a package file from the target
+        /// </summary>
+        bool PackageFileUninstall(PackageFile file)
+        {
+            if (!Tree.TryGetValue(file.Path, out var leafNodes))
+                return false;
+
+            // Target file path
+            string targetFile = Path.Combine(Root, file.Path);
+
+            // Get the hash of the file as a string...
+            string fileHash = $"{file.FNV64:X16}";
+
+            if (leafNodes.Back() != fileHash)
+            {
+                // The head of the leaf is not owned by this package anymore, remove the leaf reference and the history file
+                string historyFile = Path.Combine(Root, ".history", file.Path);
+                historyFile = historyFile.Replace(Path.GetFileName(historyFile), $"{fileHash}_{Path.GetFileName(historyFile)}");
+
+                File.Delete(historyFile);
+
+                int indexOfNode = leafNodes.IndexOf(fileHash);
+
+                if (indexOfNode != -1)
+                    Tree[file.Path] = leafNodes.Remove(indexOfNode);
+            }
+            else
+            {
+                // There is only one file - which means this was added by the package, and can be removed.
+                if (leafNodes.Length == 1)
+                {
+                    File.Delete(targetFile);
+                    Tree.Remove(file.Path);
+                } 
+                else
+                {
+                    // There is more than one file, and we're the head. Pop this off and go back in history.
+                    leafNodes = leafNodes.Remove(leafNodes.Length - 1);
+                    Tree[file.Path] = leafNodes;
+
+                    // History file path
+                    string historyFile = Path.Combine(Root, ".history", file.Path);
+                    historyFile = historyFile.Replace(Path.GetFileName(historyFile), $"{leafNodes.Back()}_{Path.GetFileName(historyFile)}");
+
+                    // Replace target with history!
+                    File.Move(historyFile, targetFile, true);
+                }
+            }
+
+            return true;
+        }
     }
 }

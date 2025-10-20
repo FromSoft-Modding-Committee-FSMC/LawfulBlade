@@ -109,7 +109,7 @@ namespace LawfulBlade.Core
                 UUID = instanceGuid.ToString(),
                 Root = Path.Combine(App.InstancePath, instanceGuid.ToString()),
                 Packages = [],
-                Tree = new Dictionary<string, ulong>(),
+                Tree = new Dictionary<string, string[]>(),
                 Tags = [.. (new string[] { "Managed" }), .. creationArgs.Tags],
                 LastAccessDateTime = DateTime.Now,
                 Dirty = true // Created instances are always marked dirty...
@@ -212,7 +212,7 @@ namespace LawfulBlade.Core
                     UUID        = instanceGuid.ToString(),
                     Root        = Path.Combine(App.InstancePath, instanceGuid.ToString()),
                     Packages    = [],
-                    Tree        = new Dictionary<string, ulong>(),
+                    Tree        = new Dictionary<string, string[]>(),
                     Tags        = ["Managed", "Imported"],
                     IconImage   = new(Path.Combine(App.ResourcePath, "256x256_instancedefault.png")),
                     Dirty       = true // Created instances are always marked dirty
@@ -264,9 +264,9 @@ namespace LawfulBlade.Core
                 // Load tree.json
                 targetFile = Path.Combine(directory, "tree.json");
                 if (File.Exists(targetFile))
-                    instance.Tree = JsonSerializer.Deserialize<Dictionary<string, ulong>>(File.ReadAllText(targetFile));
+                    instance.Tree = JsonSerializer.Deserialize<Dictionary<string, string[]>>(File.ReadAllText(targetFile));
                 else
-                    instance.Tree = new Dictionary<string, ulong>();
+                    instance.Tree = new Dictionary<string, string[]>();
 
                 // Load instance.ico
                 targetFile = Path.Combine(directory, "instance.ico");
@@ -317,13 +317,19 @@ namespace LawfulBlade.Core
                 Directory.CreateDirectory(Root);
 
             // Save instance.json
-            File.WriteAllText(Path.Combine(Root, "instance.json"), JsonSerializer.Serialize(this));
+            File.WriteAllText(Path.Combine(Root, "instance.json"), JsonSerializer.Serialize(this, new JsonSerializerOptions
+            {
+                WriteIndented = true
+            }));
 
             // Save packages.json
             File.WriteAllText(Path.Combine(Root, "packages.json"), JsonSerializer.Serialize(Packages));
 
             // Save tree.json
-            File.WriteAllText(Path.Combine(Root, "tree.json"), JsonSerializer.Serialize(Tree));
+            File.WriteAllText(Path.Combine(Root, "tree.json"), JsonSerializer.Serialize(Tree, new JsonSerializerOptions
+            {
+                WriteIndented = true
+            }));
 
             // Save instance.ico
             IconImage.Write(Path.Combine(Root, "instance.ico"), MagickFormat.Ico);

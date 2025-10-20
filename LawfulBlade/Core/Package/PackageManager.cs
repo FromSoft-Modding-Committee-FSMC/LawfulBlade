@@ -24,7 +24,7 @@ namespace LawfulBlade.Core.Package
         /// <summary>
         /// The file storing our repository links
         /// </summary>
-        static string RepositoryFile = Path.Combine(App.AppDataPath, "repositories.json");
+        static readonly string RepositoryFile = Path.Combine(App.AppDataPath, "repositories.json");
 
         /// <summary>
         /// Initializes the package manager
@@ -62,7 +62,7 @@ namespace LawfulBlade.Core.Package
         public static void Shutdown()
         {
             // Save the repositories file...
-            File.WriteAllText(RepositoryFile, JsonSerializer.Serialize(Repositories.Select(repo => repo.URI)));
+            // File.WriteAllText(RepositoryFile, JsonSerializer.Serialize(Repositories.Select(repo => repo.URI)));
         }
 
         /// <summary>
