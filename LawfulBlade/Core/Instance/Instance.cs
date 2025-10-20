@@ -69,6 +69,20 @@ namespace LawfulBlade.Core
         public MagickImage IconImage { get; private set; }
 
         /// <summary>
+        /// Returns if this is the currently active instance
+        /// </summary>
+        public bool IsActiveInstance 
+        { 
+            get 
+            {
+                if (RegistryHelper.GetValue("INSTALL", "InstDir", out object currentInstall))
+                    return ((string)currentInstall) == Root;
+
+                return false;
+            } 
+        }
+
+        /// <summary>
         /// JSON only constructor
         /// </summary>
         [JsonConstructor]

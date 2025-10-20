@@ -74,6 +74,8 @@ namespace LawfulBlade.Control
                 });
             }
 
+            instActive.Visibility = instance.IsActiveInstance ? Visibility.Visible : Visibility.Hidden;
+
             Instance = instance;
         }
 

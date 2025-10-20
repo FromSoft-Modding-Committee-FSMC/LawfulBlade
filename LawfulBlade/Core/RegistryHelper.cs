@@ -37,5 +37,20 @@ namespace LawfulBlade.Core
             // Now we can set our value...
             intRoot.SetValue(key, value);
         }
+
+        /// <summary>
+        /// Gets a value
+        /// </summary>
+        public static bool GetValue(string root, string key, out object value)
+        {
+            RegistryKey intRoot = registryRoot;
+
+            if (root != string.Empty)
+                intRoot = intRoot.OpenSubKey(root, true) ?? intRoot.CreateSubKey(root, true);
+
+            value = intRoot.GetValue(key);
+
+            return value != null;
+        }
     }
 }

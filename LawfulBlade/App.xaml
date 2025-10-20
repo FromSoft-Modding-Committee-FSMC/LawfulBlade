@@ -20,9 +20,11 @@
             <BitmapImage x:Key="96-96Create" UriSource="Resource\96x96_create.png"/>
             <BitmapImage x:Key="96-96Import" UriSource="Resource\96x96_import.png"/>
 
+            <!-- Resources which are not from Icons8 (All should be here eventually) -->
+            <BitmapImage x:Key="64-64-Primary" UriSource="Resource\64x64_primary.png"/>
             <BitmapImage x:Key="256-256InstanceDefault" UriSource="Resource\256x256_instancedefault.png"/>
             <BitmapImage x:Key="256-256ProjectDefault" UriSource="Resource\256x256_projectdefault.png"/>
-            
+
             <BitmapImage x:Key="lbIcon" UriSource="Resource\moonlight.ico"/>
         </ResourceDictionary>
     </Application.Resources>
