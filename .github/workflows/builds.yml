@@ -65,7 +65,7 @@ jobs:
           echo "::endgroup::"
 
       - name: Store build output
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           path: bld
           name: ${{ matrix.project.name }}-${{ matrix.buildtype }}
