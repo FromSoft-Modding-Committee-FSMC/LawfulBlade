@@ -1,11 +1,6 @@
-﻿using ImageMagick;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
+﻿using System.IO;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+using ImageMagick;
 
 namespace LawfulBlade.Core
 {

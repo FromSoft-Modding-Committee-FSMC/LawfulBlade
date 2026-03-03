@@ -1,9 +1,8 @@
-﻿
-using LawfulBlade.Core.Extensions;
+﻿using LawfulBlade.Core.Extensions;
+
 using System.Globalization;
 using System.IO;
 using System.Text.Json;
-using System.Windows.Controls.Primitives;
 
 namespace LawfulBlade.Core.Package
 {
@@ -41,7 +40,7 @@ namespace LawfulBlade.Core.Package
             if (File.Exists(Path.Combine(App.AppDataPath, "repositories.json")))
                 repositoryUrls = JsonSerializer.Deserialize<string[]>(File.ReadAllText(RepositoryFile));
             else
-                repositoryUrls = [$"file:///{Path.Combine(App.ProgramPath, "StandardLibrary")}"];
+                repositoryUrls = ["file:///StandardLibrary"];
 
             // Load the basic info for each repository...
             Repositories = [];
@@ -62,7 +61,7 @@ namespace LawfulBlade.Core.Package
         public static void Shutdown()
         {
             // Save the repositories file...
-            // File.WriteAllText(RepositoryFile, JsonSerializer.Serialize(Repositories.Select(repo => repo.URI)));
+            File.WriteAllText(RepositoryFile, JsonSerializer.Serialize(Repositories.Select(repo => repo.URI)));
         }
 
         /// <summary>
@@ -157,7 +156,6 @@ namespace LawfulBlade.Core.Package
 
                 // Load the downloaded package...
                 result = Package.Load(packageBundlePath);
-
             }
 
             // return the found package.

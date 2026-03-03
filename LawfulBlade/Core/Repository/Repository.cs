@@ -36,7 +36,6 @@ namespace LawfulBlade.Core
         [JsonIgnore]
         public string URI { get; private set; }
 
-
         /// <summary>
         /// Creates a repository based on the provided arguments
         /// </summary>
@@ -81,15 +80,27 @@ namespace LawfulBlade.Core
             // Default repository to null...
             repository = null;
 
+            // Turn our URI string into a URI object
+            Uri repositoryURI = new Uri(sourceUri);
+
             // Depending on if the Uri is a local file or a internet path we want different actions...
-            if (new Uri($"{sourceUri}").IsFile)
-                repositoryPath = new Uri($"{sourceUri}").LocalPath;      
+            if (repositoryURI.IsFile)
+            {
+                if (Path.IsPathFullyQualified(repositoryURI.LocalPath))
+                    repositoryPath = repositoryURI.LocalPath;
+                else
+                    repositoryPath = Path.Combine(App.ProgramPath, repositoryURI.LocalPath.TrimStart('/', '\\'));
+
+                Console.WriteLine(repositoryPath);
+            }
             else
             {
                 DownloadManager.DownloadSync(new Uri($"{sourceUri}.REP"), Path.Combine(App.TemporaryPath, "TEMP.REP"));
                 DownloadManager.DownloadSync(new Uri($"{sourceUri}.LIB"), Path.Combine(App.TemporaryPath, "TEMP.LIB"));
                 repositoryPath = Path.Combine(App.TemporaryPath, "TEMP");
             }
+
+            Console.WriteLine(repositoryPath);
 
             if (!File.Exists($"{repositoryPath}.REP") || !File.Exists($"{repositoryPath}.LIB"))
                 return false;
@@ -123,7 +134,6 @@ namespace LawfulBlade.Core
             // Create the {PackageName}.LIB file
             byte[] encodedLib = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(PackageLibrary));
 
-            File.WriteAllText(Path.Combine(args.CreateRoot, $"{PackageRoot}.TEAPOT"), JsonSerializer.Serialize(PackageLibrary));
             using FileStream outputStream   = File.OpenWrite(Path.Combine(args.CreateRoot, $"{PackageRoot}.LIB"));
             using BrotliStream brotliStream = new (outputStream, CompressionLevel.SmallestSize);
             brotliStream.Write(encodedLib);
