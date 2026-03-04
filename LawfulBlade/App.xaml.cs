@@ -15,7 +15,7 @@ namespace LawfulBlade
         /// <summary>
         /// 'Global' Constant Data
         /// </summary>
-        public static readonly string Version           = @"1.03";
+        public static readonly string Version           = @"103";
         public static readonly string ProgramPath       = AppDomain.CurrentDomain.BaseDirectory;
         public static readonly string AppDataPath       = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "FSMC", "LawfulBlade");
         public static readonly string ProjectPath       = Path.Combine(AppDataPath, "projects");
@@ -23,7 +23,7 @@ namespace LawfulBlade
         public static readonly string PackageCachePath  = Path.Combine(AppDataPath, "packageCache");
         public static readonly string TemporaryPath     = Path.Combine(Path.GetTempPath(), "FSMC", "LawfulBlade");
         public static readonly string ResourcePath      = Path.Combine(ProgramPath, "Resource");
-        public static readonly string ReleaseNotesFile  = Path.Combine(ProgramPath, $"release-notes-v{Version.Strip('.')}.txt");
+        public static readonly string ReleaseNotesFile  = Path.Combine(ProgramPath, $"release-notes-v{Version}.txt");
         public static readonly string RuntimeGenPath    = Path.Combine(ProgramPath, "Runtime");
         public static readonly string ReportAProblemURL = @"https://github.com/FromSoft-Modding-Committee-FSMC/Lawful-Blade/issues";
         public static readonly string RemoteVersionURL  = @"https://lawful.swordofmoonlight.com/version.php";
@@ -126,7 +126,7 @@ namespace LawfulBlade
                 if (CheckForProgramUpdate(out UpdateInfo updateInfo))
                 {
                     // Do we want the update?
-                    if (MessageBox.Show($"A new version of Lawful Blade is avaliable! (Your version = {Version}, new version = {updateInfo.Version})\nDo you want to update?", "Lawful Blade", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
+                    if (MessageBox.Show($"A new version of Lawful Blade is avaliable! (Your version = V{Version}, new version = V{updateInfo.Version})\nDo you want to update?", "Lawful Blade", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
                         PerformUpdate(updateInfo);
                 }
             }
@@ -163,7 +163,7 @@ namespace LawfulBlade
         public bool CheckForProgramUpdate(out UpdateInfo versionInfo)
         {
             // The version info file does exist, lets download it into our temporary path
-            bool   needsUpdate = false;
+            bool needsUpdate = false;
 
             // Start the busy dialog...
             BusyDialog.ShowBusy(
@@ -174,11 +174,8 @@ namespace LawfulBlade
             // Check for the newest version...
             if (DownloadManager.RequestVersion(new Uri(RemoteVersionURL), out versionInfo))
             {
-                // We must parse the versions as integers to do comparisons...
-                int currentVersion = int.Parse(Version.Strip('.'), CultureInfo.InvariantCulture);
-                int newVersion     = int.Parse(versionInfo.Version.Strip('.'), CultureInfo.InvariantCulture);
-
-                needsUpdate = currentVersion < newVersion;
+                // We must parse the versions as integers to do our comparison
+                needsUpdate = int.Parse(Version, CultureInfo.InvariantCulture) < int.Parse(versionInfo.Version, CultureInfo.InvariantCulture);
 
                 // If we do need an update, download the payload now...
                 if (needsUpdate)
@@ -189,7 +186,7 @@ namespace LawfulBlade
 
             BusyDialog.HideBusy();
 
-            return true; //needsUpdate;
+            return needsUpdate;
         }
 
         /// <summary>
