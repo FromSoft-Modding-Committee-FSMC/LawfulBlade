@@ -97,8 +97,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="14.8.1" />
-    <PackageReference Include="Magick.NET.SystemWindowsMedia" Version="8.0.4" />
+    <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="14.10.3" />
+    <PackageReference Include="Magick.NET.SystemWindowsMedia" Version="8.0.16" />
     <PackageReference Include="System.Drawing.Common" Version="9.0.2" />
     <PackageReference Include="System.Management" Version="9.0.2" />
   </ItemGroup>
