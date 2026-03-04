@@ -90,8 +90,6 @@ namespace LawfulBlade.Core
                     repositoryPath = repositoryURI.LocalPath;
                 else
                     repositoryPath = Path.Combine(App.ProgramPath, repositoryURI.LocalPath.TrimStart('/', '\\'));
-
-                Console.WriteLine(repositoryPath);
             }
             else
             {
@@ -99,8 +97,6 @@ namespace LawfulBlade.Core
                 DownloadManager.DownloadSync(new Uri($"{sourceUri}.LIB"), Path.Combine(App.TemporaryPath, "TEMP.LIB"));
                 repositoryPath = Path.Combine(App.TemporaryPath, "TEMP");
             }
-
-            Console.WriteLine(repositoryPath);
 
             if (!File.Exists($"{repositoryPath}.REP") || !File.Exists($"{repositoryPath}.LIB"))
                 return false;

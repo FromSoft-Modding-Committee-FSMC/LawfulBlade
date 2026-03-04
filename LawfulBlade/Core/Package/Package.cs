@@ -1,10 +1,9 @@
-﻿using ImageMagick;
-using LawfulBlade.Core.Extensions;
-using System.IO;
+﻿using System.IO;
 using System.IO.Compression;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Windows;
+
+using ImageMagick;
 
 namespace LawfulBlade.Core.Package
 {
