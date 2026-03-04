@@ -1,14 +1,15 @@
-﻿using ImageMagick;
-using LawfulBlade.Core.Extensions;
+﻿using LawfulBlade.Core.Extensions;
 using LawfulBlade.Core.Package;
 using LawfulBlade.Dialog;
-using System;
+
 using System.Diagnostics;
 using System.IO;
 using System.Management;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
+
+using ImageMagick;
 
 namespace LawfulBlade.Core
 {
@@ -44,17 +45,17 @@ namespace LawfulBlade.Core
         [JsonInclude]
         public DateTime LastAccessDateTime;
 
-        /// <summary>
-        /// Dictionary of avaliable commands for the instance (launchInstance, launchProject)
-        /// </summary>
+        /// <summary>Dictionary of avaliable commands for the instance (launchInstance, launchProject)</summary>
         [JsonInclude]
         public Dictionary<string, InstanceCommand> Commands { get; private set; }
 
-        /// <summary>
-        /// Dictionary of avaliable variables for the instance (set on any instance execution)
-        /// </summary>
+        /// <summary>List of avaliable variables for the instance (set on any instance execution)</summary>
         [JsonInclude]
         public List<InstanceVariable> Variables { get; private set; }
+
+        /// <summary>List of tools which are avaliable for the instance context menu</summary>
+        [JsonInclude]
+        public List<InstanceTool> Tools { get; private set; }
 
         /// <summary>
         /// The template for creating projects for this instance
@@ -71,6 +72,7 @@ namespace LawfulBlade.Core
         /// <summary>
         /// Returns if this is the currently active instance
         /// </summary>
+        [JsonIgnore]
         public bool IsActiveInstance 
         { 
             get 
@@ -128,11 +130,8 @@ namespace LawfulBlade.Core
             if (!Directory.Exists(instance.Root))
                 Directory.CreateDirectory(instance.Root);
 
-            // Store the package UUID because fuck me I guess
-            string packageUUID = creationArgs.CorePackageUUID;
-
-            // Now we get + install the package
-            instance.InstallPackage(PackageManager.GetPackageByUUID(packageUUID));
+            // Now we get + install the core package
+            instance.InstallPackage(PackageManager.GetPackageByUUID(creationArgs.CorePackageUUID));
 
             // Locate and "install" var.json
             string varJsonFile = Path.Combine(instance.Root, "var.json");
