@@ -3,6 +3,7 @@ using LawfulBlade.Core.Extensions;
 using LawfulBlade.Dialog;
 using System.Buffers;
 using System.IO;
+using System.Reflection.Metadata.Ecma335;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Windows;
@@ -96,40 +97,63 @@ namespace LawfulBlade.Core
             if (!Directory.Exists(project.Root))
                 Directory.CreateDirectory(project.Root);
 
-            // We need to run the template which is assossiated with the instance.
-            foreach (InstanceTemplate template in createArgs.Owner.ProjectTemplate)
+            // We must scan for the requested template
+            foreach (InstanceTemplate instanceTemplate in createArgs.Owner.ProjectTemplates)
             {
-                // Content must be expanded in case there are any variables
-                for (int i = 0; i < template.Content.Length; ++i)
-                    template.Content[i] = createArgs.Owner.ExpandVariable(template.Content[i], project);
-                    
-                // Create Project with Template
-                switch (template.Type)
+                // Skip which ever template does not match the one we want
+                if (instanceTemplate.Name != createArgs.TemplateName)
+                    continue;
+
+                // Store a copy so we can modify it
+                InstanceTemplate template = instanceTemplate;
+
+                // There may be variables we need to expand in the content path
+                template.ContentSource = createArgs.Owner.ExpandVariable(template.ContentSource, project);
+
+                // Execute controls
+                foreach (InstanceTemplateControl control in template.Controls)
                 {
-                    // MAKE DIRECTORY
-                    case "maked":
-                        if (!Directory.Exists(Path.Combine(project.Root, template.Content[0])))
-                            Directory.CreateDirectory(Path.Combine(project.Root, template.Content[0]));
-                        break;
+                    try
+                    {
+                        switch (control.Type)
+                        {
+                            case "CopyContent":
+                                if (!Directory.Exists(template.ContentSource))
+                                    throw new Exception("Template content did not exist.");
 
-                    // COPY DIRECTORY
-                    case "copyd":
-                        new DirectoryInfo(Path.Combine(createArgs.Owner.Root, template.Content[0])).Copy(Path.Combine(project.Root, template.Content[1]));
-                        break;
+                                new DirectoryInfo(template.ContentSource).Copy(project.Root);
+                                break;
 
-                    // MAKE FILE
-                    case "makef":
-                        File.WriteAllLines(Path.Combine(project.Root, template.Content[0]), template.Content[1..]);
-                        break;
+                            case "MakeDirectory":
+                                if (control.Arguments == null || control.Arguments.Length != 1)
+                                    throw new Exception("Invalid arguments.");
 
-                    // COPY FILE
-                    case "copyf":
-                        File.Copy(Path.Combine(createArgs.Owner.Root, template.Content[0]), Path.Combine(project.Root, template.Content[1].ToUpperInvariant()), true);
-                        break;
+                                string targetDirectory = Path.Combine(project.Root, createArgs.Owner.ExpandVariable(control.Arguments[0], project));
 
-                    default:
-                        Debug.Error($"Unknown Template Command: '{template.Type}'!");
-                        break;
+                                if (!Directory.Exists(targetDirectory))
+                                    Directory.CreateDirectory(targetDirectory);
+                                break;
+
+                            case "MakeFile":
+                                if (control.Arguments == null || control.Arguments.Length != 1)
+                                    throw new Exception("Invalid arguments.");
+
+                                if (control.Content == null)
+                                    throw new Exception("Null content.");
+
+                                string targetFile = Path.Combine(project.Root, createArgs.Owner.ExpandVariable(control.Arguments[0], project));
+
+                                File.WriteAllLines(targetFile, control.Content);
+                                break;
+
+                            default:
+                                throw new Exception("Invalid control.");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.Critical($"Couldn't execute '{control.Type}': {ex.Message}");
+                    }
                 }
             }
 

@@ -61,7 +61,7 @@ namespace LawfulBlade.Core
         /// The template for creating projects for this instance
         /// </summary>
         [JsonInclude]
-        public List<InstanceTemplate> ProjectTemplate { get; private set; }
+        public List<InstanceTemplate> ProjectTemplates { get; private set; }
        
         /// <summary>
         /// The icon data for this instance
@@ -130,38 +130,12 @@ namespace LawfulBlade.Core
             if (!Directory.Exists(instance.Root))
                 Directory.CreateDirectory(instance.Root);
 
-            // Now we get + install the core package
-            instance.InstallPackage(PackageManager.GetPackageByUUID(creationArgs.CorePackageUUID));
+            // Get the core package using it's UUID
+            Package.Package corePackage = PackageManager.GetPackageByUUID(creationArgs.CorePackageUUID);
 
-            // Locate and "install" var.json
-            string varJsonFile = Path.Combine(instance.Root, "var.json");
-            if (!File.Exists(varJsonFile))
-                Debug.Warn("No 'var.json' file found! You will have to manually create one!");
-            else
-            {
-                instance.Variables = JsonSerializer.Deserialize<List<InstanceVariable>>(File.ReadAllText(varJsonFile));
-                File.Delete(varJsonFile);
-            }
+            // Install the package
+            instance.InstallPackage(corePackage);
 
-            // Locate and 'install' cmd.json
-            string cmdJsonFile = Path.Combine(instance.Root, "cmd.json");
-            if (!File.Exists(cmdJsonFile))
-                Debug.Warn("No 'cmd.json' file found! You will have to manually create one!");
-            else
-            {
-                instance.Commands = JsonSerializer.Deserialize<Dictionary<string, InstanceCommand>>(File.ReadAllText(cmdJsonFile));
-                File.Delete(cmdJsonFile);
-            }
-
-            // Locate and 'install' template.json
-            string temJsonFile = Path.Combine(instance.Root, "template.json");
-            if (!File.Exists(temJsonFile))
-                Debug.Warn("No 'template.json' file found! You will have to manually create one!");
-            else
-            {
-                instance.ProjectTemplate = JsonSerializer.Deserialize<List<InstanceTemplate>>(File.ReadAllText(temJsonFile));
-                File.Delete(temJsonFile);
-            }
             // After installing the package, hide busy...
             BusyDialog.HideBusy();
                
@@ -325,10 +299,7 @@ namespace LawfulBlade.Core
             File.WriteAllText(Path.Combine(Root, "packages.json"), JsonSerializer.Serialize(Packages));
 
             // Save tree.json
-            File.WriteAllText(Path.Combine(Root, "tree.json"), JsonSerializer.Serialize(Tree, new JsonSerializerOptions
-            {
-                WriteIndented = true
-            }));
+            File.WriteAllText(Path.Combine(Root, "tree.json"), JsonSerializer.Serialize(Tree));
 
             // Save instance.ico
             IconImage.Write(Path.Combine(Root, "instance.ico"), MagickFormat.Ico);
@@ -458,6 +429,63 @@ namespace LawfulBlade.Core
 
             if (!silent)
                 SpawnInstanceWatcherTask(process, project);
+        }
+
+        /// <summary>
+        /// Installs a package with instance specific overrides
+        /// </summary>
+        /// <param name="package"></param>
+        public override void InstallPackage(Package.Package package)
+        {
+            // Base pass should come first...
+            base.InstallPackage(package);
+
+            // Install variables, which are data put into the registry on launch
+            if (package.Meta.Variables != null)
+            {
+                // If instance variables are null, lets create it now...
+                if (Variables == null)
+                    Variables = new List<InstanceVariable>();
+
+                // Install the variables to the instance
+                Variables.AddRange(package.Meta.Variables);
+
+                Debug.Info($"Installed {package.Meta.Variables.Length} variables.");
+            } 
+
+            // Install commands, which are used to launch the editor/project
+            if (package.Meta.Commands != null)
+            {
+                if (Commands == null)
+                    Commands = new Dictionary<string, InstanceCommand>();
+
+                foreach (KeyValuePair<string, InstanceCommand> kvp in package.Meta.Commands)
+                    Commands.Add(kvp.Key, kvp.Value);
+
+                Debug.Info($"Installed {package.Meta.Commands.Count} commands.");
+            }
+
+            // Install tools, which are used to extend core functionality
+            if (package.Meta.Tools != null)
+            {
+                if (Tools == null)
+                    Tools = new List<InstanceTool>();
+
+                Tools.AddRange(package.Meta.Tools);
+
+                Debug.Info($"Installed {package.Meta.Tools.Length} tools.");
+            }
+
+            // Install templates, which are default projects and examples
+            if (package.Meta.Templates != null)
+            {
+                if (ProjectTemplates == null)
+                    ProjectTemplates = new List<InstanceTemplate>();
+
+                ProjectTemplates.AddRange(package.Meta.Templates);
+
+                Debug.Info($"Installed {package.Meta.Templates.Length} project templates.");
+            }
         }
 
         /// <summary>

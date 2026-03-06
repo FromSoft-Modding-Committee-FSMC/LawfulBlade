@@ -70,6 +70,12 @@ namespace LawfulBlade.Core.Package
         public PackageFile[] Contents { get; private set; }
 
         /// <summary>
+        /// Package meta contains data specific to the package, for example template definitions and 
+        /// </summary>
+        [JsonIgnore]
+        public PackageMeta Meta { get; private set; }
+
+        /// <summary>
         /// Creates a package based on the provided arguments
         /// </summary>
         public static Package Create(in PackageCreateArgs args)
@@ -119,6 +125,12 @@ namespace LawfulBlade.Core.Package
                 TreeDepth = 2048,
                 DitherMethod = DitherMethod.Riemersma
             });
+
+            // Load Package Meta (where it exists - if it doesn't we make a default)
+            if (File.Exists(Path.Combine(args.Root, $"{args.PackageName}.meta.json")))
+                package.Meta = JsonSerializer.Deserialize<PackageMeta>(File.ReadAllText(Path.Combine(args.Root, $"{args.PackageName}.meta.json")));
+            else
+                package.Meta = new PackageMeta();
 
             // Gather the contents of the package...
             List<PackageFile> files = [];
@@ -171,6 +183,10 @@ namespace LawfulBlade.Core.Package
                 using (BinaryWriter bw = new(packageBundle.CreateEntry(@"LB.PACKAGE.ICON").Open()))
                     bw.Write(Icon.ToByteArray(MagickFormat.Png));
 
+                // Create the LB.PACKAGE.META entry
+                using (StreamWriter sw = new(packageBundle.CreateEntry(@"LB.PACKAGE.META").Open()))
+                    sw.Write(JsonSerializer.Serialize(Meta));
+
                 // Now we can add all file sources to the bundle...
                 foreach (PackageFile file in Contents)
                     packageBundle.CreateEntryFromFile(Path.Combine(args.Root, args.PackageName, file.Path), file.Path);
@@ -220,6 +236,13 @@ namespace LawfulBlade.Core.Package
                     package.Contents = JsonSerializer.Deserialize<PackageFile[]>(sr.ReadToEnd())
                      ?? throw new Exception("Package file contains invalid tree, it is corrupt!");
                 }
+
+                // meta entry
+                ZipArchiveEntry lbPackageMeta = bundle.GetEntry("LB.PACKAGE.META")
+                    ?? throw new Exception("Package file does not contain meta, it is not a Lawful Blade package!");
+
+                using (StreamReader sr = new(lbPackageMeta.Open()))
+                    package.Meta = JsonSerializer.Deserialize<PackageMeta>(sr.ReadToEnd());
             }
 
             // Store the path to the bundle...

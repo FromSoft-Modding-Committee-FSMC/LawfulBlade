@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using LawfulBlade.Core.Package;
+using System.IO;
 using System.IO.Compression;
 using System.Text;
 using System.Text.Json;
@@ -74,47 +75,47 @@ namespace LawfulBlade.Core
         /// </summary>>
         public static bool Load(string sourceUri, out Repository repository)
         {
-            // Create uri object from the uri string
-            string repositoryPath;
-
-            // Default repository to null...
-            repository = null;
-
             // Turn our URI string into a URI object
-            Uri repositoryURI = new Uri(sourceUri);
+            Uri repositoryURI = PackageManager.ExpandURI(sourceUri);
 
-            // Depending on if the Uri is a local file or a internet path we want different actions...
-            if (repositoryURI.IsFile)
+            // We need to download some files if it's not a local repository, assume files are local (???)
+            if (!repositoryURI.IsFile)
             {
-                if (Path.IsPathFullyQualified(repositoryURI.LocalPath))
-                    repositoryPath = repositoryURI.LocalPath;
-                else
-                    repositoryPath = Path.Combine(App.ProgramPath, repositoryURI.LocalPath.TrimStart('/', '\\'));
-            }
-            else
-            {
-                DownloadManager.DownloadSync(new Uri($"{sourceUri}.REP"), Path.Combine(App.TemporaryPath, "TEMP.REP"));
-                DownloadManager.DownloadSync(new Uri($"{sourceUri}.LIB"), Path.Combine(App.TemporaryPath, "TEMP.LIB"));
-                repositoryPath = Path.Combine(App.TemporaryPath, "TEMP");
+                DownloadManager.DownloadSync(new Uri($"{repositoryURI}.REP"), Path.Combine(App.TemporaryPath, "TEMP.REP"));
+                DownloadManager.DownloadSync(new Uri($"{repositoryURI}.LIB"), Path.Combine(App.TemporaryPath, "TEMP.LIB"));
+                repositoryURI = new Uri(Path.Combine(App.TemporaryPath, "TEMP"));
             }
 
-            if (!File.Exists($"{repositoryPath}.REP") || !File.Exists($"{repositoryPath}.LIB"))
+            try
+            {
+                // Check if the definition and library exist
+                if (!File.Exists($"{repositoryURI.LocalPath}.REP"))
+                    throw new Exception($"Repository Definition missing! {repositoryURI.LocalPath}.REP");
+
+                if (!File.Exists($"{repositoryURI.LocalPath}.LIB"))
+                    throw new Exception($"Repository Library missing! {repositoryURI.LocalPath}.LIB");
+
+                // Load repository definition
+                repository     = JsonSerializer.Deserialize<Repository>(File.ReadAllText($"{repositoryURI.LocalPath}.REP"));
+                repository.URI = sourceUri;
+
+                // Load repository library
+                using MemoryStream memoryStream = new (File.ReadAllBytes($"{repositoryURI.LocalPath}.LIB"));
+                using BrotliStream brotliStream = new (memoryStream, CompressionMode.Decompress);
+                using MemoryStream decompStream = new ();
+
+                // Copy from brotli to the decomp stream, which is decompiling the data
+                brotliStream.CopyTo(decompStream);
+
+                // Convert the decompiled stream back into text, and deserialise it.
+                repository.PackageLibrary = JsonSerializer.Deserialize<List<RepositoryPackage>>(Encoding.UTF8.GetString(decompStream.ToArray()));
+            } 
+            catch (Exception ex)
+            {
+                Debug.Critical(ex.Message);
+                repository = null;
                 return false;
-
-            // Load the repository into memory
-            repository     = JsonSerializer.Deserialize<Repository>(File.ReadAllText($"{repositoryPath}.REP"));
-            repository.URI = sourceUri;
-
-            // decompress the library file
-            using MemoryStream memoryStream = new (File.ReadAllBytes($"{repositoryPath}.LIB"));
-            using BrotliStream brotliStream = new (memoryStream, CompressionMode.Decompress);
-            using MemoryStream decompStream = new ();
-
-            // Copy from Brotli to the decomp stream
-            brotliStream.CopyTo(decompStream);
-
-            // Turn it back into valid text and deserialize it...
-            repository.PackageLibrary = JsonSerializer.Deserialize<List<RepositoryPackage>>(Encoding.UTF8.GetString(decompStream.ToArray()));
+            }
 
             return true;
         }

@@ -48,7 +48,10 @@
             <!-- Instance Field -->
             <TextBlock Foreground="#FFF0F0F0" Margin="0,0,0,4">Instance</TextBlock>
             <ComboBox x:Name="instanceField"/>
-
+            
+            <!-- Template Field -->
+            <TextBlock Foreground="#FFF0F0F0" Margin="0,4,0,4">Template</TextBlock>
+            <ComboBox x:Name="templateField" IsEnabled="False"/>
         </StackPanel>
 
         <!-- Button Array -->

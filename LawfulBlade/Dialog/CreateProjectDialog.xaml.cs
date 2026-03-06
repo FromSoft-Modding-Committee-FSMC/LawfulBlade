@@ -26,7 +26,19 @@ namespace LawfulBlade.Dialog
                 instanceField.ItemsSource = InstanceManager.Instances.Select(x => x.Name);
                 instanceField.SelectedIndex = 0;
                 instanceField.Text = InstanceManager.Instances[0].Name;
+
+                if (InstanceManager.Instances[0].ProjectTemplates != null && InstanceManager.Instances[0].ProjectTemplates.Count > 0)
+                {
+                    templateField.ItemsSource = InstanceManager.Instances[0].ProjectTemplates.Select(x => x.Name);
+                    templateField.SelectedIndex = 0;
+                    templateField.Text = InstanceManager.Instances[0].ProjectTemplates[0].Name;
+                    templateField.IsEnabled = true;
+                }
+                else
+                    templateField.IsEnabled = false;
             }
+
+            instanceField.SelectionChanged += OnInstanceSelectionChanged;
         }
 
         /// <summary>
@@ -37,6 +49,27 @@ namespace LawfulBlade.Dialog
         {
             if (Message.Warning("No instances have been created! You must create an instance before you create a project!", (InstanceManager.Count == 0)))
                 OnCancelButton(null, null);
+        }
+
+        /// <summary>
+        /// Event Callback.<br/>
+        /// Called when the selected instance is changed
+        /// </summary>
+        void OnInstanceSelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            // Which instance is selected?
+            Instance selectedInstance = InstanceManager.Instances[instanceField.SelectedIndex];
+
+            // We need to reload any templates...
+            if (selectedInstance.ProjectTemplates != null && selectedInstance.ProjectTemplates.Count > 0)
+            {
+                templateField.ItemsSource   = selectedInstance.ProjectTemplates.Select(x => x.Name);
+                templateField.SelectedIndex = 0;
+                templateField.Text          = selectedInstance.ProjectTemplates[0].Name;
+                templateField.IsEnabled     = true;
+            }
+            else
+                templateField.IsEnabled = false;
         }
 
         /// <summary>
@@ -60,11 +93,12 @@ namespace LawfulBlade.Dialog
             // Create the project
             Project project = Project.Create(new ProjectCreateArgs
             {
-                Name        = nameField.Text,
-                Description = descField.Text,
-                Author      = authorField.Text,
-                IconFile    = iconFilePath,
-                Owner       = InstanceManager.Instances[instanceField.SelectedIndex],
+                Name         = nameField.Text,
+                Description  = descField.Text,
+                Author       = authorField.Text,
+                IconFile     = iconFilePath,
+                Owner        = InstanceManager.Instances[instanceField.SelectedIndex],
+                TemplateName = templateField.Text
             });
 
             ProjectManager.AddProject(project);

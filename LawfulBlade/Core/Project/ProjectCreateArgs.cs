@@ -12,6 +12,7 @@ namespace LawfulBlade.Core
         public string Description;
         public string Author;
         public string IconFile;
+        public string TemplateName;
         public Instance Owner;
     }
 }

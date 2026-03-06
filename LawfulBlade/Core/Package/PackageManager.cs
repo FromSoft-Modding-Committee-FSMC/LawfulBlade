@@ -92,6 +92,9 @@ namespace LawfulBlade.Core.Package
             return foundPackages.ToArray();
         }
 
+        /// <summary>
+        /// Gets a package using it's UUID
+        /// </summary>
         public static Package GetPackageByUUID(string UUID)
         {
             Repository parentRepo = null;
@@ -143,7 +146,7 @@ namespace LawfulBlade.Core.Package
                 {
                     // Re download the stale package...
                     Debug.Warn($"Package is stale. Reacquiring. [New Version = {foundRepoPackage.Value.Version}, Old Version = {result.Version})");
-                    DownloadManager.DownloadSync(new Uri(Path.Combine(parentRepo.URI, foundRepoPackage.Value.Bundle)), packageBundlePath);
+                    DownloadManager.DownloadSync(new Uri($"{ExpandURI(parentRepo.URI)}{Path.DirectorySeparatorChar}{foundRepoPackage.Value.Bundle}"), packageBundlePath);
 
                     // Reload the package
                     result = Package.Load(packageBundlePath);
@@ -152,7 +155,7 @@ namespace LawfulBlade.Core.Package
             else
             {
                 Debug.Info($"Downloading Package: '{foundRepoPackage.Value.Name}'");
-                DownloadManager.DownloadSync(new Uri(Path.Combine(parentRepo.URI, foundRepoPackage.Value.Bundle)), packageBundlePath);
+                DownloadManager.DownloadSync(new Uri($"{ExpandURI(parentRepo.URI)}{Path.DirectorySeparatorChar}{foundRepoPackage.Value.Bundle}"), packageBundlePath);
 
                 // Load the downloaded package...
                 result = Package.Load(packageBundlePath);
@@ -160,6 +163,25 @@ namespace LawfulBlade.Core.Package
 
             // return the found package.
             return result;
+        }
+
+        /// <summary>
+        /// URIs can come in many forms:<br/>
+        /// <b>Web URLs</b><br/>
+        /// <b>Local Files</b><br/>
+        /// and our hacked relative local files...
+        /// </summary>
+        public static Uri ExpandURI(string sourceUri)
+        {
+            Uri uri = new Uri(sourceUri);
+
+            if (uri.IsFile)
+            {
+                if (!Path.IsPathFullyQualified(uri.LocalPath))
+                    uri = new Uri(Path.Combine(App.ProgramPath, uri.LocalPath.TrimStart('/', '\\')));  
+            }
+
+            return uri;
         }
     }
 }
