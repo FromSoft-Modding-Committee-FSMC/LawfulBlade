@@ -20,23 +20,15 @@ namespace LawfulBladeSDK.IO
 
             do
             {
-                buffer[c] = ReadU8(); 
-
                 // Bounds check. If a string is longer than the max buffer size, something is very wrong.
                 if (c >= BYTEBUFFER_SIZE)
                     throw new Exception($"Tried to read a null-terminated string longer than {BYTEBUFFER_SIZE} characters.");
 
-            } while (buffer[c++] != 0x00);
+                buffer[c++] = (byte)fstream.ReadByte();
 
-            string terminatedString = encoding.GetString(buffer, 0, c - 1);
+            } while (buffer[c - 1] != 0x00);
 
-            // We don't want to include the null terminator in the C# string, so find the index of it - and then only return what is before.
-            int nullTerminatorPosition = terminatedString.IndexOf('\0');
-
-            if (nullTerminatorPosition == -1)
-                throw new Exception("Tried to read a null terminated string which does not contain a null terminator.");
-
-            return terminatedString[..nullTerminatorPosition];
+            return encoding.GetString(buffer, 0, c - 1);
         }
 
         /// <summary>
