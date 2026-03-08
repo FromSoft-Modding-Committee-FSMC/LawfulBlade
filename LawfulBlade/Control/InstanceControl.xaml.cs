@@ -148,5 +148,52 @@ namespace LawfulBlade.Control
         void OnMouseLeave(object sender, MouseEventArgs e) =>
             Background = new SolidColorBrush(Color.FromRgb(32, 32, 32));
         #endregion
+
+        // Context Menu
+        void OnContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+            // Fill the context menu with items...
+            contextMenu.Items.Clear();
+
+            if (Instance.Tools != null)
+            {
+                foreach (InstanceTool tool in Instance.Tools)
+                    AddMenuItem(contextMenu, tool.MenuPath);
+            }
+
+            // If it is empty, cancel it by marking the event as handled
+            if (contextMenu.Items.Count == 0)
+                e.Handled = true;
+        }
+
+        void AddMenuItem(ContextMenu menu, string path)
+        {
+            var parts = path.Split('\\');
+            ItemCollection items = menu.Items;
+            MenuItem parent = null;
+
+            foreach (var part in parts)
+            {
+                MenuItem existing = null;
+
+                foreach (MenuItem item in items)
+                {
+                    if ((string)item.Header == part)
+                    {
+                        existing = item;
+                        break;
+                    }
+                }
+
+                if (existing == null)
+                {
+                    existing = new MenuItem { Header = part };
+                    items.Add(existing);
+                }
+
+                parent = existing;
+                items = existing.Items;
+            }
+        }
     }
 }

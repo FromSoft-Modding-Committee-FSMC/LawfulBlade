@@ -98,8 +98,34 @@ namespace LawfulBlade.Dialog
             // Add each property to the list...
             foreach (GeneratorProperty property in Generator.Properties)
             {
-                // Property Label
-                propertiesList.Children.Add(new TextBlock { Text = property.Name, Foreground = ForegroundBrush, Margin = labelMargin });
+                // Create the property block
+                Grid propertyBlock = new Grid
+                {
+                    Margin = new Thickness(0, 2, 0, 2)
+                };
+
+                propertyBlock.ColumnDefinitions.Add(
+                    new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }
+                    );
+                propertyBlock.ColumnDefinitions.Add(
+                    new ColumnDefinition { Width = GridLength.Auto }
+                    );
+
+                // Set the tool tip for the property block
+                string tooltip = GeneratorProperty.GetTooltip(Generator, property);
+                if (tooltip != null && tooltip != string.Empty)
+                    ToolTipService.SetToolTip(propertyBlock, tooltip);
+
+                // Add the property label to the block
+                TextBlock propertyLabel = new TextBlock
+                {
+                    Text              = property.Name,
+                    Foreground        = ForegroundBrush,
+                    Margin            = labelMargin,
+                    VerticalAlignment = VerticalAlignment.Center
+                };
+                Grid.SetColumn(propertyLabel, 0);
+                propertyBlock.Children.Add(propertyLabel);
 
                 // Property Value   - this is fucking awful, save me from terrible code and make a PR!..
                 switch (property.Type)
@@ -115,12 +141,13 @@ namespace LawfulBlade.Dialog
                         };
 
                         stringParam.Text = (string)property.Value;
-                        stringParam.TextChanged += (object obj, TextChangedEventArgs args) =>
+                        stringParam.TextChanged += (obj, args) =>
                         {
                             property.Value = (obj as TextBox).Text;
                         };
 
-                        propertiesList.Children.Add(stringParam);
+                        Grid.SetColumn(stringParam, 1);
+                        propertyBlock.Children.Add(stringParam);
                         break;
 
                     // BOOL VALUE
@@ -131,19 +158,41 @@ namespace LawfulBlade.Dialog
                         };
 
                         boolParam.IsChecked = (bool)property.Value;
-                        boolParam.Click += (object obj, RoutedEventArgs args) =>
+                        boolParam.Click += (obj, args) =>
                         {
                             property.Value = (obj as CheckBox).IsChecked;
-                            Debug.Warn($"{(obj as CheckBox).IsChecked}");
                         };
 
-                        propertiesList.Children.Add(boolParam);
+                        Grid.SetColumn(boolParam, 1);
+                        propertyBlock.Children.Add(boolParam);
+                        break;
+
+                    // ENUM VALUE
+                    case Type enumType when enumType.IsEnum:
+                        ComboBox enumParam = new ComboBox
+                        {
+                            Margin = proptMargin,
+                        };
+
+                        enumParam.ItemsSource  = Enum.GetValues(enumType);
+                        enumParam.SelectedItem = property.Value;
+
+                        enumParam.SelectionChanged += (obj, args) =>
+                        {
+                            property.Value = ((ComboBox)obj).SelectedItem;
+                        };
+
+                        Grid.SetColumn(enumParam, 1);
+                        propertyBlock.Children.Add(enumParam);
                         break;
 
                     default:
                         Debug.Critical($"Unknown Generator Property Type! ({property.Type.Name})");
                         break;
                 }
+
+                // Put the property block into the list
+                propertiesList.Children.Add(propertyBlock);
             }
 
             GeneratorProperties = new GroupBox
@@ -213,10 +262,19 @@ namespace LawfulBlade.Dialog
 
             BusyDialog.HideBusy();
 
+            Generator.UpdateStatus -= OnGeneratorUpdateStatus;
+
             Close();
         }
 
-        void OnGeneratorUpdateStatus(string feedback) =>
+        void OnGeneratorUpdateStatus(string feedback)
+        {
+            // Set the busy message
             BusyDialog.SetBusyMessage(feedback);
+
+            // Also write it into the console
+            Console.WriteLine(feedback);
+        }
+            
     }
 }
