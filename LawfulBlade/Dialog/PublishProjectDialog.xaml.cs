@@ -93,7 +93,7 @@ namespace LawfulBlade.Dialog
             Thickness proptMargin = new Thickness(0, 0, 0, 4);
 
             // Construct Generator Properties...
-            StackPanel propertiesList = new StackPanel { Orientation = Orientation.Vertical };
+            StackPanel propertiesList = new StackPanel { Orientation = System.Windows.Controls.Orientation.Vertical };
 
             // Add each property to the list...
             foreach (GeneratorProperty property in Generator.Properties)

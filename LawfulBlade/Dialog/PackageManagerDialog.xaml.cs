@@ -77,8 +77,8 @@ namespace LawfulBlade.Dialog
                 // Horizontal stack panel for each tag
                 StackPanel tagPanel = new StackPanel
                 {
-                    Orientation = Orientation.Horizontal,
-                    Margin = new Thickness(4, 0, 0, 0),
+                    Orientation = System.Windows.Controls.Orientation.Horizontal,
+                    Margin      = new Thickness(4, 0, 0, 0),
                 };
 
                 CheckBox tagCheckbox = new CheckBox
