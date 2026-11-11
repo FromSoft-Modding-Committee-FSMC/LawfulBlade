@@ -64,9 +64,18 @@ namespace LawfulBlade.Core
 
                 if (!file.IsInvalid)
                 {
-                    StreamWriter sw = new(new FileStream(file, FileAccess.Write)) { AutoFlush = true };
-                    Console.SetError(sw);
-                    Console.SetOut(sw);
+                    // Console Wrapper
+                    StreamWriter sw1 = new(new FileStream(file, FileAccess.Write)) { AutoFlush = true };
+
+                    // File out
+                    StreamWriter sw2 = new($"lawful_{DateTime.Now:yyyy-mm-dd}.log", true);
+
+                    // Multi writer
+                    MultiWriter mw   = new MultiWriter(sw1, sw2);
+                    
+                    // Output
+                    Console.SetError(mw);
+                    Console.SetOut(mw);
                 }
 
                 // Enable terminal mode to get sexy ansi goodness
