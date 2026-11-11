@@ -15,7 +15,7 @@ namespace LawfulBlade
         /// <summary>
         /// 'Global' Constant Data
         /// </summary>
-        public static readonly string Version           = @"103";
+        public static readonly string Version           = @"104";
         public static readonly string ProgramPath       = AppDomain.CurrentDomain.BaseDirectory;
         public static readonly string AppDataPath       = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "FSMC", "LawfulBlade");
         public static readonly string ProjectPath       = Path.Combine(AppDataPath, "projects");
@@ -199,8 +199,17 @@ namespace LawfulBlade
         /// </summary>
         public void PerformUpdate(UpdateInfo versionInfo)
         {
+            string localUpdaterPath = Path.Combine(ProgramPath, "LawfulBladeUpdater.exe");
+
+            if (!File.Exists(localUpdaterPath))
+            {
+                Debug.Error("LawfulBladeUpdater.exe was missing from the root directory of the program.  This is a common problem, and Windows Defender has probably swallowed it for being unsigned!");
+                Debug.Error("Please restore the file before progressing with the update, or download the new version from Github manually!");
+                return;
+            }
+
             // First copy the updater to our temporary path...
-            File.Copy(Path.Combine(ProgramPath, "LawfulBladeUpdater.exe"), Path.Combine(TemporaryPath, "LawfulBladeUpdater.exe"), true);
+            File.Copy(localUpdaterPath, Path.Combine(TemporaryPath, "LawfulBladeUpdater.exe"), true);
 
             // Get some info about our current process...
             string processID   = $"{Environment.ProcessId}";
