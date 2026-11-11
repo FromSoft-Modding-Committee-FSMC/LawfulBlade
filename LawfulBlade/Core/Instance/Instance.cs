@@ -342,9 +342,9 @@ namespace LawfulBlade.Core
         }
 
         /// <summary>
-        /// Launches the instance directly...
+        /// Loads any registery variables for the instance
         /// </summary>
-        public void Launch(Project project, bool silent = false)
+        public void LoadInstanceVariables(Project project = null)
         {
             // Set each variable to the registry...
             Debug.Warn("Modifying Sword of Moonlight Registry!!!");
@@ -354,17 +354,28 @@ namespace LawfulBlade.Core
                 // We need to expand any #var tags inside the value field...
                 Debug.Info($"[Root = {variable.Root}, Key = {variable.Key}, Type = {variable.Type}, Value = {variable.Value}]");
 
-                RegistryHelper.SetValue(variable.Root, variable.Key, 
+                RegistryHelper.SetValue(variable.Root, variable.Key,
                     variable.Type switch
                     {
                         // String type can be expanded
                         InstanceVariableType.String => ExpandVariable(variable.Value, project),
 
                         // Any other variable type can not.
-                        _                           => variable.GetValue(),
+                        _ => variable.GetValue(),
                     }
                 );
             }
+
+            InstanceManager.RaiseRefreshActiveInstance();
+        }
+
+        /// <summary>
+        /// Launches the instance directly...
+        /// </summary>
+        public void Launch(Project project, bool silent = false)
+        {
+            // We must load instance variables before continuing.
+            LoadInstanceVariables(project);
 
             // Now we can attempt to launch...
             InstanceCommand launchCommand;
@@ -567,7 +578,7 @@ namespace LawfulBlade.Core
         /// <summary>
         /// Expands variables in a given string
         /// </summary>
-        public string ExpandVariable(string variableSource, Project project)
+        public string ExpandVariable(string variableSource, Project project = null)
         {
             // Get N matches for expansion...
             MatchCollection matches = ExpandVariablePattern().Matches(variableSource);

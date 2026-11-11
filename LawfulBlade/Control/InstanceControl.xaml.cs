@@ -74,9 +74,17 @@ namespace LawfulBlade.Control
                 });
             }
 
-            instActive.Visibility = instance.IsActiveInstance ? Visibility.Visible : Visibility.Hidden;
-
             Instance = instance;
+
+            RefreshActiveState();
+        }
+
+        /// <summary>
+        /// Sets the active instance start visibility
+        /// </summary>
+        public void RefreshActiveState()
+        {
+            instActive.Visibility = Instance.IsActiveInstance ? Visibility.Visible : Visibility.Hidden;
         }
 
         /// <summary>
@@ -141,24 +149,45 @@ namespace LawfulBlade.Control
             Instance.Launch(null, false);
         }
 
-        #region Highlighting
+        /// <summary>
+        /// Event Callback.<br/>
+        /// Called when the mouse enters the instance control to enable a highlight.
+        /// </summary>
         void OnMouseEnter(object sender, MouseEventArgs e) =>
             Background = new SolidColorBrush(Color.FromRgb(32, 48, 64));
 
+        /// <summary>
+        /// Event Callback.<br/>
+        /// Called when the mouse leaves the instance control to disable highlight.
+        /// </summary>
         void OnMouseLeave(object sender, MouseEventArgs e) =>
             Background = new SolidColorBrush(Color.FromRgb(32, 32, 32));
-        #endregion
 
-        // Context Menu
+        /// <summary>
+        /// Event Callback.<br/>
+        /// Called when the context menu is opened for this instance, filling it with data.
+        /// </summary>
         void OnContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
             // Fill the context menu with items...
+            foreach (MenuItem item in contextMenu.Items)
+                item.Click -= OnContextMenuItemClick;
+
             contextMenu.Items.Clear();
 
             if (Instance.Tools != null)
             {
                 foreach (InstanceTool tool in Instance.Tools)
-                    AddMenuItem(contextMenu, tool.MenuPath);
+                {
+                    MenuItem newItem = AddMenuItem(contextMenu, tool.MenuPath);
+
+                    // Store the command inside the tag, for later use...
+                    newItem.Tag = tool.Command;
+
+                    if (newItem != null)
+                        newItem.Click += OnContextMenuItemClick;
+                }
+                    
             }
 
             // If it is empty, cancel it by marking the event as handled
@@ -166,34 +195,79 @@ namespace LawfulBlade.Control
                 e.Handled = true;
         }
 
-        void AddMenuItem(ContextMenu menu, string path)
+        /// <summary>
+        /// Event Callback.<br/>
+        /// Called when an owned context menu item is clicked, executing its command.
+        /// </summary>
+        void OnContextMenuItemClick(object sender, RoutedEventArgs e)
         {
-            var parts = path.Split('\\');
-            ItemCollection items = menu.Items;
-            MenuItem parent = null;
-
-            foreach (var part in parts)
+            try
             {
-                MenuItem existing = null;
+                // First we need to load in variables for the current instance...
+                Instance.LoadInstanceVariables();
 
-                foreach (MenuItem item in items)
+                // Recover the command and arguments for execution...
+                InstanceToolCommand command = (InstanceToolCommand)(sender as MenuItem).Tag;
+
+                if (string.IsNullOrEmpty(command.Executable))
+                    return;
+
+                string expandedCommand = Instance.ExpandVariable(command.Executable, null);
+
+                string argumentStrings = string.Empty;
+                if (command.Arguments != null)
                 {
-                    if ((string)item.Header == part)
+                    foreach (string argument in command.Arguments)
                     {
-                        existing = item;
-                        break;
+                        if (string.IsNullOrEmpty(argument))
+                            continue;
+
+                        if (!string.IsNullOrEmpty(argumentStrings))
+                            argumentStrings += ' ';
+
+                        argumentStrings += Instance.ExpandVariable(argument, null);
                     }
                 }
 
-                if (existing == null)
+                // Now we have our expanded command and arguments, we can execute it...
+                Process commandProcess = new();
+                commandProcess.StartInfo = new ProcessStartInfo
                 {
-                    existing = new MenuItem { Header = part };
-                    items.Add(existing);
+                    FileName = expandedCommand,
+                    Arguments = argumentStrings
+                };
+
+                commandProcess.Start();
+            }
+            catch (Exception ex)
+            {
+                Core.Debug.Error($"Could not execute command: {ex.Message}");
+                Core.Debug.Critical($"\n{ex.StackTrace}");
+            }
+        }
+
+        /// <summary>
+        /// Helper to add items into the context menu
+        /// </summary>
+        static MenuItem AddMenuItem(ContextMenu menu, string path)
+        {
+            ItemCollection items = menu.Items;
+            MenuItem current = null;
+
+            foreach (string part in path.Split('\\'))
+            {
+                current = items.OfType<MenuItem>().FirstOrDefault(item => (string)item.Header == part);
+
+                if (current == null)
+                {
+                    current = new MenuItem { Header = part };
+                    items.Add(current);
                 }
 
-                parent = existing;
-                items = existing.Items;
+                items = current.Items;
             }
+
+            return current;
         }
     }
 }

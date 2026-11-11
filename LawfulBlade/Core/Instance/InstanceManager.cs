@@ -23,6 +23,10 @@ namespace LawfulBlade.Core
         /// Set to a currently running instance...
         /// </summary>
         public static Instance CurrentOpenInstance { get; set; } = null;
+        
+        /// <summary>Called when the active instance is changed...</summary>
+
+        public static event Action RefreshActiveInstance;
 
         /// <summary>
         /// Initializes the instance manager, loading all instances in to memory
@@ -109,5 +113,11 @@ namespace LawfulBlade.Core
             Instances.Clear();
             Instances = null;
         }
+
+        /// <summary>
+        /// Call to raise the refresh active instance event
+        /// </summary>
+        public static void RaiseRefreshActiveInstance() =>
+            RefreshActiveInstance?.Invoke();
     }
 }

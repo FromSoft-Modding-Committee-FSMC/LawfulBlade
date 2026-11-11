@@ -20,6 +20,7 @@ namespace LawfulBlade
 
             // Populate the instance list every single time the instance manager content changes...
             InstanceManager.InstancesChanged += PopulateInstanceList;
+            InstanceManager.RefreshActiveInstance += OnRefreshActiveInstances;
             PopulateInstanceList();
 
             // Populate the project list every time the project manager content changes
@@ -71,6 +72,21 @@ namespace LawfulBlade
                 InstanceManager.AddInstance(importInstanceTask.Result);
 
                 PopulateInstanceList();
+            }
+        }
+
+        /// <summary>
+        /// Event Handler<br/>
+        /// Listens for a refresh of the active instance state
+        /// </summary>
+        void OnRefreshActiveInstances()
+        {
+            foreach (InstanceControl instanceControl in instanceList.Children)
+            {
+                if (instanceControl == null)
+                    continue;
+
+                instanceControl.RefreshActiveState();
             }
         }
 
