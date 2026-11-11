@@ -21,7 +21,7 @@ namespace LawfulBlade.Core
         {
             httpClient = new HttpClient()
             {
-                Timeout = TimeSpan.FromMilliseconds(1000),
+                Timeout = TimeSpan.FromMilliseconds(10000),
             };
         }
 
