@@ -115,8 +115,9 @@ namespace LawfulBlade.Core.Package
 
             // If there is only one file in the tree, the file must be from the core.
             // there for, it's not a conflict ??
-            if (leafNodes.Length == 1)
-                return false;
+            // if (leafNodes.Length == 1)
+            //     return false;
+            //  ^ It absolutely is conflicting you fucking knob head.
 
             // Now check if the FNV64 of head matches with the current file
             // This shouldn't happen, but it's not a conflict either.
