@@ -58,8 +58,11 @@ namespace LawfulBlade.Dialog
         // We store the instance of busy to make sure only one exists...
         static BusyDialog instance;
         static Thread busyThread;
-        static Dispatcher busyThreadDispatcher;
         static bool isCloseAllowed = true;
+
+        static readonly object gate = new();
+        static readonly ManualResetEventSlim created = new(false);
+
 
         /// <summary>
         /// Private Constructor...
@@ -95,28 +98,42 @@ namespace LawfulBlade.Dialog
         /// </summary>
         public static void ShowBusy(string title, string message)
         {
-            // Don't show busy if it is not null...
-            if (instance != null || busyThread != null)
-                return;
-
-            busyThread = new(() =>
+            lock (gate)
             {
-                instance = new BusyDialog();
+                if (instance != null || busyThread != null)
+                    return;
 
-                // Set the title and message...
-                instance.busyWindow.Title = title;
-                instance.busyMessage.Text = message;
+                created.Reset();
+                isCloseAllowed = false;
 
-                // Show the busy dialog
-                instance.ShowDialog();
-            });
+                busyThread = new Thread(() =>
+                {
+                    try
+                    {
+                        BusyDialog dialog = new BusyDialog();
+                        dialog.busyWindow.Title = title;
+                        dialog.busyMessage.Text = message;
 
-            // Don't allow the user to close the window
-            isCloseAllowed = false;
+                        instance = dialog;
+                        created.Set();
 
-            busyThread.SetApartmentState(ApartmentState.STA);
-            busyThreadDispatcher = Dispatcher.FromThread(busyThread);
-            busyThread.Start();
+                        dialog.ShowDialog();
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.Error($"Busy dialog failed: {ex.Message}");
+                        Debug.Critical($"\n{ex.StackTrace}");
+                    }
+                    finally
+                    {
+                        created.Set();
+                    }
+                });
+
+                busyThread.SetApartmentState(ApartmentState.STA);
+                busyThread.IsBackground = true;
+                busyThread.Start();
+            }
         }
 
         /// <summary>
@@ -136,27 +153,47 @@ namespace LawfulBlade.Dialog
         /// </summary>
         public static void HideBusy()
         {
-            // The user will now be allowed to close the window again
-            isCloseAllowed = true;
+            Thread thread;
 
-            // Close the instance using our dispatcher
-            Dispatcher.FromThread(busyThread).Invoke(instance.Close);
+            lock (gate)
+                thread = busyThread;
 
-            // We join the busy thread on to the main thread until close has executed...
-            busyThread.Join(1000);
+            if (thread == null)
+                return;
 
-            // Now we can clear thread and instance up.
-            busyThreadDispatcher = null;
-            busyThread = null;
-            instance   = null;
+            created.Wait(TimeSpan.FromSeconds(5));
+
+            BusyDialog dialog;
+
+            lock (gate)
+            {
+                dialog = instance;
+                instance = null;
+                busyThread = null;
+                isCloseAllowed = true;
+            }
+
+            if (dialog != null)
+            {
+                try
+                {
+                    dialog.Dispatcher.BeginInvoke(new Action(dialog.Close));
+                }
+                catch (Exception ex)
+                {
+                    Debug.Error($"Could not close the busy dialog: {ex.Message}");
+                    Debug.Critical($"\n{ex.StackTrace}");
+                }
+            }
+
+            thread.Join(1000);
         }
 
         public static void SetBusyMessage(string message)
         {
-            if (instance == null)
-                return;
+            BusyDialog dialog = instance;
 
-            Dispatcher.FromThread(busyThread).Invoke(() => { instance.busyMessage.Text = message; });
+            dialog?.Dispatcher.BeginInvoke(new Action(() => dialog.busyMessage.Text = message));
         }
     }
 }
