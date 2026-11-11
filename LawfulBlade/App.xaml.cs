@@ -174,12 +174,17 @@ namespace LawfulBlade
             // Check for the newest version...
             if (DownloadManager.RequestVersion(new Uri(RemoteVersionURL), out versionInfo))
             {
-                // We must parse the versions as integers to do our comparison
-                needsUpdate = int.Parse(Version, CultureInfo.InvariantCulture) < int.Parse(versionInfo.Version, CultureInfo.InvariantCulture);
+                if (!int.TryParse(Version, CultureInfo.InvariantCulture, out int currentVersion) || !int.TryParse(versionInfo.Version, CultureInfo.InvariantCulture, out int remoteVersion))
+                    Debug.Warn($"Remote version string was malformed, and updates could not proceed! {{ current = {Version}, remote = {versionInfo.Version} }}");
+                else
+                {
+                    // We must parse the versions as integers to do our comparison
+                    needsUpdate = currentVersion < remoteVersion;
 
-                // If we do need an update, download the payload now...
-                if (needsUpdate)
-                    DownloadManager.DownloadSync(new Uri(versionInfo.SourceF), Path.Combine(TemporaryPath, "updates.zip"));
+                    // If we do need an update, download the payload now...
+                    if (needsUpdate)
+                        DownloadManager.DownloadSync(new Uri(versionInfo.SourceF), Path.Combine(TemporaryPath, "updates.zip"));
+                }
             } 
             else
                 Debug.Warn($"Cannot retrieve version information from URL: '{RemoteVersionURL}'");
