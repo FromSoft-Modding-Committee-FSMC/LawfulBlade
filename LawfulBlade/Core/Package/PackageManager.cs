@@ -146,7 +146,7 @@ namespace LawfulBlade.Core.Package
                 {
                     // Re download the stale package...
                     Debug.Warn($"Package is stale. Reacquiring. [New Version = {foundRepoPackage.Value.Version}, Old Version = {result.Version})");
-                    DownloadManager.DownloadSync(new Uri($"{ExpandURI(parentRepo.PackageRoot)}{Path.DirectorySeparatorChar}{foundRepoPackage.Value.Bundle}"), packageBundlePath);
+                    DownloadManager.DownloadSync(parentRepo.ResolveBundle(foundRepoPackage.Value.Bundle), packageBundlePath);
 
                     // Reload the package
                     result = Package.Load(packageBundlePath);
@@ -155,7 +155,7 @@ namespace LawfulBlade.Core.Package
             else
             {
                 Debug.Info($"Downloading Package: '{foundRepoPackage.Value.Name}'");
-                DownloadManager.DownloadSync(new Uri($"{ExpandURI(parentRepo.PackageRoot)}{Path.DirectorySeparatorChar}{foundRepoPackage.Value.Bundle}"), packageBundlePath);
+                DownloadManager.DownloadSync(parentRepo.ResolveBundle(foundRepoPackage.Value.Bundle), packageBundlePath);
 
                 // Load the downloaded package...
                 result = Package.Load(packageBundlePath);
@@ -173,8 +173,6 @@ namespace LawfulBlade.Core.Package
         /// </summary>
         public static Uri ExpandURI(string sourceUri)
         {
-            Debug.Info($"Source URI = {sourceUri}");
-
             Uri uri = new Uri(sourceUri);
 
             if (uri.IsFile)
@@ -182,8 +180,6 @@ namespace LawfulBlade.Core.Package
                 if (!Path.IsPathFullyQualified(uri.LocalPath))
                     uri = new Uri(Path.Combine(App.ProgramPath, uri.LocalPath.TrimStart('/', '\\')));  
             }
-
-            Debug.Info($"Target URI = {uri}");
 
             return uri;
         }

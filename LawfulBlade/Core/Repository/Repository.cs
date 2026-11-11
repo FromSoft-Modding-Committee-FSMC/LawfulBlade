@@ -75,19 +75,22 @@ namespace LawfulBlade.Core
         /// </summary>>
         public static bool Load(string sourceUri, out Repository repository)
         {
-            // Turn our URI string into a URI object
-            Uri repositoryURI = PackageManager.ExpandURI(sourceUri);
-
-            // We need to download some files if it's not a local repository, assume files are local (???)
-            if (!repositoryURI.IsFile)
-            {
-                DownloadManager.DownloadSync(new Uri($"{repositoryURI}.REP"), Path.Combine(App.TemporaryPath, "TEMP.REP"));
-                DownloadManager.DownloadSync(new Uri($"{repositoryURI}.LIB"), Path.Combine(App.TemporaryPath, "TEMP.LIB"));
-                repositoryURI = new Uri(Path.Combine(App.TemporaryPath, "TEMP"));
-            }
+            // Repository starts as null
+            repository = null;
 
             try
             {
+                // Turn our URI string into a URI object
+                Uri repositoryURI = PackageManager.ExpandURI(sourceUri);
+
+                // We need to download some files if it's not a local repository, assume files are local (???)
+                if (!repositoryURI.IsFile)
+                {
+                    DownloadManager.DownloadSync(new Uri($"{repositoryURI}.REP"), Path.Combine(App.TemporaryPath, "TEMP.REP"));
+                    DownloadManager.DownloadSync(new Uri($"{repositoryURI}.LIB"), Path.Combine(App.TemporaryPath, "TEMP.LIB"));
+                    repositoryURI = new Uri(Path.Combine(App.TemporaryPath, "TEMP"));
+                }
+
                 // Check if the definition and library exist
                 if (!File.Exists($"{repositoryURI.LocalPath}.REP"))
                     throw new Exception($"Repository Definition missing! {repositoryURI.LocalPath}.REP");
@@ -96,7 +99,7 @@ namespace LawfulBlade.Core
                     throw new Exception($"Repository Library missing! {repositoryURI.LocalPath}.LIB");
 
                 // Load repository definition
-                repository     = JsonSerializer.Deserialize<Repository>(File.ReadAllText($"{repositoryURI.LocalPath}.REP"));
+                repository     = JsonSerializer.Deserialize<Repository>(File.ReadAllText($"{repositoryURI.LocalPath}.REP"), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                 repository.URI = sourceUri;
 
                 // Load repository library
@@ -112,8 +115,8 @@ namespace LawfulBlade.Core
             } 
             catch (Exception ex)
             {
-                Debug.Critical(ex.Message);
-                repository = null;
+                Debug.Error($"Failed to load repository: {ex.Message}");
+                Debug.Critical($"\n{ex.StackTrace}");
                 return false;
             }
 
@@ -135,6 +138,19 @@ namespace LawfulBlade.Core
             using BrotliStream brotliStream = new (outputStream, CompressionLevel.SmallestSize);
             brotliStream.Write(encodedLib);
             brotliStream.Flush();
+        }
+
+        /// <summary>
+        /// Builds URI for a package bundle within the repository, using the bundle path.
+        /// </summary>
+        public Uri ResolveBundle(string bundle)
+        {
+            // A web repository says where its packages are in PackageRoot (an http or https address). Use that, not the address of the .REP file.
+            if (Uri.TryCreate(PackageRoot, UriKind.Absolute, out Uri root) && (root.Scheme == Uri.UriSchemeHttp || root.Scheme == Uri.UriSchemeHttps))
+                return new Uri(new Uri(root.AbsoluteUri.TrimEnd('/') + "/"), bundle);
+
+            // Otherwise assume it's a file repository
+            return new Uri($"{PackageManager.ExpandURI(URI)}{Path.DirectorySeparatorChar}{bundle}");
         }
     }
 }

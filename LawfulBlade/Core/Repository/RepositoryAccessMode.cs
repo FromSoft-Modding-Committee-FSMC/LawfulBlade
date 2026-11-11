@@ -8,6 +8,7 @@ namespace LawfulBlade.Core
 {
     public enum RepositoryAccessMode
     {
-        FileSystem
+        FileSystem,
+        Net
     }
 }
