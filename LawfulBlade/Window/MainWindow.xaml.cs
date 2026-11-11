@@ -171,6 +171,9 @@ namespace LawfulBlade
 
         #endregion
 
+        /**
+         * This region stores all events fired from the 'Packages' section of the menu
+        **/
         #region Menu - Packages
         /// <summary>
         /// Event Handler<br/>
