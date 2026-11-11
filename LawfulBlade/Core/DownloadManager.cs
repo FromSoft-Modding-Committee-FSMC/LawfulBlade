@@ -44,12 +44,20 @@ namespace LawfulBlade.Core
                 throw new Exception($"No network connection!");
 
             // Now lets attempt to download that file...
-            using Task<Stream> httpStream = httpClient.GetStreamAsync(source);
-            httpStream.Wait();  // Wait for it to complete...
+            try
+            {
+                using Task<Stream> httpStream = httpClient.GetStreamAsync(source);
+                httpStream.Wait();  // Wait for it to complete...
 
-            // Wait for the stream task to complete
-            using FileStream fileStream = new(destination, FileMode.OpenOrCreate);
-            httpStream.Result.CopyTo(fileStream);
+                // Wait for the stream task to complete
+                using FileStream fileStream = new(destination, FileMode.OpenOrCreate);
+                httpStream.Result.CopyTo(fileStream);
+            } 
+            catch (Exception ex)
+            {
+                Debug.Error($"Failed to download file '{source}': {ex.Message}");
+                Debug.Critical($"\n{ex.StackTrace}");
+            }
         }
 
         /// <summary>

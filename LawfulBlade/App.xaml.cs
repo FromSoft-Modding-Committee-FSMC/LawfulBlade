@@ -106,14 +106,14 @@ namespace LawfulBlade
             PackageManager.Initialize();
             Debug.Info($"There are {PackageManager.PackageCount} packages avaliable across {PackageManager.RepositoryCount} repositories...");
 
+            // Load Runtime Generators...
+            RuntimeManager.Initialize();
+            Debug.Info($"There are {RuntimeManager.Count} runtimes avaliable...");
+
             // Load Instances, Projects
             InstanceManager.Initialize();
             ProjectManager.Initialize();
-            Debug.Info($"Managing {InstanceManager.Count} instances, {ProjectManager.Count} projects...");
-
-            // Load Runtime Generators...
-            RuntimeManager.Initialize();
-            Debug.Info($"There are {RuntimeManager.Count} runtimes avaliable!");
+            Debug.Info($"Managing {InstanceManager.Count} instances, and {ProjectManager.Count} projects...");
 
             // Construct new main window
             MainWindow = new MainWindow();

@@ -198,55 +198,62 @@ namespace LawfulBlade.Core.Package
         /// </summary>
         public static Package Load(string path, bool liteLoad = false)
         {
-            // Open the Zip File...
-            using ZipArchive bundle = ZipFile.Open(path, ZipArchiveMode.Read);
+            Package package = null;
 
-            // Get the info entry...
-            ZipArchiveEntry lbPackageInfo = bundle.GetEntry("LB.PACKAGE.INFO")
-                ?? throw new Exception("Package file does not contain info, it is not a Lawful Blade package!");
-
-            Package package;
-
-            // Deserialize the info file as the package file
-            using (StreamReader sr = new(lbPackageInfo.Open()))
+            try
             {
-                package = JsonSerializer.Deserialize<Package>(sr.ReadToEnd())
-                    ?? throw new Exception("Package file contains invalid info, it is corrupt!");
-            }
+                // Open the Zip File...
+                using ZipArchive bundle = ZipFile.Open(path, ZipArchiveMode.Read);
 
-            // icon entry
-            ZipArchiveEntry lbPackageIcon = bundle.GetEntry("LB.PACKAGE.ICON")
-                ?? throw new Exception("Package file does not contain icon, it is not a Lawful Blade package!");
-
-            using (BinaryReader br = new(lbPackageIcon.Open()))
-            {
-                package.Icon = new MagickImage(br.ReadBytes((int)lbPackageIcon.Length));
-            }
-
-            if (!liteLoad)
-            {
-                // If liteload is false, we also load everything else....
-
-                // tree entry
-                ZipArchiveEntry lbPackageTree = bundle.GetEntry("LB.PACKAGE.TREE")
-                    ?? throw new Exception("Package file does not contain tree, it is not a Lawful Blade package!");
-
-                using (StreamReader sr = new(lbPackageTree.Open()))
+                // Get the info entry...
+                ZipArchiveEntry lbPackageInfo = bundle.GetEntry("LB.PACKAGE.INFO")
+                    ?? throw new Exception("Package file does not contain info, it is not a Lawful Blade package!");
+                // Deserialize the info file as the package file
+                using (StreamReader sr = new(lbPackageInfo.Open()))
                 {
-                    package.Contents = JsonSerializer.Deserialize<PackageFile[]>(sr.ReadToEnd())
-                     ?? throw new Exception("Package file contains invalid tree, it is corrupt!");
+                    package = JsonSerializer.Deserialize<Package>(sr.ReadToEnd())
+                        ?? throw new Exception("Package file contains invalid info, it is corrupt!");
                 }
 
-                // meta entry
-                ZipArchiveEntry lbPackageMeta = bundle.GetEntry("LB.PACKAGE.META")
-                    ?? throw new Exception("Package file does not contain meta, it is not a Lawful Blade package!");
+                // icon entry
+                ZipArchiveEntry lbPackageIcon = bundle.GetEntry("LB.PACKAGE.ICON")
+                    ?? throw new Exception("Package file does not contain icon, it is not a Lawful Blade package!");
 
-                using (StreamReader sr = new(lbPackageMeta.Open()))
-                    package.Meta = JsonSerializer.Deserialize<PackageMeta>(sr.ReadToEnd());
+                using (BinaryReader br = new(lbPackageIcon.Open()))
+                {
+                    package.Icon = new MagickImage(br.ReadBytes((int)lbPackageIcon.Length));
+                }
+
+                if (!liteLoad)
+                {
+                    // If liteload is false, we also load everything else....
+
+                    // tree entry
+                    ZipArchiveEntry lbPackageTree = bundle.GetEntry("LB.PACKAGE.TREE")
+                        ?? throw new Exception("Package file does not contain tree, it is not a Lawful Blade package!");
+
+                    using (StreamReader sr = new(lbPackageTree.Open()))
+                    {
+                        package.Contents = JsonSerializer.Deserialize<PackageFile[]>(sr.ReadToEnd())
+                         ?? throw new Exception("Package file contains invalid tree, it is corrupt!");
+                    }
+
+                    // meta entry
+                    ZipArchiveEntry lbPackageMeta = bundle.GetEntry("LB.PACKAGE.META")
+                        ?? throw new Exception("Package file does not contain meta, it is not a Lawful Blade package!");
+
+                    using (StreamReader sr = new(lbPackageMeta.Open()))
+                        package.Meta = JsonSerializer.Deserialize<PackageMeta>(sr.ReadToEnd());
+                }
+
+                // Store the path to the bundle...
+                package.Bundle = path;
+            } 
+            catch (Exception ex)
+            {
+                Debug.Error($"Failed to load package '{path}': {ex.Message}");
+                Debug.Critical($"\n{ex.StackTrace}");
             }
-
-            // Store the path to the bundle...
-            package.Bundle = path;
 
             return package;
         }

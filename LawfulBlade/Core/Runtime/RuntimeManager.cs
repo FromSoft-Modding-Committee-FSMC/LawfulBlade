@@ -58,8 +58,8 @@ namespace LawfulBlade.Core
                 }
                 catch (Exception ex)
                 {
-                    Debug.Critical("Failed to load generator assembly!");
-                    Debug.Critical(ex.Message);
+                    Debug.Error($"Failed to load generator assembly: {ex.Message}");
+                    Debug.Critical($"\n{ex.StackTrace}");
                 }
             }
         }
