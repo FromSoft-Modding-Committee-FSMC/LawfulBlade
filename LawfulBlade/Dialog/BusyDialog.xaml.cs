@@ -31,6 +31,10 @@ namespace LawfulBlade.Dialog
             "Waiting for the King's Field V announcement",
             "Comparing equipment stats in Shadow Tower",
             "Waiting for Prince Devian Rosberg to turn around\r\n(He'll get there, someday...)",
+            "CHECKING THE RAM CARD.",
+            "Ok.",
+            "I feel like there's got to be a better way",
+            "Busy loading the busy dialog message",
 
             /* Thanks, Kurobake! */
             "Appears to be dead (just loading, though)",
