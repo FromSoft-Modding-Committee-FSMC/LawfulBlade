@@ -623,7 +623,44 @@
         </Setter>
     </Style>
 
-
+    
+    <!--  ContextMenu  -->
+    <Style TargetType="{x:Type ContextMenu}">
+        <Setter Property="Background" Value="{StaticResource ContextMenuBackground}" />
+        <Setter Property="Foreground" Value="{StaticResource ContextMenuForeground}" />
+        <Setter Property="BorderBrush" Value="{StaticResource ContextMenuBorderBrush}" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Grid.IsSharedSizeScope" Value="true" />
+        <Setter Property="HasDropShadow" Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ContextMenu}">
+                    <Themes:SystemDropShadowChrome Name="Shdw"
+                                                   Themes:SystemDropShadowChrome.Color="Transparent"
+                                                   Themes:SystemDropShadowChrome.CornerRadius="0"
+                                                   SnapsToDevicePixels="True">
+                        <Border x:Name="Border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="1">
+                            <ScrollViewer x:Name="ScrollViewer" VerticalScrollBarVisibility="Hidden">
+                                <ItemsPresenter />
+                            </ScrollViewer>
+                        </Border>
+                    </Themes:SystemDropShadowChrome>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="HasDropShadow" Value="True">
+                            <Setter TargetName="Shdw" Property="Margin" Value="0,0,5,5" />
+                            <Setter TargetName="Shdw" Property="Themes:SystemDropShadowChrome.Color" Value="#71000000" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    
     <!--  Menu  -->
     <Style TargetType="{x:Type Menu}">
         <Setter Property="Background" Value="#1B1B1C" />
