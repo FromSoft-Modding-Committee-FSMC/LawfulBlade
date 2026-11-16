@@ -37,6 +37,10 @@ namespace LawfulBlade.Core
         [JsonIgnore]
         public string URI { get; private set; }
 
+        /// <summary>If the repository is currently avaliable</summary>
+        [JsonIgnore]
+        public bool Avaliable { get; private set; } = false;
+
         /// <summary>
         /// Creates a repository based on the provided arguments
         /// </summary>
@@ -75,9 +79,6 @@ namespace LawfulBlade.Core
         /// </summary>>
         public static bool Load(string sourceUri, out Repository repository)
         {
-            // Repository starts as null
-            repository = null;
-
             try
             {
                 // Turn our URI string into a URI object
@@ -112,11 +113,22 @@ namespace LawfulBlade.Core
 
                 // Convert the decompiled stream back into text, and deserialise it.
                 repository.PackageLibrary = JsonSerializer.Deserialize<List<RepositoryPackage>>(Encoding.UTF8.GetString(decompStream.ToArray()));
+                repository.Avaliable = true;
             } 
             catch (Exception ex)
             {
                 Debug.Error($"Failed to load repository: {ex.Message}");
                 Debug.Critical($"\n{ex.StackTrace}");
+
+                // Fail repository
+                repository = new Repository();
+                repository.URI = sourceUri;
+                repository.Name = "Unknown";
+                repository.PackageLibrary = new List<RepositoryPackage>();
+                repository.AccessMode = RepositoryAccessMode.Net;
+                repository.Description = string.Empty;
+                repository.Avaliable = false;
+
                 return false;
             }
 

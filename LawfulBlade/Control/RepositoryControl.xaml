@@ -1,0 +1,22 @@
+﻿<UserControl x:Class="LawfulBlade.Control.RepositoryControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:LawfulBlade.Control"
+             mc:Ignorable="d" 
+             d:DesignHeight="24" d:DesignWidth="320" >
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="48" />
+            <ColumnDefinition Width="5*" />
+            <ColumnDefinition Width="24" />
+        </Grid.ColumnDefinitions>
+
+        <TextBlock x:Name="statusField" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextAlignment="Center" FontSize="12" Background="#FF101010" Foreground="#FFF0F0F0" Margin="2,2,2,2"/>
+        <TextBox x:Name="urlField" Grid.Column="1" AcceptsReturn="True" HorizontalAlignment="Stretch" Background="#FF101010" BorderBrush="Black" Foreground="#FFF0F0F0" Margin="0,2,0,2"/>
+        <Button x:Name="deleteButton" Grid.Column="2" Margin="2,2,2,2" Click="OnClickDelete">
+            <Image Grid.Column="0" Margin="2,2,2,2" Source="{StaticResource 48-48Delete}"/>
+        </Button>
+    </Grid>
+</UserControl>

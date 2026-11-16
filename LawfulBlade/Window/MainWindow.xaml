@@ -30,7 +30,7 @@
 
             <!-- PACKAGES -->
             <MenuItem Header="Packages">
-                <MenuItem Header="Manage Repositories"/>
+                <MenuItem Header="Manage Repositories" Click="OnMenuPackagesManageRepositories"/>
                 <MenuItem Header="Clear Package Cache" Click="OnMenuPackagesClearCache"/>
             </MenuItem>
 

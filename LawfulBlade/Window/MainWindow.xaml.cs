@@ -175,6 +175,16 @@ namespace LawfulBlade
          * This region stores all events fired from the 'Packages' section of the menu
         **/
         #region Menu - Packages
+        void OnMenuPackagesManageRepositories(object sender, RoutedEventArgs e)
+        {
+            RepositoryManagerDialog managerDialog = new ();
+            
+            if (managerDialog.ShowDialog() ?? false)
+            {
+
+            }
+        }
+
         /// <summary>
         /// Event Handler<br/>
         /// Listens for the 'Clear Package Cache' button

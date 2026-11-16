@@ -44,15 +44,28 @@ namespace LawfulBlade.Core.Package
 
             // Load the basic info for each repository...
             Repositories = [];
+            PackageCount = 0;
 
             foreach (string repositoryUrl in repositoryUrls)
             {
                 if (!Repository.Load(repositoryUrl, out Repository repo))
-                    continue;
-
+                    Debug.Warn($"Failed to load repository from URL '{repositoryUrl}'.");
+                    
                 PackageCount += repo.PackageCount;
                 Repositories.Add(repo);
             }
+        }
+
+        /// <summary>
+        /// Load a new repository into the package manager...
+        /// </summary>
+        public static void LoadRepository(string repositoryUrl)
+        {
+            if (!Repository.Load(repositoryUrl, out Repository repository))
+                Debug.Warn($"Failed to load repository from URL '{repositoryUrl}'.");
+
+            PackageCount += repository.PackageCount;
+            Repositories.Add(repository);
         }
 
         /// <summary>
@@ -62,6 +75,9 @@ namespace LawfulBlade.Core.Package
         {
             // Save the repositories file...
             File.WriteAllText(RepositoryFile, JsonSerializer.Serialize(Repositories.Select(repo => repo.URI)));
+
+            Repositories.Clear();
+            PackageCount = 0;
         }
 
         /// <summary>
@@ -72,9 +88,15 @@ namespace LawfulBlade.Core.Package
             List<RepositoryPackage> foundPackages = [];
 
             foreach (Repository repository in Repositories)
+            {
+                if (!repository.Avaliable)
+                    continue;
+
                 foreach (RepositoryPackage package in repository.PackageLibrary)
                     if (package.Tags.Contains(tag))
                         foundPackages.Add(package);
+            }
+
 
             return foundPackages.ToArray();
         }
@@ -86,8 +108,13 @@ namespace LawfulBlade.Core.Package
         {
             List<RepositoryPackage> foundPackages = [];
 
-            foreach (Repository repo in Repositories)
-                foundPackages.AddRange(repo.PackageLibrary);
+            foreach (Repository repository in Repositories)
+            {
+                if (!repository.Avaliable)
+                    continue;
+
+                foundPackages.AddRange(repository.PackageLibrary);
+            }
 
             return foundPackages.ToArray();
         }
@@ -101,15 +128,18 @@ namespace LawfulBlade.Core.Package
             RepositoryPackage? foundRepoPackage = null;
 
             // Locate the package according to the UUID.
-            foreach (Repository repo in Repositories)
+            foreach (Repository repository in Repositories)
             {
+                if (!repository.Avaliable)
+                    continue;
+
                 // Scan through each package in the repo,
-                foreach (RepositoryPackage repoPackage in repo.PackageLibrary)
+                foreach (RepositoryPackage repoPackage in repository.PackageLibrary)
                 {
                     if (repoPackage.UUID != UUID)
                         continue;
 
-                    parentRepo       = repo;
+                    parentRepo       = repository;
                     foundRepoPackage = repoPackage;
 
                     // We've found the package, so we can progress...
