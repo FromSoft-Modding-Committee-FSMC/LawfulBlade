@@ -51,6 +51,8 @@ namespace LawfulBlade.Core
         const uint FILE_ATTRIBUTE_NORMAL = 0x80;
         const uint ERROR_ACCESS_DENIED   = 5;
 
+        static TextWriter outputWriter = null;
+
         public static void InitConsole()
         {
             bool consoleAttached = true;
@@ -68,14 +70,14 @@ namespace LawfulBlade.Core
                     StreamWriter sw1 = new(new FileStream(file, FileAccess.Write)) { AutoFlush = true };
 
                     // File out
-                    StreamWriter sw2 = new($"lawful_{DateTime.Now:yyyy-mm-dd}.log", true);
+                    StreamWriter sw2 = new($"lawful_{DateTime.Now:yyyy-MM-dd}.log", true);
 
                     // Multi writer
-                    MultiWriter mw   = new MultiWriter(sw1, sw2);
+                    outputWriter = new MultiWriter(sw1, sw2);
                     
                     // Output
-                    Console.SetError(mw);
-                    Console.SetOut(mw);
+                    Console.SetError(outputWriter);
+                    Console.SetOut(outputWriter);
                 }
 
                 // Enable terminal mode to get sexy ansi goodness
@@ -90,6 +92,24 @@ namespace LawfulBlade.Core
                 Icon icon = Icon.ExtractAssociatedIcon(Path.Combine(App.ProgramPath, "LawfulBlade.exe"));
                 if (icon != null)
                     SetConsoleIcon(icon.Handle);
+            }
+        }
+
+        public static void InitLite()
+        {
+            // File out
+            outputWriter = new StreamWriter($"lawful_{DateTime.Now:yyyy-mm-dd}.log", true);
+
+            Console.SetError(outputWriter);
+            Console.SetOut(outputWriter);
+        }
+
+        public static void Shutdown()
+        {
+            if (outputWriter != null)
+            {
+                outputWriter.Flush();
+                outputWriter.Close();
             }
         }
 

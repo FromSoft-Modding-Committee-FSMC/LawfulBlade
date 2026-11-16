@@ -101,9 +101,11 @@ namespace LawfulBlade
             // Optional Debugging Console
             if (Preferences.ShowDebugConsole)
                 Debug.InitConsole();
+            else
+                Debug.InitLite();
 
-            // Load Repositories
-            PackageManager.Initialize();
+                // Load Repositories
+                PackageManager.Initialize();
             Debug.Info($"There are {PackageManager.PackageCount} packages avaliable across {PackageManager.RepositoryCount} repositories...");
 
             // Load Runtime Generators...
@@ -152,6 +154,9 @@ namespace LawfulBlade
 
             // Shutdown package manager
             PackageManager.Shutdown();
+
+            // Shutdown Debug
+            Debug.Shutdown();
 
             // Save Preferences
             Preferences.Save();
