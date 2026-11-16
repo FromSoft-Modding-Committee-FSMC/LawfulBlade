@@ -52,10 +52,7 @@ namespace SomExRuntime
             ];
 
         /// <summary>runtime **only supports Som2k games**!!!</summary>
-        public string[] SupportedCores { get; } = 
-            [
-                "24d8608f-8dc0-4b21-8333-05f097fd1823"
-            ];
+        public string[] SupportedCores { get; } = [ "24d8608f-8dc0-4b21-8333-05f097fd1823" ];
 
         /// <summary>runtime name</summary>
         public string Name { get; } = "SoM Ex Runtime";
